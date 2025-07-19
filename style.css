@@ -1,0 +1,2480 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+
+
+/* CSS Variables for consistent styling - aligned with Tailwind's default color palette for easy integration */
+
+:root {
+
+--primary-color: #4f46e5; /* Indigo-600 */
+
+--primary-light: #6366f1; /* Indigo-500 */
+
+--primary-dark: #3730a3; /* Indigo-700 */
+
+--accent-color: #0d9488; /* Teal-600 for subtle accents */
+
+--secondary-color: #6b7280; /* Gray-500 */
+
+--danger-color: #ef4444; /* Red-500 */
+
+--bg-light: #f3f4f6; /* Gray-100 - slightly darker for contrast */
+
+--bg-medium: #e0e7ff; /* Indigo-100 for subtle sections */
+
+--text-dark: #1a202c; /* Deeper gray for text */
+
+--text-light: #4b5563; /* Gray-600 */
+
+--border-color: #d1d5db; /* Gray-300 */
+
+--shadow-small: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+
+--shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.06);
+
+--shadow-large: 0 15px 30px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0, 0, 0, 0.08);
+
+--card-bg: #ffffff;
+
+--header-bg: #c7d7e2; /* Light blue-gray for headers */
+
+}
+
+
+
+#customer-address {
+
+min-height: auto !important;
+
+height: 60px !important;
+
+}
+
+
+
+/* Custom Text Shadows */
+
+.text-shadow-sm {
+
+text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+
+}
+
+.text-shadow-md {
+
+text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+
+}
+
+
+
+html, body {
+
+margin: 0;
+
+padding: 0;
+
+font-family: 'Poppins', sans-serif;
+
+box-sizing: border-box;
+
+background: linear-gradient(to bottom right, #f8f9fa, #eef2ff); /* Very light gray to light indigo gradient for softer look */
+
+color: var(--text-dark);
+
+line-height: 1.6;
+
+
+
+/* Add these 👇 */
+
+font-size: 16px; /* Base font size increased (you can go up to 18px if you want) */
+
+font-weight: 500; /* Medium font weight globally */
+
+}
+
+
+
+/* Scrollbar styling for better aesthetics (Webkit browsers) */
+
+::-webkit-scrollbar {
+
+width: 8px;
+
+height: 8px; /* For horizontal scrollbars */
+
+}
+
+
+
+::-webkit-scrollbar-track {
+
+background: var(--bg-light); /* Lighter track */
+
+border-radius: 10px;
+
+}
+
+
+
+::-webkit-scrollbar-thumb {
+
+background: #9ca3af; /* Gray-400 */
+
+border-radius: 10px;
+
+transition: background 0.3s ease;
+
+}
+
+
+
+::-webkit-scrollbar-thumb:hover {
+
+background: #6b7280; /* Gray-500 */
+
+}
+
+
+
+/* Specific scrollbar for item tables etc. */
+
+.custom-scroll::-webkit-scrollbar {
+
+height: 6px; /* Thinner horizontal scrollbar */
+
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+
+background: #b0c2d3; /* Lighter gray for less prominent scrollbar */
+
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+
+background: #8fa6bb;
+
+}
+
+
+
+
+
+/* Main Application Container */
+
+.app-container {
+
+height: 100vh; /* Full viewport height */
+
+background-color: var(--bg-light); /* Even lighter gray background */
+
+box-shadow: var(--shadow-large); /* Add a subtle overall shadow to the app container */
+
+border-radius: 1rem; /* Slight rounding for the whole app if it's not full screen */
+
+overflow: hidden; /* Ensure internal shadows/borders are clipped */
+
+}
+
+
+
+/* Sidebar Styles */
+
+.sidebar {
+
+width: 280px;
+
+flex-shrink: 0; /* Prevents sidebar from shrinking */
+
+background: linear-gradient(to bottom, #1f2937, #111827); /* Darker, richer blue-gray gradient */
+
+box-shadow: 0 0 40px rgba(0, 0, 0, 0.8); /* More prominent, deeper shadow */
+
+color: white;
+
+padding: 1.5rem; /* Consistent padding */
+
+border-right: 1px solid rgba(255,255,255,0.08); /* Subtle separator */
+
+}
+
+
+
+.sidebar-logo {
+
+color: #ffffff; /* A brighter blue/violet for the logo */
+
+text-shadow: 1px 1px 5px rgba(0,0,0,0.6); /* More pronounced shadow */
+
+letter-spacing: 0.15em; /* More prominent letter spacing */
+
+margin-bottom: 2.8rem; /* More space below logo */
+
+}
+
+
+
+@keyframes pulseGlow {
+
+from { text-shadow: 0 0 5px rgba(129, 140, 248, 0.4), 0 0 10px rgba(129, 140, 248, 0.2); }
+
+to { text-shadow: 0 0 10px rgba(129, 140, 248, 0.8), 0 0 20px rgba(129, 140, 248, 0.4); }
+
+}
+
+
+
+
+
+.sidebar-nav a {
+
+position: relative;
+
+overflow: hidden;
+
+padding: 0.9rem 1rem; /* Slightly more padding */
+
+border-radius: 0.75rem; /* More rounded */
+
+color: #d1d5db; /* Gray-300 */
+
+transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); /* Smoother, springier transition */
+
+font-size: 1rem; /* Slightly larger font */
+
+font-weight: 500;
+
+letter-spacing: 0.02em;
+
+}
+
+.sidebar-nav a:hover {
+
+background-color: #2a3340; /* Darker hover */
+
+color: #e5e7eb; /* Lighter text on hover */
+
+transform: translateX(6px); /* More pronounced slide */
+
+box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+}
+
+
+
+.sidebar-nav a.active {
+
+background: linear-gradient(to right, #4f46e5, #6366f1); /* Strong blue gradient */
+
+color: white;
+
+font-weight: 600;
+
+border: 1px solid #7c3aed; /* Stronger accent border */
+
+text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+
+}
+
+.sidebar-nav a.active i {
+
+color: white;
+
+transform: scale(1.15); /* Slightly bigger icon */
+
+}
+
+.sidebar-nav a.active::before {
+
+content: '';
+
+position: absolute;
+
+top: 0;
+
+left: 0;
+
+height: 100%;
+
+width: 6px; /* Accent line */
+
+background-color: #10b981; /* Emerald green accent */
+
+border-top-left-radius: 0.75rem;
+
+border-bottom-left-radius: 0.75rem;
+
+animation: stretchIn 0.5s ease-out;
+
+}
+
+@keyframes stretchIn {
+
+from { transform: scaleY(0); }
+
+to { transform: scaleY(1); }
+
+}
+
+
+
+#logout-btn {
+
+transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+background: linear-gradient(to right, #ef4444, #dc2626); /* Red gradient */
+
+font-size: 1.05rem;
+
+padding: 0.9rem 1.5rem;
+
+border-radius: 0.75rem;
+
+}
+
+#logout-btn:hover {
+
+box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5); /* Stronger red shadow on hover */
+
+transform: translateY(-4px);
+
+background: linear-gradient(to right, #dc2626, #b91c1c); /* Darker red gradient */
+
+}
+
+
+
+/* Hamburger Menu (Mobile/Tablet) */
+
+#hamburger-menu {
+
+transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+
+background-color: var(--primary-color);
+
+}
+
+#hamburger-menu:hover {
+
+background-color: var(--primary-dark); /* Darker blue on hover */
+
+transform: scale(1.1);
+
+box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+
+}
+
+#hamburger-menu.active i {
+
+transform: rotate(90deg);
+
+}
+
+
+
+
+
+/* Main Content Area */
+
+.main-content {
+
+flex-grow: 1;
+
+min-height: 100vh;
+
+background-color: var(--bg-light);
+
+padding: 2.5rem; /* Increased padding */
+
+border-left: 1px solid var(--border-color); /* Subtle border for main content */
+
+overflow-x: hidden; /* Prevent horizontal scroll on main content */
+
+}
+
+
+
+.content-section {
+
+display: none; /* Hidden by default, managed by JS */
+
+}
+
+.content-section.active {
+
+display: block;
+
+animation: fadeInScale 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; /* Smoother animation */
+
+}
+
+
+
+@keyframes fadeInScale {
+
+from { opacity: 0; transform: translateY(20px) scale(0.98); }
+
+to { opacity: 1; transform: translateY(0) scale(1); }
+
+}
+
+
+
+h1 {
+
+position: relative;
+
+padding-bottom: 1.25rem; /* More space for the underline */
+
+text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+
+color: var(--primary-dark);
+
+font-size: 2.75rem; /* Larger headings */
+
+font-weight: 800;
+
+}
+
+h1::after {
+
+content: '';
+
+position: absolute;
+
+left: 0;
+
+bottom: 0;
+
+width: 100%;
+
+height: 6px; /* Thicker underline */
+
+background: linear-gradient(to right, var(--primary-color), var(--primary-dark)); /* Blue-600 to Indigo-700 */
+
+border-radius: 3px;
+
+box-shadow: var(--shadow-small);
+
+}
+
+
+
+h2 {
+
+color: var(--text-dark); /* Darker text */
+
+margin-bottom: 1.5rem;
+
+font-size: 2rem; /* Larger sub-headings */
+
+font-weight: 700;
+
+padding-bottom: 0.5rem;
+
+border-bottom: 1px dashed var(--border-color); /* Subtle dashed border */
+
+}
+
+
+
+.form-section-card {
+
+transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+border-radius: 1.25rem; /* Even more rounded corners */
+
+border: 1px solid var(--border-color);
+
+background-color: var(--card-bg);
+
+box-shadow: var(--shadow-medium);
+
+padding: 2rem; /* More internal padding */
+
+}
+
+.form-section-card:hover {
+
+transform: translateY(-8px); /* More pronounced lift */
+
+box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); /* Stronger shadow */
+
+}
+
+
+
+/* Form Elements */
+
+input[type="text"],
+
+input[type="number"],
+
+input[type="email"],
+
+textarea,
+
+select {
+
+transition: all 0.3s ease-in-out;
+
+border-color: #cbd5e1; /* Gray-300 consistent border color */
+
+background-color: #fcfdfe; /* Very light background for inputs */
+
+color: var(--text-dark);
+
+padding: 0.85rem 1.15rem; /* More padding */
+
+border-radius: 0.625rem; /* More rounded */
+
+font-size: 0.95rem;
+
+}
+
+input:focus, textarea:focus, select:focus {
+
+border-color: var(--primary-color) !important;
+
+box-shadow: 0 0 0 5px rgba(79, 70, 229, 0.35) !important; /* Stronger focus ring (Indigo-600) */
+
+background-color: #fff !important;
+
+}
+
+textarea {
+
+min-height: 150px !important; /* Increased text area height for description */
+
+resize: vertical; /* Allow only vertical resizing */
+
+}
+
+
+
+/* Custom Select Styling */
+
+.custom-select {
+
+appearance: none;
+
+-webkit-appearance: none;
+
+-moz-appearance: none;
+
+background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath d='M7 7l3-3 3 3m0 6l-3 3-3-3' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+
+background-repeat: no-repeat;
+
+background-position: right 0.85rem center;
+
+background-size: 1.4em 1.4em;
+
+padding-right: 2.8rem;
+
+}
+
+
+
+
+
+/* Autocomplete styling */
+
+.autocomplete-results {
+
+transform: translateY(-15px);
+
+opacity: 0;
+
+transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+border-radius: 0.75rem;
+
+box-shadow: 0 10px 25px rgba(0,0,0,0.2); /* Stronger shadow */
+
+background-color: var(--card-bg);
+
+border: 1px solid var(--border-color);
+
+max-height: 200px; /* Consistent height */
+
+}
+
+.autocomplete-results:not(.hidden) {
+
+transform: translateY(0);
+
+opacity: 1;
+
+}
+
+.autocomplete-results div {
+
+cursor: pointer;
+
+transition: background-color 0.25s ease, color 0.25s ease;
+
+padding: 0.75rem 1.2rem;
+
+font-size: 1rem;
+
+border-bottom: 1px solid #f3f4f6; /* Subtle separators */
+
+}
+
+.autocomplete-results div:last-child {
+
+border-bottom: none;
+
+}
+
+.autocomplete-results div:hover {
+
+background-color: var(--bg-medium); /* Lighter blue */
+
+color: var(--primary-dark); /* Darker blue */
+
+}
+
+
+
+
+
+/* Buttons */
+
+.btn-primary, .btn-secondary, .btn-danger {
+
+display: inline-flex;
+
+align-items: center;
+
+justify-content: center;
+
+padding: 14px 32px; /* Increased padding for larger buttons */
+
+border-radius: 12px; /* More rounded */
+
+font-weight: 700; /* Bolder text */
+
+cursor: pointer;
+
+transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); /* Springy animation */
+
+text-decoration: none;
+
+border: none;
+
+white-space: nowrap;
+
+font-size: 1.05rem; /* Slightly larger font */
+
+box-shadow: var(--shadow-medium);
+
+}
+
+
+
+.btn-primary {
+
+background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+
+color: #fff;
+
+box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+
+}
+
+.btn-primary:hover {
+
+background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
+
+transform: translateY(-5px); /* More pronounced lift */
+
+box-shadow: 0 12px 30px rgba(79, 70, 229, 0.5);
+
+}
+
+.btn-primary:active {
+
+transform: translateY(0);
+
+box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+
+}
+
+
+
+.btn-secondary {
+
+background-color: #4b5563; /* Gray-700 */
+
+color: #fff;
+
+box-shadow: 0 6px 15px rgba(75, 85, 99, 0.3);
+
+}
+
+.btn-secondary:hover {
+
+background-color: #374151; /* Gray-800 */
+
+transform: translateY(-5px);
+
+box-shadow: 0 10px 25px rgba(75, 85, 99, 0.4);
+
+}
+
+.btn-secondary:active {
+
+transform: translateY(0);
+
+box-shadow: 0 4px 10px rgba(75, 85, 99, 0.2);
+
+}
+
+
+
+.btn-danger {
+
+background-color: var(--danger-color); /* Red-500 */
+
+color: #fff;
+
+box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+
+}
+
+.btn-danger:hover {
+
+background-color: #dc2626; /* Red-600 */
+
+transform: translateY(-3px);
+
+box-shadow: 0 6px 12px rgba(239, 68, 68, 0.3);
+
+}
+
+.btn-danger:active {
+
+transform: translateY(0);
+
+box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
+
+}
+
+
+
+/* Item Table */
+
+.item-table {
+
+border-radius: 12px; /* More rounded table */
+
+overflow: hidden; /* Ensures rounded corners are visible */
+
+box-shadow: var(--shadow-small); /* Subtle shadow for the table */
+
+}
+
+.item-table thead {
+
+background-color: var(--header-bg); /* Lighter blue-gray for header */
+
+}
+
+.item-table th {
+
+white-space: nowrap;
+
+color: var(--primary-dark);
+
+padding: 0.9rem 0.6rem; /* More vertical padding */
+
+border: 1px solid var(--border-color);
+
+font-size: 0.9rem; /* Slightly larger header font */
+
+font-weight: 600;
+
+}
+
+.item-table td {
+
+border: 1px solid #e2e8f0; /* Lighter border for table cells */
+
+padding: 0.75rem 0.6rem;
+
+vertical-align: middle;
+
+font-size: 0.9rem;
+
+color: var(--text-dark);
+
+background-color: var(--card-bg);
+
+/* For responsiveness, ensure inputs inside cells don't overflow */
+
+box-sizing: border-box; /* Include padding and border in the element's total width and height */
+
+}
+
+.item-table td input,
+
+.item-table td select,
+
+.item-table td textarea { /* Added textarea */
+
+padding: 0.6rem 0.8rem !important; /* Increased padding */
+
+border-radius: 0.5rem;
+
+border: 1px solid #cbd5e1; /* Slightly darker border */
+
+font-size: 1rem !important; /* Increased font size */
+
+color: var(--text-dark);
+
+background-color: #f8f9fa; /* Lighter background */
+
+width: 100%; /* Ensure inputs take full width of cell */
+
+box-sizing: border-box;
+
+}
+
+.item-table td:nth-child(2) textarea { /* Description input */
+
+min-width: 150px; /* Ensure enough width for description on larger screens */
+
+min-height: 40px !important; /* Minimum height for textarea */
+
+max-height: 100px !important; /* Max height for textarea */
+
+resize: vertical;
+
+line-height: 1.5 !important;
+
+}
+
+.item-table td:nth-child(3) input { /* HSN/SAC input */
+
+min-width: 80px;
+
+}
+
+.item-table td:nth-child(4) input { /* Qty input */
+
+min-width: 60px;
+
+text-align: center;
+
+}
+
+.item-table td:nth-child(5) input { /* Rate input */
+
+min-width: 70px;
+
+text-align: right;
+
+}
+
+.item-table td:nth-child(6) input { /* Discount input */
+
+min-width: 80px;
+
+text-align: right;
+
+}
+
+.item-table td:nth-child(7) { /* Amount cell (read-only) */
+
+white-space: nowrap; /* Prevent wrapping of amount */
+
+font-weight: bold;
+
+text-align: right;
+
+}
+
+
+
+.item-table td .btn-danger {
+
+padding: 0.35rem 0.6rem;
+
+font-size: 0.8rem;
+
+border-radius: 0.5rem;
+
+margin: 0 auto;
+
+}
+
+
+
+
+
+/* Summary Table */
+
+.summary-table td {
+
+padding-left: 0.75rem;
+
+padding-right: 0.75rem;
+
+}
+
+
+
+.summary-table .value-col {
+
+font-weight: 700;
+
+}
+
+.summary-table .grand-total-row {
+
+border-top: 2px solid var(--primary-dark); /* Darker blue for grand total line */
+
+background: linear-gradient(to right, #3b82f6, #2563eb); /* Vibrant blue gradient */
+
+color: white;
+
+box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+
+}
+
+.summary-table .grand-total-row td {
+
+padding-top: 1rem;
+
+padding-bottom: 1rem;
+
+text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Added text shadow */
+
+}
+
+
+
+.invoice-preview-container {
+
+min-height: 297mm;
+
+max-width: 210mm;
+
+margin: auto;
+
+border: 1px solid #ccc;
+
+box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+
+background-color: #fff;
+
+border-radius: 0.5rem;
+
+padding: 0.25rem;
+
+}
+
+
+
+.invoice-content {
+
+border: 2px solid #000;
+
+padding: 1rem;
+
+font-family: 'Times New Roman', serif;
+
+font-size: 12px;
+
+line-height: 1.5;
+
+color: #222;
+
+box-sizing: border-box;
+
+}
+
+
+
+.invoice-header-section {
+
+border-bottom: 2px solid #000;
+
+padding-bottom: 0.6rem;
+
+margin-bottom: 0.8rem;
+
+}
+
+
+
+.invoice-title {
+
+font-size: 0.95rem;
+
+letter-spacing: 0.75px;
+
+color: #444;
+
+}
+
+
+
+.company-main-title {
+
+font-size: 2.3rem;
+
+letter-spacing: 1.2px;
+
+color: #b91c1c; /* Deep red */
+
+font-weight: 900;
+
+margin-bottom: 0.2rem;
+
+}
+
+
+
+.company-slogan {
+
+font-size: 0.75rem;
+
+color: #444;
+
+}
+
+
+
+.company-details-grid, .receiver-section {
+
+border-top: 1px solid #000;
+
+border-left: 1px solid #000;
+
+margin-bottom: 0.8rem;
+
+}
+
+
+
+.company-details-grid > div,
+
+.receiver-section > div {
+
+border-right: 1px solid #000;
+
+border-bottom: 1px solid #000;
+
+padding: 0.4rem 0.6rem;
+
+font-size: 0.75rem;
+
+}
+
+
+
+.company-details-grid p strong,
+
+.receiver-section p strong {
+
+display: inline-block;
+
+min-width: 100px;
+
+font-weight: 600;
+
+color: #111;
+
+}
+
+
+
+.receiver-details-left .label-billed-to {
+
+font-size: 0.85rem;
+
+color: #1f2937;
+
+font-weight: bold;
+
+margin-bottom: 0.25rem;
+
+}
+
+
+
+.invoice-table-container {
+
+border: 1px solid #000;
+
+margin-bottom: 0.75rem;
+
+}
+
+
+
+.invoice-table th,
+
+.invoice-table td {
+
+border: 1px solid #000;
+
+padding: 0.35rem 0.5rem;
+
+font-size: 0.75rem;
+
+}
+
+
+
+.invoice-table th {
+
+background-color: #f3f4f6;
+
+font-weight: 600;
+
+color: #111827;
+
+}
+
+
+
+.invoice-table td.text-right,
+
+.invoice-table th.text-right {
+
+text-align: right;
+
+}
+
+
+
+.invoice-table td.text-center,
+
+.invoice-table th.text-center {
+
+text-align: center;
+
+}
+
+
+
+/* Summary & Taxes */
+
+.summary-and-bank-section {
+
+display: flex;
+
+gap: 1rem;
+
+border: none;
+
+margin-bottom: 0.75rem;
+
+}
+
+
+
+.amount-in-words-box {
+
+flex: 2;
+
+padding: 0.75rem;
+
+font-size: 0.75rem;
+
+border: 1px solid #000;
+
+}
+
+
+
+.amount-in-words-box .label {
+
+font-weight: 600;
+
+font-size: 0.85rem;
+
+color: #1f2937;
+
+}
+
+
+
+.tax-summary-table {
+
+flex: 1;
+
+font-size: 0.75rem;
+
+border: 1px solid #000;
+
+border-collapse: collapse;
+
+width: 100%;
+
+}
+
+
+
+.tax-summary-table td {
+
+border: 1px solid #000;
+
+padding: 0.4rem 0.5rem;
+
+}
+
+
+
+.tax-summary-table .label-col {
+
+background-color: #f5f5f5;
+
+}
+
+
+
+.tax-summary-table .value-col {
+
+text-align: right;
+
+font-weight: 700;
+
+}
+
+
+
+.tax-summary-table .grand-total-row td {
+
+background-color: #1e3a8a;
+
+color: #fff;
+
+font-size: 0.85rem;
+
+font-weight: 800;
+
+}
+
+
+
+/* Bank + Notes */
+
+.bank-details-section,
+
+.footer-notes-section {
+
+border: 1px solid #000;
+
+padding: 0.6rem;
+
+font-size: 0.75rem;
+
+margin-bottom: 0.6rem;
+
+line-height: 1.3;
+
+}
+
+
+
+/* Footer */
+
+.for-company-text {
+
+font-size: 0.85rem;
+
+font-weight: bold;
+
+text-align: right;
+
+color: #111827;
+
+margin-bottom: 0.5rem;
+
+}
+
+
+
+/* Signature Section */
+
+.signatures-section {
+
+display: flex;
+
+justify-content: space-between;
+
+margin-top: 1rem;
+
+gap: 1.5rem;
+
+}
+
+
+
+.signature-box {
+
+flex: 1;
+
+text-align: center;
+
+border-top: 1px solid #000;
+
+padding-top: 2.5rem;
+
+font-size: 0.75rem;
+
+color: #333;
+
+position: relative;
+
+}
+
+
+
+.signature-box .digital-stamp {
+
+position: absolute;
+
+top: -2.2rem;
+
+left: 50%;
+
+transform: translateX(-50%);
+
+max-width: 60px;
+
+opacity: 0.9;
+
+}
+
+
+
+/* Message Box Overlay */
+
+.message-box-overlay.show {
+
+opacity: 1;
+
+visibility: visible;
+
+}
+
+.message-box-overlay.show .message-box {
+
+transform: translateY(0) scale(1);
+
+opacity: 1;
+
+}
+
+.message-box {
+
+opacity: 0; /* Hidden by default */
+
+transform: translateY(20px) scale(0.95); /* Start slightly off-screen and smaller */
+
+transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Springy animation */
+
+background-color: var(--card-bg);
+
+box-shadow: var(--shadow-large);
+
+border-radius: 1.5rem; /* More rounded */
+
+padding: 2.5rem;
+
+}
+
+.message-box h3 {
+
+color: var(--primary-dark); /* Darker blue title */
+
+font-size: 2.2rem;
+
+}
+
+.message-box p {
+
+color: var(--text-dark); /* Ensure text is visible */
+
+font-size: 1.2rem;
+
+}
+
+.message-box button {
+
+box-shadow: 0 6px 18px rgba(79, 70, 229, 0.4);
+
+padding: 0.9rem 2.5rem;
+
+border-radius: 0.75rem;
+
+}
+.message-box button:hover {
+
+box-shadow: 0 10px 25px rgba(79, 70, 229, 0.5);
+
+}
+
+
+
+/* Login Form Specific Styles */
+
+#login-page .login-form-active {
+
+opacity: 1;
+
+transform: translateY(0) scale(1);
+
+}
+
+
+
+@media print {
+
+body {
+
+font-size: 11px !important;
+
+margin: 0;
+
+padding: 0;
+
+line-height: 1.2;
+
+color: #000;
+
+background: #fff;
+
+}
+
+
+
+* {
+
+-webkit-print-color-adjust: exact !important;
+
+color-adjust: exact !important;
+
+box-shadow: none !important;
+
+}
+
+
+
+#print-button,
+
+#download-button,
+
+.no-print,
+
+.app-sidebar,
+
+.app-header,
+
+.footer,
+
+.print-hidden { /* Added print-hidden to hide elements during print */
+
+display: none !important;
+
+}
+
+
+
+.container {
+
+width: 100% !important;
+
+padding: 0 !important;
+
+margin: 0 auto !important;
+
+}
+
+
+
+.invoice-box {
+
+padding: 10px !important;
+
+margin: 0 !important;
+
+border: none !important;
+
+width: 100% !important;
+
+}
+
+
+
+.header-section,
+
+.company-info,
+
+.invoice-info,
+
+.bill-to,
+
+.transport-info {
+
+display: flex;
+
+justify-content: space-between;
+
+align-items: start;
+
+flex-wrap: wrap;
+
+gap: 4px;
+
+}
+
+
+
+.company-name {
+
+font-size: 20px !important;
+
+font-weight: bold;
+
+color: #d32f2f !important;
+
+}
+
+
+
+.invoice-title {
+
+font-size: 16px !important;
+
+font-weight: bold;
+
+text-align: right;
+
+color: #000;
+
+}
+
+
+
+.invoice-metadata {
+
+text-align: right;
+
+font-size: 11px;
+
+}
+
+
+
+table {
+
+width: 100%;
+
+border-collapse: collapse !important;
+
+margin-top: 5px;
+
+}
+
+
+
+table th,
+
+table td {
+
+padding: 4px 6px !important;
+
+border: 1px solid #000 !important;
+
+font-size: 10px !important;
+
+text-align: left;
+
+}
+
+
+
+.summary-section {
+
+margin-top: 8px;
+
+display: flex;
+
+justify-content: space-between;
+
+align-items: flex-start;
+
+font-size: 11px;
+
+}
+
+
+
+.amount-in-words {
+
+width: 60%;
+
+}
+
+
+
+.tax-summary {
+
+width: 38%;
+
+border: 1px solid #000;
+
+padding: 6px;
+
+}
+
+
+
+.tax-summary table {
+
+border: none !important;
+
+margin: 0;
+
+}
+
+
+
+.tax-summary td {
+
+border: none !important;
+
+padding: 3px 6px;
+
+}
+
+
+
+.bank-details {
+
+border: 1px solid #000;
+
+padding: 6px;
+
+margin-top: 6px;
+
+font-size: 10px;
+
+}
+
+
+
+.signature-section {
+
+display: flex;
+
+justify-content: space-between;
+
+margin-top: 20px;
+
+font-size: 10px;
+
+}
+
+
+
+.signature-box {
+
+width: 48%;
+
+text-align: center;
+
+border-top: 1px solid #000;
+
+padding-top: 4px;
+
+}
+
+
+
+.stamp {
+
+max-width: 120px;
+
+margin-top: 8px;
+
+}
+
+
+
+hr {
+
+border: 1px solid #000;
+
+margin: 8px 0;
+
+}
+
+
+
+/* Ensure proper A4 size printing */
+
+@page {
+
+size: A4;
+
+margin: 15mm 10mm 15mm 10mm;
+
+}
+
+}
+
+
+
+/* Responsive adjustments */
+
+/* Tablets and small desktops (smaller than 1280px, Tailwind's lg) */
+
+@media (max-width: 1279px) {
+
+.app-container {
+
+border-radius: 0; /* Remove rounding for full width on smaller screens */
+
+box-shadow: none;
+
+}
+
+.main-content {
+
+padding: 2rem; /* Consistent padding */
+
+}
+
+h1 {
+
+font-size: 2.5rem;
+
+}
+
+h2 {
+
+font-size: 1.8rem;
+
+}
+
+.form-section-card {
+
+padding: 1.75rem;
+
+border-radius: 1rem;
+
+}
+
+.btn-primary, .btn-secondary, .btn-danger {
+
+padding: 12px 28px;
+
+font-size: 1rem;
+
+}
+
+.sidebar {
+
+width: 250px; /* Slightly narrower sidebar on medium screens */
+
+}
+
+.sidebar-nav a {
+
+padding: 0.75rem 1rem;
+
+font-size: 0.9rem;
+
+}
+
+.sidebar-nav a.active {
+
+transform: translateX(8px);
+
+}
+
+}
+
+
+
+/* Medium screens (smaller than 1024px, Tailwind's lg) - Sidebar becomes mobile-first */
+
+@media (max-width: 1023px) {
+
+.app-container {
+
+flex-direction: column;
+
+height: auto;
+
+margin: 0;
+
+}
+
+
+
+.sidebar {
+
+position: fixed;
+
+left: 0;
+
+top: 0;
+
+height: 100vh;
+
+transform: translateX(-100%); /* Hidden by default */
+
+transition: transform 0.3s ease-in-out;
+
+z-index: 100;
+
+box-shadow: 8px 0 20px rgba(0,0,0,0.4); /* Stronger shadow when open */
+
+width: 270px; /* Ensure sufficient width for mobile sidebar */
+
+padding-top: 5rem; /* Space for fixed hamburger */
+
+}
+
+.sidebar.show-sidebar {
+
+transform: translateX(0%); /* Show sidebar when toggled */
+
+}
+
+
+
+.main-content {
+
+margin-left: 0;
+
+padding: 1.5rem; /* Smaller padding for mobile */
+
+min-height: calc(100vh - 4rem); /* Adjust for potential fixed header/footer */
+
+border-left: none; /* No border on mobile */
+
+}
+
+
+
+h1 {
+
+font-size: 2.2rem;
+
+margin-bottom: 1.5rem;
+
+padding-bottom: 1rem;
+
+}
+
+h1::after {
+
+height: 5px;
+
+}
+
+h2 {
+
+font-size: 1.7rem;
+
+margin-bottom: 1rem;
+
+}
+
+.form-section-card {
+
+padding: 1.5rem;
+
+margin-bottom: 1.5rem;
+
+}
+
+.item-table th, .item-table td {
+
+padding: 0.6rem 0.5rem;
+
+font-size: 0.85rem;
+
+}
+
+.item-table td input, .item-table td select, .item-table td textarea { /* Added textarea */
+
+padding: 0.4rem 0.5rem;
+
+font-size: 1rem !important; /* Keep larger font for mobile usability */
+
+}
+
+.invoice-preview-container {
+
+padding: 1.25rem;
+
+margin-top: 1.5rem;
+
+max-width: none;
+
+width: auto;
+
+}
+
+.summary-and-bank-section {
+
+flex-direction: column;
+
+}
+
+.amount-in-words-box {
+
+border-right: none;
+
+border-bottom: 1px solid #000;
+
+padding-bottom: 1rem;
+
+}
+
+.tax-summary-table {
+
+width: 100%;
+
+}
+
+.signatures-section {
+
+flex-direction: column;
+
+align-items: center;
+
+gap: 1.5rem;
+
+}
+
+.signature-box {
+
+width: 90%;
+
+}
+
+.signature-box .digital-stamp {
+
+max-width: 60px;
+
+top: -2.2rem;
+
+}
+
+#hamburger-menu {
+
+top: 1rem;
+
+right: 1rem;
+
+padding: 0.75rem;
+
+font-size: 1.5rem;
+
+}
+
+}
+
+
+
+/* Small screens (smaller than 768px, Tailwind's md) */
+
+@media (max-width: 767px) {
+
+.main-content {
+
+padding: 1rem;
+
+}
+
+h1 {
+
+font-size: 2rem;
+
+margin-bottom: 1rem;
+
+padding-bottom: 0.8rem;
+
+}
+
+h1::after {
+
+height: 4px;
+
+}
+
+h2 {
+
+font-size: 1.5rem;
+
+margin-bottom: 0.75rem;
+
+}
+
+.form-section-card {
+
+padding: 1rem;
+
+margin-bottom: 1rem;
+
+}
+
+.form-section-card .grid {
+
+grid-template-columns: 1fr; /* Stack inputs vertically on very small screens */
+
+gap: 1rem;
+
+}
+
+input[type="text"], input[type="number"], input[type="email"], textarea, select {
+
+padding: 0.7rem 0.9rem;
+
+font-size: 0.9rem;
+
+}
+
+.btn-primary, .btn-secondary, .btn-danger {
+
+padding: 0.8rem 1.5rem;
+
+font-size: 0.9rem;
+
+width: 100%; /* Full width buttons */
+
+margin-bottom: 0.75rem;
+
+}
+
+.flex-wrap.gap-4 { /* Target button groups */
+
+flex-direction: column;
+
+gap: 0.75rem;
+
+}
+
+.item-table th, .item-table td {
+
+font-size: 0.75rem;
+
+padding: 0.4rem 0.3rem;
+
+}
+
+.item-table td input, .item-table td select, .item-table td textarea { /* Added textarea */
+
+font-size: 1rem !important; /* Still larger for better touch targets */
+
+padding: 0.4rem 0.5rem;
+
+}
+
+.summary-table td {
+
+font-size: 0.9rem;
+
+}
+
+.summary-table .grand-total-row td {
+
+font-size: 1.1rem;
+
+}
+
+
+
+.invoice-preview-container {
+
+padding: 1rem;
+
+}
+
+.invoice-content {
+
+padding: 0.75rem;
+
+}
+
+.invoice-title {
+
+font-size: 0.8rem;
+
+}
+
+.company-main-title {
+
+font-size: 2rem;
+
+}
+
+.company-slogan {
+
+font-size: 0.65rem;
+
+}
+
+.company-details-grid > div,
+
+.receiver-section > div {
+
+padding: 0.5rem 0.7rem;
+
+font-size: 0.75rem;
+
+}
+
+.invoice-table th, .invoice-table td, .tax-summary-table td {
+
+font-size: 0.7rem;
+
+padding: 0.3rem 0.5rem;
+
+}
+
+.amount-in-words-box, .bank-details-section, .footer-notes-section {
+
+padding: 0.6rem 0.7rem;
+
+font-size: 0.75rem;
+
+}
+
+.tax-summary-table td {
+
+font-size: 0.75rem;
+
+padding: 0.4rem 0.6rem;
+
+}
+
+.tax-summary-table .grand-total-row td {
+
+font-size: 0.85rem;
+
+}
+
+.signature-box {
+
+padding-top: 2rem;
+
+font-size: 0.7rem;
+
+}
+
+.signature-box .digital-stamp {
+
+max-width: 55px;
+
+top: -1.8rem;
+
+}
+
+.message-box {
+
+padding: 1.5rem;
+
+}
+
+.message-box h3 {
+
+font-size: 1.8rem;
+
+}
+
+.message-box p {
+
+font-size: 1rem;
+
+}
+
+.message-box button {
+
+padding: 0.75rem 2rem;
+
+}
+
+.autocomplete-results div {
+
+padding: 0.6rem 1rem;
+
+font-size: 0.9rem;
+
+}
+
+}
+
+
+
+#vehicle-number::placeholder {
+
+text-transform: uppercase;
+
+}
+
+
+
+textarea.item-description {
+
+height: 30px !important;
+
+max-height: 30px !important;
+
+min-height: 40px !important; /* Increased min-height */
+
+line-height: 1.5rem !important; /* Adjusted line-height */
+
+padding-top: 4px !important;
+
+padding-bottom: 4px !important;
+
+margin-bottom: 0 !important;
+
+}
+
+
+
+
+
+/* Force larger placeholder */
+
+textarea.item-description::placeholder {
+
+font-size: 1rem !important;
+
+color: #999 !important; /* optional: make it lighter for visibility */
+
+padding-top: 0.25rem;
+
+}
+
+
+
+
+
+/* Extra small screens (smaller than 480px, custom breakpoint) */
+
+@media (max-width: 479px) {
+
+.main-content {
+
+padding: 0.75rem;
+
+}
+
+h1 {
+
+font-size: 1.75rem;
+
+margin-bottom: 0.75rem;
+
+padding-bottom: 0.6rem;
+
+}
+
+h1::after {
+
+height: 3px;
+
+}
+
+h2 {
+
+font-size: 1.3rem;
+
+margin-bottom: 0.6rem;
+
+}
+
+.form-section-card {
+
+padding: 0.75rem;
+
+margin-bottom: 0.75rem;
+
+}
+
+input[type="text"], input[type="number"], input[type="email"], textarea, select {
+
+padding: 0.6rem 0.8rem;
+
+font-size: 0.85rem;
+
+}
+
+.btn-primary, .btn-secondary {
+
+padding: 0.7rem 1.2rem;
+
+font-size: 0.85rem;
+
+margin-bottom: 0.6rem;
+
+}
+
+
+
+.item-table th, .item-table td {
+
+font-size: 0.65rem;
+
+padding: 0.3rem 0.2rem;
+
+}
+
+.item-table td input, .item-table td select, .item-table td textarea { /* Added textarea */
+
+font-size: 0.8rem !important; /* Maintain slightly larger for input usability */
+
+padding: 0.3rem 0.4rem;
+
+}
+
+.summary-table td {
+
+font-size: 0.8rem;
+
+}
+
+.summary-table .grand-total-row td {
+
+font-size: 1rem;
+
+}
+
+
+
+.invoice-preview-container {
+
+padding: 0.75rem;
+
+}
+
+.invoice-content {
+
+padding: 0.6rem;
+
+}
+
+.invoice-title {
+
+font-size: 0.7rem;
+
+}
+
+.company-main-title {
+
+font-size: 1.7rem;
+
+}
+
+.company-slogan {
+
+font-size: 0.6rem;
+
+}
+
+.company-details-grid > div,
+
+.receiver-section > div {
+
+padding: 0.4rem 0.6rem;
+
+font-size: 0.7rem;
+
+}
+
+.invoice-table th, .invoice-table td, .tax-summary-table td {
+
+font-size: 0.6rem;
+
+padding: 0.2rem 0.4rem;
+
+}
+
+.amount-in-words-box, .bank-details-section, .footer-notes-section {
+
+padding: 0.5rem 0.6rem;
+
+font-size: 0.7rem;
+
+}
+
+.tax-summary-table td {
+
+font-size: 0.7rem;
+
+padding: 0.3rem 0.5rem;
+
+}
+
+.tax-summary-table .grand-total-row td {
+
+font-size: 0.75rem;
+
+}
+
+.signature-box {
+
+padding-top: 1.7rem;
+
+font-size: 0.65rem;
+
+}
+
+.signature-box .digital-stamp {
+
+max-width: 45px;
+
+top: -1.5rem;
+
+}
+
+.message-box {
+
+padding: 1rem;
+
+}
+
+.message-box h3 {
+
+font-size: 1.5rem;
+
+}
+
+.message-box p {
+
+font-size: 0.85rem;
+
+}
+
+.message-box button {
+
+padding: 0.6rem 1.5rem;
+
+}
+
+.autocomplete-results div {
+
+padding: 0.5rem 0.8rem;
+
+font-size: 0.8rem;
+
+}
+
+}
