@@ -1620,21 +1620,12 @@ function renderInvoiceHistory() {
 
     filteredInvoices.forEach(invoice => {
         const row = document.createElement('tr');
-        let balanceClass = 'text-green-600'; // Fully paid
-        let balanceText = 'Fully Paid';
-        const balanceDue = invoice.summary.balanceDue || 0;
-
-        if (balanceDue > 0.01) { // Check if balance is effectively greater than zero
-            balanceClass = 'text-red-600 font-semibold';
-            balanceText = formatCurrency(balanceDue);
-        }
 
         row.innerHTML = `
             <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${invoice.invoiceDetails.invoiceNumber}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${invoice.invoiceDetails.invoiceDate}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-left text-sm">${invoice.receiverDetails.name}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-right text-sm">${formatCurrency(invoice.summary.grandTotal)}</td>
-            <td class="py-2 px-2 border-b border-gray-200 text-right text-sm ${balanceClass}">${balanceText}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-center space-x-2">
                 <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="delete-invoice-btn btn-danger text-sm p-1 rounded">
                     <i class="fas fa-trash"></i> Delete
