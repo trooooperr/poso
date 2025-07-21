@@ -1,4 +1,3 @@
-
 // --- Element References ---
 const loginPage = document.getElementById('login-page');
 const loginForm = document.getElementById('login-form');
@@ -119,6 +118,9 @@ const paymentNotesTextarea = document.getElementById('payment-notes');
 const recordPaymentBtn = document.getElementById('record-payment-btn');
 const paymentHistoryList = document.getElementById('payment-history-list');
 const noPaymentData = document.getElementById('no-payment-data');
+// This was missing from HTML, adding for payment flow.
+const paymentCustomerInput = document.getElementById('payment-customer-name');
+
 
 // History elements
 const historyInvoiceNumberSearch = document.getElementById('history-invoice-number-search');
@@ -519,6 +521,7 @@ function showContentSection(sectionId) {
         paymentAmountInput.value = '';
         paymentMethodSelect.value = 'Cash';
         paymentNotesTextarea.value = '';
+        paymentCustomerInput.value = ''; // Clear customer input
     }
 
     // Reset invoice generation state when navigating away from invoice section
@@ -529,6 +532,7 @@ function showContentSection(sectionId) {
         invoiceData = null; // Clear invoice data
     }
 }
+
 
 navInvoice.addEventListener('click', (e) => {
     e.preventDefault();
@@ -933,14 +937,14 @@ function calculateItemRow() {
         if (!isNaN(percentage) && percentage >= 0 && percentage <= 100) {
             effectiveDiscount = baseAmount * (percentage / 100);
         } else {
-            discountInputVal = '';
+            // If invalid percentage, reset discount input and effective discount
+            effectiveDiscount = 0;
             row.querySelector('.item-discount').value = '';
         }
     } else {
         effectiveDiscount = parseFloat(discountInputVal) || 0;
         if (isNaN(effectiveDiscount) || effectiveDiscount < 0) {
             effectiveDiscount = 0;
-            discountInputVal = '';
             row.querySelector('.item-discount').value = '';
         }
     }
@@ -951,8 +955,11 @@ function calculateItemRow() {
     // Save item data for autocomplete if new or updated
     const description = row.querySelector('.item-description').value.trim();
     const hsn = row.querySelector('.item-hsn').value.trim();
+    // Only save if description or hsn is not empty
     if (description || hsn) {
+        // Use a combination of description and HSN as a more unique key
         const key = `${description.toLowerCase()}-${hsn.toLowerCase()}`;
+        // Ensure that the stored rate is the current rate from the input, not the calculated itemTotal
         itemsData[key] = { description, hsn, rate: rate };
         localStorage.setItem('itemsData', JSON.stringify(itemsData));
     }
@@ -987,14 +994,18 @@ function calculateSummary() {
                 discountAmountPerItem = 0;
             }
         }
-        
+
         subTotalBeforeItemDiscount += baseAmountPerItem;
         totalItemDiscount += discountAmountPerItem;
     });
 
-    const subTotalAfterItemDiscount = subTotalBeforeItemDiscount - totalItemDiscount;
-
     const overallDiscount = parseFloat(overallDiscountInput.value) || 0;
+    if (isNaN(overallDiscount) || overallDiscount < 0) {
+        overallDiscountInput.value = '0.00';
+        // Use 0 for calculation if invalid
+    }
+
+    const subTotalAfterItemDiscount = subTotalBeforeItemDiscount - totalItemDiscount;
     const totalTaxableValue = Math.max(0, subTotalAfterItemDiscount - overallDiscount);
 
     const cgstRate = parseFloat(cgstRateSpan.textContent) || 0;
@@ -1010,7 +1021,7 @@ function calculateSummary() {
     // Update the DOM
     subTotalSpan.textContent = formatCurrency(subTotalBeforeItemDiscount);
     totalItemDiscountSpan.textContent = formatCurrency(totalItemDiscount);
-    overallDiscountInput.value = overallDiscount.toFixed(2); // Keep input value updated
+    // overallDiscountInput.value is already set by user, only ensure it's a number
     totalTaxableValueSpan.textContent = formatCurrency(totalTaxableValue);
     cgstAmountSpan.textContent = formatCurrency(cgstAmount);
     sgstAmountSpan.textContent = formatCurrency(sgstAmount);
@@ -1051,7 +1062,7 @@ resetFormBtn.addEventListener('click', () => {
     invoiceNumberInput.value = generateInvoiceNumber();
     invoiceDateInput.value = formatDateForDisplay(formatDateForInput(new Date()));
 
-    updateTaxRatesBasedOnGSTIN();
+    updateTaxRatesBasedOnGSTIN(); // Recalculate taxes based on cleared customer GSTIN
 
     invoicePreview.classList.add('hidden');
     invoiceActions.classList.add('hidden');
@@ -1081,12 +1092,15 @@ generateInvoiceBtn.addEventListener('click', () => {
         const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
         const discountInputVal = row.querySelector('.item-discount').value.trim();
 
+        // Validate only if the row has any content.
+        // If a row is entirely empty, it's considered for removal/ignored.
+        if (description === '' && hsn === '' && qty === 0 && rate === 0 && discountInputVal === '') {
+            return; // Skip completely empty rows
+        }
+
         if (!description || qty <= 0 || rate <= 0) {
-            // If any field is partially filled but not valid, mark as invalid
-            if (description || hsn || qty > 0 || rate > 0 || discountInputVal) {
-                allItemsValid = false;
-            }
-            return; // Skip this row if it's empty or invalid
+            allItemsValid = false;
+            return; // Mark as invalid and continue to show specific message
         }
 
         let itemEffectiveDiscount = 0;
@@ -1126,6 +1140,7 @@ generateInvoiceBtn.addEventListener('click', () => {
     // Recalculate summary one last time to ensure all spans are updated before capturing data
     calculateSummary();
 
+    // Re-read values from the DOM after calculateSummary() has updated them
     const currentSubTotal = parseFloat(subTotalSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
     const currentTotalItemDiscount = parseFloat(totalItemDiscountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
     const currentOverallDiscount = parseFloat(overallDiscountInput.value) || 0;
@@ -1346,14 +1361,34 @@ saveInvoiceBtn.addEventListener('click', () => {
         return;
     }
 
+    // Ensure all calculations are fresh before saving
+    calculateSummary();
+    invoiceData.summary.subTotal = parseFloat(subTotalSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    invoiceData.summary.totalItemDiscount = parseFloat(totalItemDiscountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    invoiceData.summary.overallDiscount = parseFloat(overallDiscountInput.value) || 0;
+    invoiceData.summary.taxableValue = parseFloat(totalTaxableValueSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    invoiceData.summary.cgstAmount = parseFloat(cgstAmountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    invoiceData.summary.sgstAmount = parseFloat(sgstAmountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    invoiceData.summary.igstAmount = parseFloat(igstAmountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    invoiceData.summary.grandTotal = parseFloat(grandTotalSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+
+
     const existingIndex = savedInvoices.findIndex(inv => inv.invoiceDetails.invoiceNumber === invoiceData.invoiceDetails.invoiceNumber);
 
-    const existingInvoicePayments = payments.filter(p => p.invoiceNumber === invoiceData.invoiceDetails.invoiceNumber);
-    const totalPaidForInvoice = existingInvoicePayments.reduce((sum, p) => sum + p.amount, 0);
+    // Calculate balance due based on *existing* payments for this invoice
+    const totalPaidForInvoice = payments.filter(p => p.invoiceNumber === invoiceData.invoiceDetails.invoiceNumber).reduce((sum, p) => sum + p.amount, 0);
     invoiceData.summary.balanceDue = Math.max(0, invoiceData.summary.grandTotal - totalPaidForInvoice);
 
+
     if (existingIndex > -1) {
-        savedInvoices[existingIndex] = { ...invoiceData, lastSaved: new Date().toISOString() };
+        // Update existing invoice, but keep the original 'lastSaved' if it's already there and more recent, or update to now.
+        // This prevents dummy data from constantly updating if it's older.
+        const existingLastSaved = new Date(savedInvoices[existingIndex].lastSaved);
+        const currentSaveTime = new Date();
+        savedInvoices[existingIndex] = {
+            ...invoiceData,
+            lastSaved: (existingLastSaved > currentSaveTime ? existingLastSaved.toISOString() : currentSaveTime.toISOString())
+        };
         showMessageBox('Info', `Invoice ${invoiceData.invoiceDetails.invoiceNumber} updated successfully!`);
     } else {
         savedInvoices.push({ ...invoiceData, lastSaved: new Date().toISOString() });
@@ -1361,6 +1396,7 @@ saveInvoiceBtn.addEventListener('click', () => {
     }
     localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
 
+    // Re-render history if currently active to show updated status/saved invoice
     if (historySection.classList.contains('active')) {
         renderInvoiceHistory();
     }
@@ -1377,23 +1413,41 @@ shareInvoiceBtn.addEventListener('click', () => {
 
 // --- Payments Section ---
 
-// Removed paymentInvoiceNumberInput and its autocomplete.
-// Payments will now be initiated from the Invoice History section.
-
+// Record Payment Button Listener
 recordPaymentBtn.addEventListener('click', () => {
+    const invoiceNumber = recordPaymentBtn.dataset.invoiceNumber; // Get invoice number from data attribute
     const paymentDate = paymentDateInput.value.trim();
     const amount = parseFloat(paymentAmountInput.value);
     const method = paymentMethodSelect.value;
     const notes = paymentNotesTextarea.value.trim();
-    const customerName = paymentCustomerInput.value.trim(); // Assuming a customer name field is available
+    const customerName = paymentCustomerInput.value.trim(); // Get customer name from input
 
-    if (!paymentDate || isNaN(amount) || amount <= 0 || !customerName) {
-        showMessageBox('Validation Error', 'Please enter a valid Customer Name, Payment Date, and a positive Amount.');
+
+    if (!invoiceNumber || !customerName || !paymentDate || isNaN(amount) || amount <= 0) {
+        showMessageBox('Validation Error', 'Please select an Invoice from history, and enter a valid Payment Date and a positive Amount.');
         return;
     }
 
+    // Find the invoice to ensure payment isn't overshooting the grand total - balance due
+    const targetInvoice = savedInvoices.find(inv => inv.invoiceDetails.invoiceNumber === invoiceNumber);
+    if (!targetInvoice) {
+        showMessageBox('Error', 'Associated invoice not found. Cannot record payment.');
+        return;
+    }
+
+    // Calculate current balance due for the target invoice
+    const totalPaidForInvoice = payments.filter(p => p.invoiceNumber === invoiceNumber).reduce((sum, p) => sum + p.amount, 0);
+    const currentBalanceDue = targetInvoice.summary.grandTotal - totalPaidForInvoice;
+
+    if (amount > currentBalanceDue + 0.01) { // Add a small tolerance for floating point
+        showMessageBox('Payment Error', `Payment amount (${formatCurrency(amount)}) exceeds remaining balance (${formatCurrency(currentBalanceDue)}) for this invoice. Please enter a lower amount.`);
+        return;
+    }
+
+
     const newPayment = {
-        id: Date.now() + Math.random(),
+        id: Date.now() + Math.random(), // Unique ID for payment record
+        invoiceNumber: invoiceNumber, // Link payment to invoice
         customerName: customerName,
         paymentDate: paymentDate,
         amount: parseFloat(amount.toFixed(2)),
@@ -1404,14 +1458,22 @@ recordPaymentBtn.addEventListener('click', () => {
     payments.push(newPayment);
     localStorage.setItem('payments', JSON.stringify(payments));
 
-    // Clear form
+    // Update the balanceDue for the specific invoice in savedInvoices
+    targetInvoice.summary.balanceDue = Math.max(0, targetInvoice.summary.grandTotal - (totalPaidForInvoice + newPayment.amount));
+    localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
+
+
+    // Clear payment form
+    paymentInvoiceDisplay.value = ''; // Clear display
+    recordPaymentBtn.removeAttribute('data-invoice-number'); // Clear the associated invoice number
     paymentAmountInput.value = '';
     paymentMethodSelect.value = 'Cash';
     paymentNotesTextarea.value = '';
     paymentCustomerInput.value = ''; // Clear customer input
 
-    showMessageBox('Success', `Payment of ${formatCurrency(amount)} recorded for ${customerName}.`);
-    renderPaymentHistory();
+    showMessageBox('Success', `Payment of ${formatCurrency(amount)} recorded for Invoice ${invoiceNumber}.`);
+    renderPaymentHistory(); // Re-render payment history
+    renderInvoiceHistory(); // Re-render invoice history to update balance due status
 });
 
 /**
@@ -1436,6 +1498,7 @@ function renderPaymentHistory() {
     sortedPayments.forEach(payment => {
         const row = document.createElement('tr');
         row.innerHTML = `
+            <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${payment.invoiceNumber || 'N/A'}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-left text-sm">${payment.customerName}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${payment.paymentDate}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-right text-sm">${formatCurrency(payment.amount)}</td>
@@ -1461,16 +1524,9 @@ function renderPaymentHistory() {
 }
 
 /**
- * Deletes a payment record by ID.
+ * Deletes a payment record by ID and updates associated invoice balance.
+ * @param {number} paymentId - The ID of the payment to delete.
  */
-function deletePayment(paymentId) {
-    const index = payments.findIndex(p => p.id === paymentId);
-    if (index !== -1) {
-        payments.splice(index, 1);
-        localStorage.setItem('payments', JSON.stringify(payments));
-        renderPaymentHistory();
-    }
-}
 function deletePayment(paymentId) {
     const paymentToDelete = payments.find(p => p.id === paymentId);
     if (!paymentToDelete) return;
@@ -1490,9 +1546,8 @@ function deletePayment(paymentId) {
         invoice.summary.balanceDue = Math.max(0, invoice.summary.grandTotal - totalPaidForInvoice);
         localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
     }
-    
     renderPaymentHistory();
-    renderInvoiceHistory()
+    renderInvoiceHistory(); // Re-render history to update balance due display
 }
 
 
@@ -1565,9 +1620,13 @@ function renderInvoiceHistory() {
 
     filteredInvoices.forEach(invoice => {
         const row = document.createElement('tr');
-        let balanceClass = 'text-green-600';
-        if (invoice.summary.balanceDue > 0.01) { // Check if balance is effectively greater than zero
+        let balanceClass = 'text-green-600'; // Fully paid
+        let balanceText = 'Fully Paid';
+        const balanceDue = invoice.summary.balanceDue || 0;
+
+        if (balanceDue > 0.01) { // Check if balance is effectively greater than zero
             balanceClass = 'text-red-600 font-semibold';
+            balanceText = formatCurrency(balanceDue);
         }
 
         row.innerHTML = `
@@ -1575,7 +1634,14 @@ function renderInvoiceHistory() {
             <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${invoice.invoiceDetails.invoiceDate}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-left text-sm">${invoice.receiverDetails.name}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-right text-sm">${formatCurrency(invoice.summary.grandTotal)}</td>
-            <td class="py-2 px-2 border-b border-gray-200 text-center">
+            <td class="py-2 px-2 border-b border-gray-200 text-right text-sm ${balanceClass}">${balanceText}</td>
+            <td class="py-2 px-2 border-b border-gray-200 text-center space-x-2">
+                <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="view-invoice-btn btn-primary text-sm p-1 rounded">
+                    <i class="fas fa-eye"></i> View
+                </button>
+                <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="pay-invoice-btn btn-success text-sm p-1 rounded ${balanceDue <= 0.01 ? 'opacity-50 cursor-not-allowed' : ''}" ${balanceDue <= 0.01 ? 'disabled' : ''}>
+                    <i class="fas fa-money-bill-wave"></i> Pay
+                </button>
                 <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="delete-invoice-btn btn-danger text-sm p-1 rounded">
                     <i class="fas fa-trash"></i> Delete
                 </button>
@@ -1584,17 +1650,53 @@ function renderInvoiceHistory() {
         invoiceHistoryList.appendChild(row);
     });
 
+    // Add event listeners for new buttons in history table
+    document.querySelectorAll('.view-invoice-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const invoiceNo = e.currentTarget.dataset.invoiceNo;
+            const invoiceToLoad = savedInvoices.find(inv => inv.invoiceDetails.invoiceNumber === invoiceNo);
+            if (invoiceToLoad) {
+                loadInvoiceToForm(invoiceToLoad);
+                populateInvoicePreview(invoiceToLoad); // Ensure preview is also updated
+                invoicePreview.classList.remove('hidden');
+                invoiceActions.classList.remove('hidden');
+                generateInvoiceBtn.disabled = true; // Disable generate when viewing a saved invoice
+                setActiveNav(navInvoice); // Navigate to invoice section
+                invoicePreview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                showMessageBox('Error', 'Invoice not found.');
+            }
+        });
+    });
 
+    document.querySelectorAll('.pay-invoice-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const invoiceNo = e.currentTarget.dataset.invoiceNo;
+            const invoiceToPay = savedInvoices.find(inv => inv.invoiceDetails.invoiceNumber === invoiceNo);
+            if (invoiceToPay && invoiceToPay.summary.balanceDue > 0.01) {
+                setActiveNav(navPayments);
+                paymentInvoiceDisplay.value = invoiceToPay.invoiceDetails.invoiceNumber;
+                paymentCustomerInput.value = invoiceToPay.receiverDetails.name; // Pre-fill customer name
+                recordPaymentBtn.dataset.invoiceNumber = invoiceNo; // Store invoice number for recording
+                paymentAmountInput.value = invoiceToPay.summary.balanceDue.toFixed(2); // Pre-fill with balance due
+            } else if (invoiceToPay) {
+                showMessageBox('Info', 'This invoice is already fully paid!');
+            } else {
+                showMessageBox('Error', 'Invoice not found.');
+            }
+        });
+    });
 
     document.querySelectorAll('.delete-invoice-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const invoiceNo = e.currentTarget.dataset.invoiceNo;
-            showMessageBox('Confirm Deletion', `Are you sure you want to delete Invoice ${invoiceNo}? This action cannot be undone.`, () => {
+            showMessageBox('Confirm Deletion', `Are you sure you want to delete Invoice ${invoiceNo}? This action cannot be undone and will also delete associated payments.`, () => {
                 deleteInvoice(invoiceNo);
             });
         });
     });
 }
+
 
 /**
  * Loads a saved invoice's data into the main invoice form for editing/viewing.
@@ -1618,13 +1720,13 @@ function loadInvoiceToForm(invoice) {
     itemCounter = 0;
     invoice.items.forEach(item => createItemRow(item));
     if (invoice.items.length === 0) {
-        createItemRow();
+        createItemRow(); // Ensure at least one empty row if invoice had no items
     }
 
     overallDiscountInput.value = invoice.summary.overallDiscount.toFixed(2);
 
-    updateTaxRatesBasedOnGSTIN();
-    calculateSummary();
+    updateTaxRatesBasedOnGSTIN(); // This will also call calculateSummary internally
+    // calculateSummary(); // Called by updateTaxRatesBasedOnGSTIN
     invoiceData = invoice;
 }
 
@@ -1693,7 +1795,7 @@ generateReportBtn.addEventListener('click', () => {
         // Total discount is sum of item-level discounts and overall discount
         totalDiscount += (invoice.summary.totalItemDiscount || 0) + (invoice.summary.overallDiscount || 0);
         // Taxable value should be subtotal before tax, after all discounts
-        const currentInvoiceTaxableValue = invoice.summary.subTotal - (invoice.summary.totalItemDiscount || 0) - (invoice.summary.overallDiscount || 0);
+        const currentInvoiceTaxableValue = (invoice.summary.subTotal || 0) - (invoice.summary.totalItemDiscount || 0) - (invoice.summary.overallDiscount || 0);
         totalTaxableAmount += Math.max(0, currentInvoiceTaxableValue);
 
         totalSgstCollected += invoice.summary.sgstAmount || 0;
@@ -1741,20 +1843,30 @@ exportReportBtn.addEventListener('click', () => {
     let csvContent = "Invoice Number,Invoice Date,Customer Name,Customer GSTIN,Amount,CGST,SGST,IGST,Total Tax,Overall Discount,Grand Total\n";
 
     relevantInvoices.forEach(invoice => {
-        const taxableAmountCalc = (invoice.summary.subTotal - (invoice.summary.totalItemDiscount || 0) - (invoice.summary.overallDiscount || 0));
-        const totalTax = (invoice.summary.cgstAmount || 0) + (invoice.summary.sgstAmount || 0) + (invoice.summary.igstAmount || 0);
+        // Ensure values are numbers before toFixed
+        const subTotal = invoice.summary.subTotal || 0;
+        const totalItemDiscount = invoice.summary.totalItemDiscount || 0;
+        const overallDiscount = invoice.summary.overallDiscount || 0;
+        const cgstAmount = invoice.summary.cgstAmount || 0;
+        const sgstAmount = invoice.summary.sgstAmount || 0;
+        const igstAmount = invoice.summary.igstAmount || 0;
+        const grandTotal = invoice.summary.grandTotal || 0;
+
+        const taxableAmountCalc = subTotal - totalItemDiscount - overallDiscount;
+        const totalTax = cgstAmount + sgstAmount + igstAmount;
+
         csvContent += [
             invoice.invoiceDetails.invoiceNumber,
             invoice.invoiceDetails.invoiceDate,
             `"${invoice.receiverDetails.name.replace(/"/g, '""')}"`,
             invoice.receiverDetails.gstin || 'N/A',
             taxableAmountCalc.toFixed(2),
-            (invoice.summary.cgstAmount || 0).toFixed(2),
-            (invoice.summary.sgstAmount || 0).toFixed(2),
-            (invoice.summary.igstAmount || 0).toFixed(2),
+            cgstAmount.toFixed(2),
+            sgstAmount.toFixed(2),
+            igstAmount.toFixed(2),
             totalTax.toFixed(2),
-            (invoice.summary.overallDiscount || 0).toFixed(2),
-            (invoice.summary.grandTotal || 0).toFixed(2),
+            overallDiscount.toFixed(2),
+            grandTotal.toFixed(2),
         ].join(',') + '\n';
     });
 
@@ -1829,7 +1941,7 @@ saveSettingsBtn.addEventListener('click', () => {
     localStorage.setItem('taxRates', JSON.stringify(TAX_RATES));
 
     updateCompanyDisplay();
-    updateTaxRatesBasedOnGSTIN();
+    updateTaxRatesBasedOnGSTIN(); // This will trigger calculateSummary as well
     showMessageBox('Settings Saved', 'Your company and tax settings have been updated successfully!');
 });
 
@@ -1933,7 +2045,25 @@ function generateDummyInvoices(count) {
 
     for (let i = 0; i < numDummyInvoices; i++) {
         const customer = dummyCustomers[Math.floor(Math.random() * dummyCustomers.length)];
-        const placeOfSupplyForInvoice = indianCities.find(city => city.state === getStateFromGSTIN(customer.gstin))?.city || customer.address.split(',').reverse()[1]?.trim() || "Mumbai"; // Default to Mumbai
+        // Determine placeOfSupply based on customer's GSTIN or a random city if no GSTIN
+        let placeOfSupplyForInvoice = "Mumbai"; // Default
+        if (customer.gstin) {
+            const customerStateName = getStateFromGSTIN(customer.gstin);
+            const cityInState = indianCities.find(city => city.state === customerStateName);
+            if (cityInState) {
+                placeOfSupplyForInvoice = cityInState.city;
+            } else {
+                // If GSTIN state found but no city in our list, pick a random city from that state if available
+                const otherCitiesInState = indianCities.filter(city => city.state === customerStateName);
+                if (otherCitiesInState.length > 0) {
+                    placeOfSupplyForInvoice = otherCitiesInState[Math.floor(Math.random() * otherCitiesInState.length)].city;
+                }
+            }
+        } else {
+            // For B2C customers, pick a random city from the list
+            placeOfSupplyForInvoice = indianCities[Math.floor(Math.random() * indianCities.length)].city;
+        }
+
 
         const dummyInvoiceCounter = (i + 1).toString().padStart(4, '0');
         const invoiceNum = `DUMMY-INV-${dummyInvoiceCounter}`;
@@ -2038,6 +2168,7 @@ function generateDummyInvoices(count) {
                 igstRate: TAX_RATES.igst,
                 igstAmount: igstAmount,
                 grandTotal: grandTotal,
+                balanceDue: grandTotal // Initially, balance due is grand total
             },
             company: COMPANY_DETAILS,
             bank: BANK_DETAILS,
