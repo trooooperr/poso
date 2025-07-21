@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GUPTA BEADS - Invoice System</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Flatpickr for date pickers -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-100 font-poppins text-gray-800 antialiased min-h-screen flex flex-col">
 
+    <!-- Login Page (Hidden by default, shown if not logged in) -->
     <div id="login-page" class="fixed inset-0 bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center z-50 hidden">
         <div class="bg-white p-10 rounded-xl shadow-2xl w-full max-w-md text-center transform transition-all duration-300 scale-95 opacity-0 login-form-active">
             <h2 class="text-4xl font-extrabold text-blue-700 mb-8">GUPTA BEADS</h2>
@@ -31,11 +36,13 @@
         </div>
     </div>
 
+    <!-- Main Application Container -->
     <div id="app-container" class="app-container flex flex-grow bg-white rounded-none shadow-none overflow-hidden my-0 mx-0 max-w-full hidden">
-        
+
+        <!-- Sidebar -->
         <aside id="sidebar" class="sidebar hidden lg:flex flex-col justify-between bg-gray-900 text-white p-6 shadow-2xl relative z-20 transition-all duration-300 ease-in-out">
             <div class="flex-grow">
-                <div class="sidebar-logo text-4xl font-extrabold text-center mb-10 tracking-wider text-white-400" id="sidebarCompanyName">GUPTA BEADS</div>
+                <div class="sidebar-logo text-4xl font-extrabold text-center mb-10 tracking-wider text-white-400">GUPTA BEADS</div>
                 <nav class="sidebar-nav space-y-4">
                     <a href="#" id="nav-invoice" class="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition duration-200 ease-in-out active group">
                         <i class="fas fa-file-invoice mr-3 text-lg group-[.active]:text-white group-[.active]:scale-110 transition-all"></i> <span class="text-base font-medium">Invoice</span>
@@ -59,12 +66,15 @@
             </button>
         </aside>
 
+        <!-- Hamburger Menu (for mobile/tablet) -->
         <div id="hamburger-menu" class="lg:hidden fixed top-4 right-4 bg-blue-600 text-white p-3 rounded-full shadow-lg cursor-pointer z-50">
             <i class="fas fa-bars text-xl"></i>
         </div>
 
+        <!-- Main Content Area -->
         <main id="main-content" class="flex-grow p-6 md:p-8 bg-gray-50 overflow-y-auto relative z-10 transition-all duration-300 ease-in-out lg:ml-0">
 
+            <!-- Invoice Section -->
             <section id="invoice-section" class="content-section active">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 pb-4 border-b-4 border-blue-600">
                     <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 flex items-center mb-4 sm:mb-0">
@@ -82,240 +92,230 @@
                         <p><strong>GSTIN:</strong> <span id="display-company-gstin"></span></p>
                         <p><strong>PAN:</strong> <span id="display-company-pan"></span></p>
                         <p><strong>Phone:</strong> <span id="display-company-phone"></span></p>
-
                     </div>
                 </div>
 
-       <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-        <i class="fas fa-user-tie mr-3 text-blue-500"></i> Receiver Details (Billed To)
-    </h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <div>
-            <label for="customer-name" class="block text-base font-semibold text-gray-700 mb-2">
-                Receiver Name
-            </label>
-            <div class="autocomplete-container relative">
-                <input
-                    type="text"
-                    id="customer-name"
-                    class="w-full px-4 py-3 text-base font-medium border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder:text-base placeholder:font-medium placeholder-gray-400"
-                    placeholder="Enter customer name"
-                >
-                <div
-                    id="customer-name-results"
-                    class="autocomplete-results absolute bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto w-full z-10 mt-1 hidden"
-                ></div>
-            </div>
-        </div>
-
-        <div>
-            <label for="customer-apn" class="block text-base font-semibold text-gray-700 mb-2">PAN Number</label>
-            <input
-                type="text"
-                id="customer-apn"
-                class="w-full px-4 py-3 text-base font-medium border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder:text-base placeholder:font-medium placeholder-gray-400"
-                placeholder="Enter PAN number"
-            >
-        </div>
-
-        <div class="md:col-span-2">
-            <label for="customer-address" class="block text-base font-semibold text-gray-700 mb-2">Address</label>
-            <textarea
-                id="customer-address"
-                class="w-full h-20 px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder:text-base placeholder:font-medium placeholder-gray-400"
-                placeholder="Enter customer address"
-            ></textarea>
-        </div>
-
-<div class="md:col-span-1">
-    <label for="customer-gstin" class="block text-base font-semibold text-gray-700 mb-2">GSTIN</label>
-    <input
-        type="text"
-        id="customer-gstin"
-        class="w-full px-4 py-3 text-base font-medium placeholder:text-base placeholder:font-medium border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400"
-        placeholder="Enter customer GSTIN"
-    >
-</div>
-
-<div class="flex flex-wrap gap-4 mt-6 justify-end print-hidden">
-    <button id="save-customer-btn" class="btn-primary min-w-[160px]">
-        <i class="fas fa-save mr-2"></i> Save Receiver
-    </button>
-    <button id="clear-customer-btn" class="btn-secondary min-w-[160px]">
-        <i class="fas fa-eraser mr-2"></i> Clear Receiver
-    </button>
-</div>
-</div>
-</div>
-
-<div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
-  <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-    <i class="fas fa-info-circle mr-3 text-blue-500"></i> Invoice Details
-  </h2>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
-    <div class="lg:col-span-3 sm:col-span-2 col-span-1">
-      <label for="invoiceNumber" class="block text-base font-semibold text-gray-700 mb-2">
-        Invoice Number <span class="text-red-500">*</span>
-      </label>
-      <input type="text" id="invoiceNumber" name="invoiceNumber"
-        class="w-full text-base font-medium border border-gray-300 rounded-lg px-4 py-2 bg-gray-100 cursor-not-allowed"
-        readonly />
-    </div>
-
-    <div class="lg:col-span-3 sm:col-span-2 col-span-1">
-      <label for="invoice-date" class="block text-base font-semibold text-gray-700 mb-2">
-        Invoice Date <span class="text-red-500">*</span>
-      </label>
-      <input type="text" id="invoice-date"
-        class="datepicker w-full text-base font-medium px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-        readonly>
-    </div>
-
-    <div class="lg:col-span-3 sm:col-span-2 col-span-1">
-      <label for="transport-mode" class="block text-base font-semibold text-gray-700 mb-2">
-        Transport Mode
-      </label>
-      <div class="relative">
-        <select id="transport-mode"
-          class="appearance-none w-full text-base font-medium px-4 py-2 border border-gray-300 rounded-lg bg-white pr-10 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-          <option value="">Select Mode</option>
-          <option value="Road">Road</option>
-          <option value="Rail">Rail</option>
-          <option value="Air">Air</option>
-          <option value="Sea">Sea</option>
-          <option value="Courier">Courier</option>
-          <option value="Other">Other</option>
-        </select>
-        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="lg:col-span-3 sm:col-span-2 col-span-1">
-      <label for="vehicle-number" class="block text-base font-semibold text-gray-700 mb-2">
-        Vehicle Number
-      </label>
-      <input type="text" id="vehicle-number" placeholder="e.g., UP65AZ1234"
-        oninput="this.value = this.value.toUpperCase();" pattern="[A-Z0-9]*"
-        title="Only uppercase letters and numbers allowed"
-        class="w-full text-base font-medium px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" />
-    </div>
-
-    <div class="lg:col-span-2 sm:col-span-2 col-span-1">
-      <label for="date-of-supply" class="block text-base font-semibold text-gray-700 mb-2">
-        Date of Supply <span class="text-red-500">*</span>
-      </label>
-      <input type="text" id="date-of-supply"
-        class="datepicker w-full text-base font-medium px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-        readonly>
-    </div>
-
-    <div class="lg:col-span-2 sm:col-span-2 col-span-1">
-      <label for="place-of-supply-city" class="block text-base font-semibold text-gray-700 mb-2">
-        Place of Supply (City) <span class="text-red-500">*</span>
-      </label>
-      <div class="autocomplete-container relative">
-        <input type="text" id="place-of-supply-city" placeholder="Enter city"
-          class="w-full text-base font-medium px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" />
-        <div id="place-of-supply-city-results"
-          class="autocomplete-results absolute bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto w-full z-10 mt-1 hidden"></div>
-      </div>
-    </div>
-
-    <div class="lg:col-span-2 sm:col-span-2 col-span-1">
-      <label for="place-of-supply-state" class="block text-base font-semibold text-gray-700 mb-2">
-        Place of Supply (State)
-      </label>
-      <input type="text" id="place-of-supply-state"
-        class="w-full text-base font-medium px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
-        readonly placeholder="Auto-filled state">
-    </div>
-  </div>
-</div>
                 <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
                     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                        <i class="fas fa-boxes mr-3 text-blue-500"></i> Item Details
+                        <i class="fas fa-user-tie mr-3 text-blue-500"></i> Receiver Details (Billed To)
                     </h2>
-                    <div class="overflow-x-auto custom-scroll mb-6">
-                        <table id="item-table" class="item-table w-full border-collapse">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div>
+                            <label for="customer-name" class="block text-base font-semibold text-gray-700 mb-2">
+                                Receiver Name
+                            </label>
+                            <div class="autocomplete-container relative">
+                                <input
+                                    type="text"
+                                    id="customer-name"
+                                    class="w-full px-4 py-3 text-base font-medium border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder:text-base placeholder:font-medium placeholder-gray-400"
+                                    placeholder="Enter customer name"
+                                >
+                                <div
+                                    id="customer-name-results"
+                                    class="autocomplete-results absolute bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto w-full z-10 mt-1 hidden"
+                                ></div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="customer-pan" class="block text-base font-semibold text-gray-700 mb-2">PAN Number</label>
+                            <input
+                                type="text"
+                                id="customer-pan"
+                                class="w-full px-4 py-3 text-base font-medium border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder:text-base placeholder:font-medium placeholder-gray-400"
+                                placeholder="Enter PAN number"
+                            >
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="customer-address" class="block text-base font-semibold text-gray-700 mb-2">Address</label>
+                            <textarea
+                                id="customer-address"
+                                class="w-full h-20 px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder:text-base placeholder:font-medium placeholder-gray-400"
+                                placeholder="Enter customer address"
+                            ></textarea>
+                        </div>
+                        <!-- GSTIN & Buttons Container -->
+                        <div class="md:col-span-1">
+                            <label for="customer-gstin" class="block text-base font-semibold text-gray-700 mb-2">GSTIN</label>
+                            <input
+                                type="text"
+                                id="customer-gstin"
+                                class="w-full px-4 py-3 text-base font-medium placeholder:text-base placeholder:font-medium border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400"
+                                placeholder="Enter customer GSTIN"
+                            >
+                        </div>
+                        <div class="flex flex-wrap gap-4 mt-6 justify-end print-hidden">
+                            <button id="save-customer-btn" class="btn-primary min-w-[160px]">
+                                <i class="fas fa-save mr-2"></i> Save Receiver
+                            </button>
+                            <button id="clear-customer-btn" class="btn-secondary min-w-[160px]">
+                                <i class="fas fa-eraser mr-2"></i> Clear Receiver
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-info-circle mr-3 text-blue-500"></i> Invoice Details
+                    </h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+                        <!-- Row 1 (2-2) -->
+                        <div class="lg:col-span-3 sm:col-span-2 col-span-1">
+                            <label for="invoiceNumber" class="block text-base font-semibold text-gray-700 mb-2">
+                                Invoice Number <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="invoiceNumber" name="invoiceNumber"
+                                class="w-full text-base font-medium border border-gray-300 rounded-lg px-4 py-2 bg-gray-100 cursor-not-allowed"
+                                readonly />
+                        </div>
+                        <div class="lg:col-span-3 sm:col-span-2 col-span-1">
+                            <label for="invoice-date" class="block text-base font-semibold text-gray-700 mb-2">
+                                Invoice Date <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="invoice-date"
+                                class="datepicker w-full text-base font-medium px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                                readonly>
+                        </div>
+                        <!-- Row 2 (2-2) -->
+                        <div class="lg:col-span-3 sm:col-span-2 col-span-1">
+                            <label for="transport-mode" class="block text-base font-semibold text-gray-700 mb-2">
+                                Transport Mode
+                            </label>
+                            <div class="relative">
+                                <select id="transport-mode"
+                                    class="appearance-none w-full text-base font-medium px-4 py-2 border border-gray-300 rounded-lg bg-white pr-10 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                                    <option value="">Select Mode</option>
+                                    <option value="Road">Road</option>
+                                    <option value="Rail">Rail</option>
+                                    <option value="Air">Air</option>
+                                    <option value="Sea">Sea</option>
+                                    <option value="Courier">Courier</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-3 sm:col-span-2 col-span-1">
+                            <label for="vehicle-number" class="block text-base font-semibold text-gray-700 mb-2">
+                                Vehicle Number
+                            </label>
+                            <input type="text" id="vehicle-number" placeholder="e.g., UP65AZ1234"
+                                oninput="this.value = this.value.toUpperCase();" pattern="[A-Z0-9]*"
+                                title="Only uppercase letters and numbers allowed"
+                                class="w-full text-base font-medium px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" />
+                        </div>
+                        <!-- Row 3 (3) -->
+                        <div class="lg:col-span-2 sm:col-span-2 col-span-1">
+                            <label for="date-of-supply" class="block text-base font-semibold text-gray-700 mb-2">
+                                Date of Supply <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="date-of-supply"
+                                class="datepicker w-full text-base font-medium px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                                readonly>
+                        </div>
+                        <div class="lg:col-span-2 sm:col-span-2 col-span-1">
+                            <label for="place-of-supply-city" class="block text-base font-semibold text-gray-700 mb-2">
+                                Place of Supply (City) <span class="text-red-500">*</span>
+                            </label>
+                            <div class="autocomplete-container relative">
+                                <input type="text" id="place-of-supply-city" placeholder="Enter city"
+                                    class="w-full text-base font-medium px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" />
+                                <div id="place-of-supply-city-results"
+                                    class="autocomplete-results absolute bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto w-full z-10 mt-1 hidden"></div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 sm:col-span-2 col-span-1">
+                            <label for="place-of-supply-state" class="block text-base font-semibold text-gray-700 mb-2">
+                                Place of Supply (State)
+                            </label>
+                            <input type="text" id="place-of-supply-state"
+                                class="w-full text-base font-medium px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
+                                readonly placeholder="Auto-filled state">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-list mr-3 text-blue-500"></i> Item Details
+                    </h2>
+                    <div class="overflow-x-auto custom-scroll">
+                        <table class="item-table w-full border-collapse border border-gray-300">
                             <thead>
-                                <tr class="bg-blue-100 text-blue-700">
-                                    <th class="py-3 px-2 text-left text-sm font-semibold uppercase border border-gray-300 w-2/5 md:w-1/3">Description</th>
-                                    <th class="py-3 px-2 text-center text-sm font-semibold uppercase border border-gray-300 w-1/5 md:w-1/6">HSN Code</th>
-                                    <th class="py-3 px-2 text-center text-sm font-semibold uppercase border border-gray-300 w-1/10">Qty</th>
-                                    <th class="py-3 px-2 text-right text-sm font-semibold uppercase border border-gray-300 w-1/10">Rate</th>
-                                    <th class="py-3 px-2 text-center text-sm font-semibold uppercase border border-gray-300 w-1/10">Discount</th>
-                                    <th class="py-3 px-2 text-right text-sm font-semibold uppercase border border-gray-300 w-1/5 md:w-1/6">Amount</th>
-                                    <th class="py-3 px-2 text-center text-sm font-semibold uppercase border border-gray-300 w-[50px]"></th>
+                                <tr class="bg-blue-100">
+                                    <th class="py-3 px-4 text-center text-sm font-semibold text-blue-700 uppercase border border-gray-300 w-[5%]">S.No.</th>
+                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300 w-[30%]">Description of Goods</th>
+                                    <th class="py-3 px-4 text-center text-sm font-semibold text-blue-700 uppercase border border-gray-300 w-[15%]">HSN/SAC</th>
+                                    <th class="py-3 px-4 text-center text-sm font-semibold text-blue-700 uppercase border border-gray-300 w-[10%]">Qty</th>
+                                    <th class="py-3 px-4 text-center text-sm font-semibold text-blue-700 uppercase border border-gray-300 w-[10%]">Rate</th>
+                                    <th class="py-3 px-4 text-center text-sm font-semibold text-blue-700 uppercase border border-gray-300 w-[10%]">Discount</th>
+                                    <th class="py-3 px-4 text-center text-sm font-semibold text-blue-700 uppercase border border-gray-300 w-[10%]">Amount</th>
+                                    <th class="py-3 px-4 text-center text-sm font-semibold text-blue-700 uppercase border border-gray-300 w-[5%] print-hidden">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="item-list">
-                                </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="7" class="pt-4 pb-2 text-center border-b border-gray-300">
-                                        <button id="add-item-btn" class="btn-secondary min-w-[150px]"><i class="fas fa-plus mr-2"></i> Add Item</button>
-                                    </td>
-                                </tr>
-                            </tfoot>
+                                <!-- Item rows will be added here by JavaScript -->
+                            </tbody>
                         </table>
                     </div>
+                    <button id="add-item-btn" class="btn-primary mt-6 text-sm py-2 px-4"><i class="fas fa-plus mr-2"></i> Add Item</button>
                 </div>
 
-               <div class="form-section-card bg-white p-6 rounded-xl shadow-md border border-gray-200">
-  <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Invoice Summary</h2>
+                <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-calculator mr-3 text-blue-500"></i> Summary
+                    </h2>
+                    <table class="summary-table w-full">
+                        <tbody>
+                            <tr class="border-b border-dashed border-gray-300">
+                                <td class="py-2 px-2 text-lg font-medium text-gray-700">Sub Total:</td>
+                                <td class="py-2 px-2 text-right text-xl font-bold text-blue-600" id="sub-total">₹ 0.00</td>
+                            </tr>
+                            <tr class="border-b border-dashed border-gray-300">
+                                <td class="py-2 px-2 text-lg font-medium text-gray-700">Item Discount:</td>
+                                <td class="py-2 px-2 text-right text-xl font-bold text-red-500" id="total-discount">₹ 0.00</td>
+                            </tr>
+                            <tr class="border-b border-dashed border-gray-300">
+                                <td class="py-2 px-2 text-lg font-medium text-gray-700">Overall Discount:</td>
+                                <td class="py-2 px-2 text-right text-xl font-bold text-red-500">
+                                    <input type="number" id="overall-discount-input" class="w-24 h-7 text-right px-1 py-0.5 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out text-sm" value="0" min="0" step="0.01"/>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-dashed border-gray-300">
+                                <td class="py-2 px-2 text-lg font-medium text-gray-700">CGST (<span id="cgst-rate" class="font-bold">0</span>%):</td>
+                                <td class="py-2 px-2 text-right text-xl font-bold text-blue-600" id="cgst-amount">₹ 0.00</td>
+                            </tr>
+                            <tr class="border-b border-dashed border-gray-300">
+                                <td class="py-2 px-2 text-lg font-medium text-gray-700">SGST (<span id="sgst-rate" class="font-bold">0</span>%):</td>
+                                <td class="py-2 px-2 text-right text-xl font-bold text-blue-600" id="sgst-amount">₹ 0.00</td>
+                            </tr>
+                            <tr class="border-b border-dashed border-gray-300">
+                                <td class="py-2 px-2 text-lg font-medium text-gray-700">IGST (<span id="igst-rate" class="font-bold">0</span>%):</td>
+                                <td class="py-2 px-2 text-right text-xl font-bold text-blue-600" id="igst-amount">₹ 0.00</td>
+                            </tr>
+                            <tr class="grand-total-row bg-blue-600 text-white">
+                                <td class="py-3 px-2 text-xl md:text-2xl font-extrabold text-shadow-md">Grand Total:</td>
+                                <td class="py-3 px-2 text-right text-2xl md:text-3xl font-extrabold text-shadow-md" id="grand-total">₹ 0.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Subtotal</label>
-      <span id="sub-total" class="block text-lg font-semibold text-gray-900">₹ 0.00</span>
-    </div>
+                <div class="flex flex-wrap gap-4 mt-8 print-hidden">
+                    <button id="generate-invoice-btn" class="btn-primary"><i class="fas fa-file-export mr-2"></i> Generate Invoice</button>
+                    <button id="reset-form-btn" class="btn-secondary"><i class="fas fa-redo mr-2"></i> Reset Form</button>
+                </div>
 
-    <div>
-      <label for="overall-discount" class="block text-sm font-medium text-gray-700">Overall Discount</label>
-      <input type="number" id="overall-discount" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" value="0" min="0">
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">CGST Rate</label>
-      <span id="cgst-rate" class="block text-lg font-semibold text-gray-900">9</span>
-      <label class="block text-sm font-medium text-gray-700">CGST Amount</label>
-      <span id="cgst-amount" class="block text-lg font-semibold text-gray-900">₹ 0.00</span>
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">SGST Rate</label>
-      <span id="sgst-rate" class="block text-lg font-semibold text-gray-900">9</span>
-      <label class="block text-sm font-medium text-gray-700">SGST Amount</label>
-      <span id="sgst-amount" class="block text-lg font-semibold text-gray-900">₹ 0.00</span>
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">IGST Rate</label>
-      <span id="igst-rate" class="block text-lg font-semibold text-gray-900">0</span>
-      <label class="block text-sm font-medium text-gray-700">IGST Amount</label>
-      <span id="igst-amount" class="block text-lg font-semibold text-gray-900">₹ 0.00</span>
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Grand Total</label>
-      <span id="grand-total" class="block text-2xl font-bold text-green-600">₹ 0.00</span>
-    </div>
-  </div>
-
-  <div class="mt-6 flex justify-end gap-4">
-    <button id="generate-invoice-btn" type="button" class="bg-blue-600 text-white px-6 py-2 rounded-md shadow hover:bg-blue-700">Generate Invoice</button>
-    <button type="reset" id="reset-invoice-btn" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-md shadow hover:bg-gray-400">Reset</button>
-  </div>
-</div>
-
+                <!-- Invoice Preview Section (Initially Hidden, shown on generate) -->
                 <div id="invoice-preview" class="invoice-preview-container hidden print-only bg-white border border-gray-300 shadow-xl rounded-xl relative overflow-hidden mt-8 p-6 md:p-10">
+                    <!-- Watermark for PDF -->
+                    <div id="watermark-text" class="absolute inset-0 flex items-center justify-center text-gray-200 text-6xl font-extrabold opacity-0 rotate-[-25deg] pointer-events-none z-0 do-not-print"></div>
+
                     <div class="invoice-content border-2 border-gray-900 p-4 relative z-10 font-sans text-gray-800">
                         <div class="invoice-header-section text-center pb-3 border-b-2 border-gray-900 mb-4">
                             <div class="invoice-title text-sm font-bold uppercase mb-1">TAX INVOICE</div>
@@ -349,7 +349,7 @@
                                 <span class="label-billed-to text-blue-700 font-bold mb-1 block">Details of Receiver (Billed To)</span>
                                 <p class="mb-1"><strong>Name:</strong> <span id="preview-customer-name" class="font-semibold"></span></p>
                                 <p class="mb-1"><strong>Address:</strong> <span id="preview-customer-address"></span></p>
-                                <p class="mb-0"><strong>APN:</strong> <span id="preview-customer-apn"></span></p>
+                                <p class="mb-0"><strong>PAN:</strong> <span id="preview-customer-pan"></span></p>
                             </div>
                             <div class="receiver-details-right p-2 text-sm">
                                 <p class="mb-1"><strong>GSTIN:</strong> <span id="preview-customer-gstin"></span></p>
@@ -369,7 +369,8 @@
                                     </tr>
                                 </thead>
                                 <tbody id="preview-item-list">
-                                    </tbody>
+                                    <!-- Preview item rows will be added here by JavaScript -->
+                                </tbody>
                             </table>
                         </div>
 
@@ -387,7 +388,7 @@
                                     </tr>
                                     <tr class="border-b border-gray-900">
                                         <td class="py-2 px-3 text-sm font-semibold bg-gray-100 border-r border-gray-900">Less: Item Discount</td>
-                                        <td class="py-2 px-3 text-right text-sm font-bold text-gray-800" id="preview-total-item-discount">₹ 0.00</td>
+                                        <td class="py-2 px-3 text-right text-sm font-bold text-gray-800" id="preview-total-discount">₹ 0.00</td>
                                     </tr>
                                     <tr class="border-b border-gray-900">
                                         <td class="py-2 px-3 text-sm font-semibold bg-gray-100 border-r border-gray-900">Less: Overall Discount</td>
@@ -416,6 +417,7 @@
                                 </tbody>
                             </table>
                         </div>
+
                         <div class="bank-details-section border border-gray-900 p-3 mb-4 text-sm">
                             <p class="font-bold text-blue-700 mb-1">Bank Details :</p>
                             <p class="mb-0.5">Bank Name: <span id="preview-bank-name" class="font-medium"></span></p>
@@ -441,9 +443,10 @@
                             </div>
                         </div>
                     </div>
-                     <div id="watermarkElement" class="watermark absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-[-45deg] text-gray-300 text-6xl font-extrabold opacity-30 pointer-events-none z-0 do-not-print"></div>
                 </div>
-           <div class="invoice-actions flex flex-wrap gap-4 mt-8 hidden print-hidden justify-center">
+
+                <!-- Invoice Actions (Hidden by default, shown on generate) -->
+                <div class="invoice-actions flex flex-wrap gap-4 mt-8 hidden print-hidden justify-center">
                     <button id="print-invoice-btn" class="btn-primary"><i class="fas fa-print mr-2"></i> Print Invoice</button>
                     <button id="download-invoice-pdf-btn" class="btn-primary"><i class="fas fa-file-pdf mr-2"></i> Download PDF</button>
                     <button id="save-invoice-btn" class="btn-primary"><i class="fas fa-save mr-2"></i> Save Invoice</button>
@@ -452,87 +455,69 @@
                 </div>
             </section>
 
+            <!-- Payments Section -->
             <section id="payments-section" class="content-section hidden">
-  <h1 class="text-4xl font-extrabold text-blue-800 mb-8 pb-4 border-b-4 border-blue-600 flex items-center">
-  <i class="fas fa-money-bill-wave mr-3 text-blue-600"></i> Record Payments Received
-  </h1>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 mb-8 pb-4 border-b-4 border-blue-600 flex items-center">
+                    <i class="fas fa-money-bill-wave mr-3 text-blue-600"></i> Record Payments Received
+                </h1>
 
-  <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">Record New Payment</h2>
+                <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Record New Payment</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Invoice number input removed as requested -->
+                        <div>
+                            <label for="payment-date" class="block text-sm font-medium text-gray-700 mb-2">Payment Date <span class="text-red-500">*</span></label>
+                            <input type="text" id="payment-date" class="datepicker w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" readonly>
+                        </div>
+                        <div>
+                            <label for="payment-amount" class="block text-sm font-medium text-gray-700 mb-2">Amount Received <span class="text-red-500">*</span></label>
+                            <input type="number" id="payment-amount" min="0" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter amount">
+                        </div>
+                        <div>
+                            <label for="payment-method" class="block text-sm font-medium text-gray-700 mb-2">Payment Method <span class="text-red-500">*</span></label>
+                            <select id="payment-method" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out custom-select">
+                                <option value="">Select Method</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-span-full">
+                            <label for="payment-notes" class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                            <textarea id="payment-notes" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400 min-h-[90px] resize-y" placeholder="Any additional notes about the payment"></textarea>
+                        </div>
+                    </div>
+                    <!-- The record-payment-btn will have a data-invoice-number attribute set from history -->
+                    <button id="record-payment-btn" class="btn-primary mt-6"><i class="fas fa-dollar-sign mr-2"></i> Record Payment</button>
+                </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-            <label for="payment-invoice-number" class="block text-base font-bold text-gray-800 mb-2">Invoice Number <span class="text-red-500">*</span></label>
-            <div class="autocomplete-container relative">
-                <input type="text" id="payment-invoice-number" class="w-full px-4 py-3 text-lg font-semibold border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Type invoice number or select">
-                <div id="payment-invoice-number-results" class="autocomplete-results absolute bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto w-full z-10 mt-1 hidden"></div>
-            </div>
-        </div>
-        <div>
-            <label class="block text-base font-bold text-gray-800 mb-2">Invoice Balance Due</label>
-            <span id="payment-invoice-balance" class="block text-lg font-bold text-red-600">₹ 0.00</span>
-        </div>
-      <div>
-        <label for="payment-date" class="block text-base font-bold text-gray-800 mb-2">Payment Date <span class="text-red-500">*</span></label>
-        <input type="text" id="payment-date" class="datepicker w-full px-4 py-3 text-lg font-semibold border border-gray-300 rounded-md bg-white cursor-pointer focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" readonly>
-      </div>
+                <div class="form-section-card bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Payment History</h2>
+                    <div class="overflow-x-auto custom-scroll">
+                        <table class="item-table w-full border-collapse border border-gray-300">
+                            <thead>
+                                <tr class="bg-blue-100">
+                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Invoice No.</th>
+                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Customer</th>
+                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Date</th>
+                                    <th class="py-3 px-4 text-right text-sm font-semibold text-blue-700 uppercase border border-gray-300">Amount</th>
+                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Method</th>
+                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Notes</th>
+                                    <th class="py-3 px-4 text-center text-sm font-semibold text-blue-700 uppercase border border-gray-300">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payment-history-list">
+                                <!-- Payment history rows will be added here by JavaScript -->
+                            </tbody>
+                        </table>
+                        <p id="no-payment-data" class="text-center text-gray-500 py-6 text-lg hidden">No payment records found.</p>
+                    </div>
+                </div>
+            </section>
 
-      <div>
-        <label for="payment-amount" class="block text-base font-bold text-gray-800 mb-2">Amount Received <span class="text-red-500">*</span></label>
-        <input type="number" id="payment-amount" min="0" step="0.01" class="w-full px-4 py-3 text-lg font-semibold border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter amount">
-      </div>
-
-      <div>
-        <label for="payment-method" class="block text-base font-bold text-gray-800 mb-2">Payment Method <span class="text-red-500">*</span></label>
-        <select id="payment-method" class="w-full px-4 py-3 text-lg font-semibold border border-gray-300 rounded-md bg-white focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-          <option value="">Select Method</option>
-          <option value="Cash">Cash</option>
-          <option value="Bank Transfer">Bank Transfer</option>
-          <option value="Cheque">Cheque</option>
-          <option value="UPI">UPI</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-
-      <div class="col-span-full">
-        <label for="payment-notes" class="block text-base font-bold text-gray-800 mb-2">Notes</label>
-        <textarea 
-          id="payment-notes" 
-          class="w-full text-lg font-semibold border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400 resize-none" 
-          placeholder="Any additional notes about the payment"
-          style="height: 36px; line-height: 1.5rem; padding: 6px 12px;"
-        ></textarea>
-      </div>
-    </div>
-
-    <button id="record-payment-btn" class="btn-primary mt-6 text-lg font-bold px-6 py-3">
-      <i class="fas fa-receipt mr-2"></i> Record Payment
-    </button>
-  </div>
-
-  <div class="form-section-card bg-white p-6 rounded-xl shadow-md border border-gray-200">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">Payment History</h2>
-    <div class="overflow-x-auto custom-scroll">
-      <table class="item-table w-full border-collapse border border-gray-300">
-        <thead>
-          <tr class="bg-blue-100">
-            <th class="py-3 px-4 text-left text-base text-center text-blue-700 uppercase border border-gray-300">Invoice No.</th>
-            <th class="py-3 px-4 text-left text-base text-center text-blue-700 uppercase border border-gray-300">Customer</th>
-            <th class="py-3 px-4 text-left text-base text-center font-bold text-blue-700 uppercase border border-gray-300">Date</th>
-            <th class="py-3 px-4 text-right text-base text-center font-bold text-blue-700 uppercase border border-gray-300">Amount</th>
-            <th class="py-3 px-4 text-left text-base text-center font-bold text-blue-700 uppercase border border-gray-300">Method</th>
-            <th class="py-3 px-4 text-left text-base text-center font-bold text-blue-700 uppercase border border-gray-300">Notes</th>
-            <th class="py-3 px-4 text-center text-base text-center font-bold text-blue-700 uppercase border border-gray-300">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="payment-history-list">
-          </tbody>
-      </table>
-      <p id="no-payment-data" class="text-center text-gray-500 py-6 text-lg hidden">No payment records found.</p>
-    </div>
-  </div>
-</section>
-
+            <!-- Invoice History Section -->
             <section id="history-section" class="content-section hidden">
                 <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 mb-8 pb-4 border-b-4 border-blue-600 flex items-center">
                     <i class="fas fa-history mr-3 text-blue-600"></i> Invoice History
@@ -542,24 +527,21 @@
                     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Filter Invoices</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div>
-    <label for="history-invoice-number-search" class="block text-base font-semibold text-gray-700 mb-2">Invoice Number</label>
-    <input type="text" id="history-invoice-number-search" class="text-base w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Search by invoice no.">
-</div>
-
-<div>
-    <label for="history-customer-name-search" class="block text-base font-semibold text-gray-700 mb-2">Customer Name</label>
-    <input type="text" id="history-customer-name-search" class="text-base w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Search by customer name">
-</div>
-
-<div>
-    <label for="history-date-from" class="block text-base font-semibold text-gray-700 mb-2">Date From</label>
-    <input type="text" id="history-date-from" class="text-base datepicker w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="Select start date">
-</div>
-
-<div>
-    <label for="history-date-to" class="block text-base font-semibold text-gray-700 mb-2">Date To</label>
-    <input type="text" id="history-date-to" class="text-base datepicker w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="Select end date">
-</div>
+                            <label for="history-invoice-number-search" class="block text-sm font-medium text-gray-700 mb-2">Invoice Number</label>
+                            <input type="text" id="history-invoice-number-search" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Search by invoice no.">
+                        </div>
+                        <div>
+                            <label for="history-customer-name-search" class="block text-sm font-medium text-gray-700 mb-2">Customer Name</label>
+                            <input type="text" id="history-customer-name-search" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Search by customer name">
+                        </div>
+                        <div>
+                            <label for="history-date-from" class="block text-sm font-medium text-gray-700 mb-2">Date From</label>
+                            <input type="text" id="history-date-from" class="datepicker w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="Select start date">
+                        </div>
+                        <div>
+                            <label for="history-date-to" class="block text-sm font-medium text-gray-700 mb-2">Date To</label>
+                            <input type="text" id="history-date-to" class="datepicker w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="Select end date">
+                        </div>
                     </div>
                     <div class="flex flex-wrap gap-4 mt-6">
                         <button id="history-filter-btn" class="btn-primary"><i class="fas fa-filter mr-2"></i> Filter</button>
@@ -573,56 +555,48 @@
                         <table class="item-table w-full border-collapse border border-gray-300">
                             <thead>
                                 <tr class="bg-blue-100">
-                                    <th class="py-3 px-4 text-left text-sm text-center text-blue-700 uppercase border border-gray-300">Invoice No.</th>
-                                    <th class="py-3 px-4 text-left text-sm text-center font-semibold text-blue-700 uppercase border border-gray-300">Date</th>
-                                    <th class="py-3 px-4 text-left text-sm text-center font-semibold text-blue-700 uppercase border border-gray-300">Customer Name</th>
-                                    <th class="py-3 px-4 text-right text-sm text-center font-semibold text-blue-700 uppercase border border-gray-300">Grand Total</th>
-                                    <th class="py-3 px-4 text-right text-sm text-center font-semibold text-blue-700 uppercase border border-gray-300">Balance Due</th>
-                                    <th class="py-3 px-4 text-center text-sm text-center font-semibold text-blue-700 uppercase border border-gray-300">Actions</th>
+                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Invoice No.</th>
+                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Date</th>
+                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Customer Name</th>
+                                    <th class="py-3 px-4 text-right text-sm font-semibold text-blue-700 uppercase border border-gray-300">Grand Total</th>
+                                    <th class="py-3 px-4 text-right text-sm font-semibold text-blue-700 uppercase border border-gray-300">Balance Due</th>
+                                    <th class="py-3 px-4 text-center text-sm font-semibold text-blue-700 uppercase border border-gray-300">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="invoice-history-list">
-                                </tbody>
+                                <!-- Invoice history rows will be added here by JavaScript -->
+                            </tbody>
                         </table>
                         <p id="no-history-data" class="text-center text-gray-500 py-6 text-lg hidden">No invoices found in history.</p>
                     </div>
                 </div>
             </section>
 
+            <!-- Reports Section -->
             <section id="reports-section" class="content-section hidden">
                 <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 mb-8 pb-4 border-b-4 border-blue-600 flex items-center">
                     <i class="fas fa-chart-line mr-3 text-blue-600"></i> Sales Reports
                 </h1>
 
-            <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
-    <h2 class="text-3xl font-extrabold text-gray-800 mb-6 flex items-center">Generate Report by Date</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-            <label for="report-date-from" class="block text-base font-semibold text-gray-700 mb-2">
-                From Date <span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="report-date-from" class="datepicker text-base w-full px-4 py-3 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="Select start date">
-        </div>
-        <div>
-            <label for="report-date-to" class="block text-base font-semibold text-gray-700 mb-2">
-                To Date <span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="report-date-to" class="datepicker text-base w-full px-4 py-3 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="Select end date">
-        </div>
-    </div>
-    <button id="generate-report-btn" class="btn-primary text-lg font-semibold mt-6">
-        <i class="fas fa-chart-bar mr-2"></i> Generate Report
-    </button>
-</div>
+                <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Generate Report by Date</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="report-date-from" class="block text-sm font-medium text-gray-700 mb-2">From Date <span class="text-red-500">*</span></label>
+                            <input type="text" id="report-date-from" class="datepicker w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="Select start date">
+                        </div>
+                        <div>
+                            <label for="report-date-to" class="block text-sm font-medium text-gray-700 mb-2">To Date <span class="text-red-500">*</span></label>
+                            <input type="text" id="report-date-to" class="datepicker w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="Select end date">
+                        </div>
+                    </div>
+                    <button id="generate-report-btn" class="btn-primary mt-6"><i class="fas fa-chart-bar mr-2"></i> Generate Report</button>
+                </div>
 
                 <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
                     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Sales Summary</h2>
                     <table id="sales-summary-table" class="summary-table w-full">
                         <tbody>
-                            <tr class="border-b border-dashed border-gray-300">
-                                <td class="py-2 px-2 text-lg font-medium text-gray-700">Total Invoices:</td>
-                                <td class="py-2 px-2 text-right text-xl font-bold text-blue-600" id="report-total-invoices">0</td>
-                            </tr>
                             <tr class="border-b border-dashed border-gray-300">
                                 <td class="py-2 px-2 text-lg font-medium text-gray-700">Total Sales (Grand Total):</td>
                                 <td class="py-2 px-2 text-right text-xl font-bold text-blue-600" id="report-total-sales">₹ 0.00</td>
@@ -634,14 +608,6 @@
                             <tr class="border-b border-dashed border-gray-300">
                                 <td class="py-2 px-2 text-lg font-medium text-gray-700">Total Taxable Amount:</td>
                                 <td class="py-2 px-2 text-right text-xl font-bold text-green-600" id="report-taxable-amount">₹ 0.00</td>
-                            </tr>
-                            <tr class="border-b border-dashed border-gray-300">
-                                <td class="py-2 px-2 text-lg font-medium text-gray-700">Total Payments Received:</td>
-                                <td class="py-2 px-2 text-right text-xl font-bold text-purple-600" id="report-total-payments">₹ 0.00</td>
-                            </tr>
-                             <tr class="border-b border-dashed border-gray-300">
-                                <td class="py-2 px-2 text-lg font-medium text-gray-700">Total Balance Due:</td>
-                                <td class="py-2 px-2 text-right text-xl font-bold text-orange-600" id="report-total-balance-due">₹ 0.00</td>
                             </tr>
                         </tbody>
                     </table>
@@ -671,6 +637,7 @@
                 </div>
             </section>
 
+            <!-- Settings Section -->
             <section id="settings-section" class="content-section hidden">
                 <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 mb-8 pb-4 border-b-4 border-blue-600 flex items-center">
                     <i class="fas fa-cog mr-3 text-blue-600"></i> Settings
@@ -678,101 +645,73 @@
 
                 <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
                     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Company Details</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-    <label for="setting-company-name" class="block text-lg font-bold text-gray-700 mb-2">
-        Company Name <span class="text-red-500">*</span>
-    </label>
-    <input type="text" id="setting-company-name" class="text-lg font-semibold w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter company name">
-</div>
-
-<div>
-    <label for="setting-company-gstin" class="block text-lg font-bold text-gray-700 mb-2">
-        GSTIN <span class="text-red-500">*</span>
-    </label>
-    <input type="text" id="setting-company-gstin" class="text-lg font-semibold w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter company GSTIN">
-</div>
-
-<div>
-    <label for="setting-company-pan" class="block text-lg font-bold text-gray-700 mb-2">
-        PAN <span class="text-red-500">*</span>
-    </label>
-    <input type="text" id="setting-company-pan" class="text-lg font-semibold w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter company PAN">
-</div>
-
-<div>
-    <label for="setting-company-phone" class="block text-lg font-bold text-gray-700 mb-2">
-        Phone <span class="text-red-500">*</span>
-    </label>
-    <input type="text" id="setting-company-phone" class="text-lg font-semibold w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter company phone">
-</div>
-
-<div class="md:col-span-2">
-    <label for="setting-company-address" class="block text-lg font-bold text-gray-700 mb-2">
-        Address <span class="text-red-500">*</span>
-    </label>
-    <textarea id="setting-company-address" class="text-lg font-semibold w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400 " placeholder="Enter company address"></textarea>
-</div>
-<div>
-    <label for="setting-company-slogan" class="block text-lg font-bold text-gray-700 mb-2">
-        Slogan (Optional)
-    </label>
-    <input type="text" id="setting-company-slogan" class="text-lg font-semibold w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="e.g., Your tagline">
-</div>
+                            <label for="setting-company-name" class="block text-sm font-medium text-gray-700 mb-2">Company Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="setting-company-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter company name">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="setting-company-address" class="block text-sm font-medium text-gray-700 mb-2">Address <span class="text-red-500">*</span></label>
+                            <textarea id="setting-company-address" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400 min-h-[90px] resize-y" placeholder="Enter company address"></textarea>
+                        </div>
+                        <div>
+                            <label for="setting-company-gstin" class="block text-sm font-medium text-gray-700 mb-2">GSTIN <span class="text-red-500">*</span></label>
+                            <input type="text" id="setting-company-gstin" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter company GSTIN">
+                        </div>
+                        <div>
+                            <label for="setting-company-pan" class="block text-sm font-medium text-gray-700 mb-2">PAN <span class="text-red-500">*</span></label>
+                            <input type="text" id="setting-company-pan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter company PAN">
+                        </div>
+                        <div>
+                            <label for="setting-company-phone" class="block text-sm font-medium text-gray-700 mb-2">Phone <span class="text-red-500">*</span></label>
+                            <input type="text" id="setting-company-phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter company phone">
+                        </div>
                     </div>
                 </div>
 
-<div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">Bank Details for Invoice</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-            <label for="setting-bank-name" class="block text-base font-semibold text-gray-700 mb-2">
-                Bank Name <span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="setting-bank-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400 text-base font-medium" placeholder="Enter bank name">
-        </div>
-        <div>
-            <label for="setting-account-number" class="block text-base font-semibold text-gray-700 mb-2">
-                Account Number <span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="setting-account-number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400 text-base font-medium" placeholder="Enter account number">
-        </div>
-        <div>
-            <label for="setting-ifsc-code" class="block text-base font-semibold text-gray-700 mb-2">
-                IFSC Code <span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="setting-ifsc-code" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400 text-base font-medium" placeholder="Enter IFSC code">
-        </div>
-    </div>
-</div>
-<div class="form-section-card bg-white p-6 rounded-xl shadow-md border border-gray-200">
-    <h2 class="text-3xl font-extrabold text-gray-800 mb-6 flex items-center">Default Tax Rates (%)</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div>
-            <label for="setting-cgst-rate" class="block text-base font-semibold text-gray-800 mb-2">CGST Rate</label>
-            <input type="number" id="setting-cgst-rate" min="0" max="100" step="0.01"
-                class="w-full px-4 py-3 text-base font-medium border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-        </div>
-        <div>
-            <label for="setting-sgst-rate" class="block text-base font-semibold text-gray-800 mb-2">SGST Rate</label>
-            <input type="number" id="setting-sgst-rate" min="0" max="100" step="0.01"
-                class="w-full px-4 py-3 text-base font-medium border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-        </div>
-        <div>
-            <label for="setting-igst-rate" class="block text-base font-semibold text-gray-800 mb-2">IGST Rate</label>
-            <input type="number" id="setting-igst-rate" min="0" max="100" step="0.01"
-                class="w-full px-4 py-3 text-base font-medium border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-        </div>
-    </div>
-</div>
+                <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Bank Details for Invoice</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="setting-bank-name" class="block text-sm font-medium text-gray-700 mb-2">Bank Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="setting-bank-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter bank name">
+                        </div>
+                        <div>
+                            <label for="setting-account-number" class="block text-sm font-medium text-gray-700 mb-2">Account Number <span class="text-red-500">*</span></label>
+                            <input type="text" id="setting-account-number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter account number">
+                        </div>
+                        <div>
+                            <label for="setting-ifsc-code" class="block text-sm font-medium text-gray-700 mb-2">IFSC Code <span class="text-red-500">*</span></label>
+                            <input type="text" id="setting-ifsc-code" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter IFSC code">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section-card bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Default Tax Rates (%)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label for="setting-cgst-rate" class="block text-sm font-medium text-gray-700 mb-2">CGST Rate</label>
+                            <input type="number" id="setting-cgst-rate" min="0" max="100" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        </div>
+                        <div>
+                            <label for="setting-sgst-rate" class="block text-sm font-medium text-gray-700 mb-2">SGST Rate</label>
+                            <input type="number" id="setting-sgst-rate" min="0" max="100" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        </div>
+                        <div>
+                            <label for="setting-igst-rate" class="block text-sm font-medium text-gray-700 mb-2">IGST Rate</label>
+                            <input type="number" id="setting-igst-rate" min="0" max="100" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        </div>
+                    </div>
+                </div>
                 <div class="flex justify-start mt-6">
                     <button id="save-settings-btn" class="btn-primary"><i class="fas fa-save mr-2"></i> Save Settings</button>
                 </div>
             </section>
-
         </main>
     </div>
 
+    <!-- Message Box Overlay -->
     <div id="message-box-overlay" class="message-box-overlay fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[2000] opacity-0 invisible transition-opacity duration-300">
         <div class="message-box bg-white p-8 rounded-xl shadow-2xl text-center max-w-sm w-11/12 transform -translate-y-10 transition-transform duration-300">
             <h3 id="message-box-title" class="text-2xl font-bold text-blue-700 mb-4"></h3>
@@ -781,9 +720,11 @@
         </div>
     </div>
 
+    <!-- External JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Custom JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>

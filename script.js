@@ -1,33 +1,28 @@
 // --- Element References ---
-// Login Page Elements
 const loginPage = document.getElementById('login-page');
 const loginForm = document.getElementById('login-form');
+const appContainer = document.getElementById('app-container');
+const loginBtn = document.getElementById('login-btn');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
-const loginBtn = document.getElementById('login-btn');
-
-// App Container & Sidebar Elements
-const appContainer = document.getElementById('app-container');
-const sidebar = document.getElementById('sidebar');
-const hamburgerMenu = document.getElementById('hamburger-menu');
-const sidebarCompanyName = document.querySelector('.sidebar-logo'); // Adjusted to match HTML structure
 const logoutBtn = document.getElementById('logout-btn');
 
-// Navigation Links
 const navInvoice = document.getElementById('nav-invoice');
 const navPayments = document.getElementById('nav-payments');
 const navHistory = document.getElementById('nav-history');
 const navReports = document.getElementById('nav-reports');
 const navSettings = document.getElementById('nav-settings');
+const hamburgerMenu = document.getElementById('hamburger-menu');
+const sidebar = document.getElementById('sidebar');
+const sidebarCompanyName = document.querySelector('.sidebar-logo'); // Corrected to target the logo text
 
-// Content Sections
 const invoiceSection = document.getElementById('invoice-section');
 const paymentsSection = document.getElementById('payments-section');
 const historySection = document.getElementById('history-section');
 const reportsSection = document.getElementById('reports-section');
 const settingsSection = document.getElementById('settings-section');
 
-// Invoice Form Elements
+// Invoice Form elements
 const displayCompanyName = document.getElementById('display-company-name');
 const displayCompanyAddress = document.getElementById('display-company-address');
 const displayCompanyGSTIN = document.getElementById('display-company-gstin');
@@ -36,13 +31,9 @@ const displayCompanyPhone = document.getElementById('display-company-phone');
 
 const customerNameInput = document.getElementById('customer-name');
 const customerAddressInput = document.getElementById('customer-address');
-const customerPANInput = document.getElementById('customer-apn'); // Matches HTML: customer-apn
+const customerPANInput = document.getElementById('customer-pan');
 const customerGSTINInput = document.getElementById('customer-gstin');
-const customerNameResults = document.getElementById('customer-name-results');
-const saveCustomerBtn = document.getElementById('save-customer-btn');
-const clearCustomerBtn = document.getElementById('clear-customer-btn');
-
-const invoiceNumberInput = document.getElementById('invoiceNumber'); // Matches HTML: invoiceNumber
+const invoiceNumberInput = document.getElementById('invoiceNumber'); // Corrected ID
 const invoiceDateInput = document.getElementById('invoice-date');
 const transportModeInput = document.getElementById('transport-mode');
 const vehicleNumberInput = document.getElementById('vehicle-number');
@@ -51,13 +42,17 @@ const placeOfSupplyCityInput = document.getElementById('place-of-supply-city');
 const placeOfSupplyStateInput = document.getElementById('place-of-supply-state');
 const placeOfSupplyResults = document.getElementById('place-of-supply-city-results');
 
-const itemList = document.getElementById('item-list'); // tbody for item rows
+const saveCustomerBtn = document.getElementById('save-customer-btn');
+const clearCustomerBtn = document.getElementById('clear-customer-btn');
+const customerNameResults = document.getElementById('customer-name-results');
+
+const itemList = document.getElementById('item-list');
 const addItemBtn = document.getElementById('add-item-btn');
 
-// Summary Spans
 const subTotalSpan = document.getElementById('sub-total');
-const totalDiscountSpan = document.getElementById('total-discount'); // For item discounts
-const overallDiscountInput = document.getElementById('overall-discount-input'); // Input for overall discount
+const totalItemDiscountSpan = document.getElementById('total-item-discount'); // Corrected ID
+const overallDiscountInput = document.getElementById('overall-discount-input');
+const totalTaxableValueSpan = document.getElementById('total-taxable-value'); // New element
 const cgstRateSpan = document.getElementById('cgst-rate');
 const cgstAmountSpan = document.getElementById('cgst-amount');
 const sgstRateSpan = document.getElementById('sgst-rate');
@@ -65,21 +60,19 @@ const sgstAmountSpan = document.getElementById('sgst-amount');
 const igstRateSpan = document.getElementById('igst-rate');
 const igstAmountSpan = document.getElementById('igst-amount');
 const grandTotalSpan = document.getElementById('grand-total');
-// Note: totalTaxableValueSpan is not explicitly present in the provided HTML summary table,
-// but it's calculated in JS. If you want to display it, add a span with id="total-taxable-value"
-// to your HTML summary table. For now, it won't cause errors if missing.
-const totalTaxableValueSpan = document.getElementById('total-taxable-value');
-
 
 const generateInvoiceBtn = document.getElementById('generate-invoice-btn');
 const resetFormBtn = document.getElementById('reset-form-btn');
 
-// Invoice Preview Modal Elements
 const invoicePreview = document.getElementById('invoice-preview');
-const closePreviewBtn = document.getElementById('close-preview-btn');
-const watermarkElement = document.getElementById('watermark-text'); // Watermark for print
+const invoiceActions = document.querySelector('.invoice-actions');
+const printInvoiceBtn = document.getElementById('print-invoice-btn');
+const downloadInvoicePdfBtn = document.getElementById('download-invoice-pdf-btn');
+const saveInvoiceBtn = document.getElementById('save-invoice-btn');
+const newInvoiceBtn = document.getElementById('new-invoice-btn');
+const shareInvoiceBtn = document.getElementById('share-invoice-btn');
 
-// Invoice Preview Content Elements
+// Preview elements
 const previewCompanyMainTitle = document.getElementById('preview-company-main-title');
 const previewCompanySlogan = document.getElementById('preview-company-slogan');
 const previewCompanyAddress = document.getElementById('preview-company-address');
@@ -92,18 +85,19 @@ const previewTransportMode = document.getElementById('preview-transport-mode');
 const previewVehicleNumber = document.getElementById('preview-vehicle-number');
 const previewDateOfSupply = document.getElementById('preview-date-of-supply');
 const previewPlaceOfSupply = document.getElementById('preview-place-of-supply');
-const previewCustomerAddressStateOnly = document.getElementById('preview-customer-address-state-only');
+const previewPlaceOfSupplyStateOnly = document.getElementById('preview-place-of-supply-state-only'); // Corrected ID
 
 const previewCustomerName = document.getElementById('preview-customer-name');
 const previewCustomerAddress = document.getElementById('preview-customer-address');
-const previewCustomerPAN = document.getElementById('preview-customer-apn'); // Matches HTML: preview-customer-apn
+const previewCustomerPAN = document.getElementById('preview-customer-pan');
 const previewCustomerGSTIN = document.getElementById('preview-customer-gstin');
-const previewItemList = document.getElementById('preview-item-list'); // tbody for preview items
+const previewItemList = document.getElementById('preview-item-list');
 const amountInWordsSpan = document.getElementById('amount-in-words');
+
 const previewSubTotal = document.getElementById('preview-sub-total');
-const previewTotalDiscount = document.getElementById('preview-total-discount'); // Preview item discount
-const previewOverallDiscount = document.getElementById('preview-overall-discount'); // Preview overall discount
-const previewTotalTaxableValue = document.getElementById('preview-total-taxable-value');
+const previewTotalItemDiscount = document.getElementById('preview-total-item-discount'); // Corrected ID
+const previewOverallDiscount = document.getElementById('preview-overall-discount');
+const previewTotalTaxableValue = document.getElementById('preview-total-taxable-value'); // New element
 const previewCgstAmount = document.getElementById('preview-cgst-amount');
 const previewSgstAmount = document.getElementById('preview-sgst-amount');
 const previewIgstAmount = document.getElementById('preview-igst-amount');
@@ -113,49 +107,43 @@ const previewBankName = document.getElementById('preview-bank-name');
 const previewBankAccountNumber = document.getElementById('preview-bank-account-number');
 const previewBankIfscCode = document.getElementById('preview-bank-ifsc-code');
 const previewCompanyNameBottom = document.getElementById('preview-company-name-bottom');
+const watermarkElement = document.getElementById('watermark-text');
 
-// Invoice Actions Buttons (outside preview modal, but related)
-const printInvoiceBtn = document.getElementById('print-invoice-btn');
-const downloadInvoicePdfBtn = document.getElementById('download-invoice-pdf-btn');
-const saveInvoiceBtn = document.getElementById('save-invoice-btn');
-const newInvoiceBtn = document.getElementById('new-invoice-btn');
-const shareInvoiceBtn = document.getElementById('share-invoice-btn');
-
-// Payments Section Elements
+// Payments elements
+const paymentInvoiceDisplay = document.getElementById('payment-invoice-display'); // New element to display selected invoice number
 const paymentDateInput = document.getElementById('payment-date');
 const paymentAmountInput = document.getElementById('payment-amount');
 const paymentMethodSelect = document.getElementById('payment-method');
 const paymentNotesTextarea = document.getElementById('payment-notes');
 const recordPaymentBtn = document.getElementById('record-payment-btn');
-const paymentHistoryList = document.getElementById('payment-history-list'); // tbody for payment history
+const paymentHistoryList = document.getElementById('payment-history-list');
 const noPaymentData = document.getElementById('no-payment-data');
-const paymentInvoiceNumberInput = document.getElementById('payment-invoice-number'); // For displaying invoice number in payments form
 
-// History Section Elements
+// History elements
 const historyInvoiceNumberSearch = document.getElementById('history-invoice-number-search');
 const historyCustomerNameSearch = document.getElementById('history-customer-name-search');
 const historyDateFrom = document.getElementById('history-date-from');
 const historyDateTo = document.getElementById('history-date-to');
 const historyFilterBtn = document.getElementById('history-filter-btn');
 const historyResetBtn = document.getElementById('history-reset-btn');
-const invoiceHistoryList = document.getElementById('invoice-history-list'); // tbody for invoice history
+const invoiceHistoryList = document.getElementById('invoice-history-list');
 const noHistoryData = document.getElementById('no-history-data');
 
-// Reports Section Elements
+// Reports elements
 const reportDateFrom = document.getElementById('report-date-from');
 const reportDateTo = document.getElementById('report-date-to');
 const generateReportBtn = document.getElementById('generate-report-btn');
-const salesSummaryTable = document.getElementById('sales-summary-table'); // Parent table
+const salesSummaryTable = document.getElementById('sales-summary-table');
 const reportTotalSales = document.getElementById('report-total-sales');
 const reportTotalDiscount = document.getElementById('report-total-discount');
 const reportTaxableAmount = document.getElementById('report-taxable-amount');
-const gstCollectedTable = document.getElementById('gst-collected-table'); // Parent table
+const gstCollectedTable = document.getElementById('gst-collected-table');
 const reportSgstCollected = document.getElementById('report-sgst-collected');
 const reportCgstCollected = document.getElementById('report-cgst-collected');
 const reportIgstCollected = document.getElementById('report-igst-collected');
 const exportReportBtn = document.getElementById('export-report-btn');
 
-// Settings Section Elements
+// Settings elements
 const settingCompanyName = document.getElementById('setting-company-name');
 const settingCompanyAddress = document.getElementById('setting-company-address');
 const settingCompanyGSTIN = document.getElementById('setting-company-gstin');
@@ -169,28 +157,28 @@ const settingSgstRate = document.getElementById('setting-sgst-rate');
 const settingIgstRate = document.getElementById('setting-igst-rate');
 const saveSettingsBtn = document.getElementById('save-settings-btn');
 
-// Custom Message Box Elements
+// Message Box elements
 const messageBoxOverlay = document.getElementById('message-box-overlay');
 const messageBoxTitle = document.getElementById('message-box-title');
 const messageBoxText = document.getElementById('message-box-text');
 const messageBoxOkBtn = document.getElementById('message-box-ok-btn');
 
-// --- Global Data Variables (Local Storage Persistent) ---
+// --- Global Data Stores ---
 let customers = JSON.parse(localStorage.getItem('customers')) || [];
-let itemsData = JSON.parse(localStorage.getItem('itemsData')) || {}; // Stores unique items with HSN/description/rate
-let itemCounter = 0; // Used for unique IDs for item rows
-let invoiceData = null; // Stores the currently generated invoice data for preview/actions
+let itemsData = JSON.parse(localStorage.getItem('itemsData')) || {}; // Store items with HSN/description
+let itemCounter = 0;
+let invoiceData = null; // To store current invoice data for PDF generation
 let savedInvoices = JSON.parse(localStorage.getItem('savedInvoices')) || [];
-let payments = JSON.parse(localStorage.getItem('payments')) || []; // Stores payment records
+let payments = JSON.parse(localStorage.getItem('payments')) || []; // New: To store payment records
 
-// Default Company and Bank Details (Updated as per request for Kanpur address)
+// Default Company and Bank Details
 const DEFAULT_COMPANY_DETAILS = {
     name: "GUPTA BEADS",
     address: "A-502 Ram Nivas CHS Ltd., Tapovan, Ram Balakdas Nagari, Malad (E), Mumbai - 400094",
     gstin: "27ALMPG5428K1ZR",
     pan: "ALMPG5428K",
     phone: "9892369334",
-    slogan: "MANUFACTURERS ALL TYPES OF PLASTICS BEADS"
+    slogan: "MANUFACTURERS ALL TYPES OF PLASTIC BEADS"
 };
 const DEFAULT_BANK_DETAILS = {
     bankName: "ICICI Bank",
@@ -267,7 +255,6 @@ const gstStateCodes = {
     "38": "Ladakh"
 };
 
-
 // --- Utility Functions ---
 
 /**
@@ -334,24 +321,11 @@ function formatDateForInput(date) {
  */
 function formatDateForDisplay(dateString) {
     if (!dateString) return '';
-    // Check if it's already in DD/MM/YYYY
-    if (dateString.includes('/')) {
-        return dateString;
-    }
-    // Assume YYYY-MM-DD format if it contains '-'
     if (dateString.includes('-')) {
         const [year, month, day] = dateString.split('-');
         return `${day}/${month}/${year}`;
     }
-    // If it's a Date object, format it
-    if (dateString instanceof Date) {
-        const d = dateString;
-        const year = d.getFullYear();
-        const month = (d.getMonth() + 1).toString().padStart(2, '0');
-        const day = d.getDate().toString().padStart(2, '0');
-        return `${day}/${month}/${year}`;
-    }
-    return dateString; // Return as is if format is unknown
+    return dateString; // Already in DD/MM/YYYY
 }
 
 /**
@@ -376,8 +350,8 @@ function convertNumberToWords(num) {
     const integerPart = Math.floor(num);
     const decimalPart = Math.round((num - integerPart) * 100);
 
-    const a = ['','one ','two ','three ','four ', 'five ','six ','seven ','eight ','nine ','ten ','eleven ','twelve ','thirteen ','fourteen ','fifteen ','sixteen ','seventeen ','eighteen ','nineteen '];
-    const b = ['', '', 'twenty','thirty','forty','fifty', 'sixty','seventy','eighty','ninety'];
+    const a = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
+    const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
 
     function inWords(n) {
         if (n === 0) return '';
@@ -437,36 +411,30 @@ function checkAuth() {
     const loggedIn = localStorage.getItem('loggedIn');
     if (loggedIn === 'true') {
         loginPage.classList.add('hidden');
-        loginPage.classList.remove('flex'); // Ensure flex is removed
         appContainer.classList.remove('hidden');
-        appContainer.classList.add('flex'); // Ensure flex is added
-        sidebar.classList.remove('hidden'); // Ensure sidebar is visible on large screens
-        sidebar.classList.add('flex'); // Ensure sidebar uses flex layout
+        sidebar.classList.remove('hidden-mobile'); // Ensure sidebar is visible on large screens
         setActiveNav(navInvoice); // Set initial active nav
         loadSettings(); // Load settings on app start
         updateCompanyDisplay(); // Update company details in invoice section and sidebar
         // Initialize invoice number and date on load (after settings loaded)
         invoiceNumberInput.value = generateInvoiceNumber();
-        invoiceDateInput.value = formatDateForDisplay(new Date()); // Use new Date() directly
-        dateOfSupplyInput.value = formatDateForDisplay(new Date()); // Use new Date() directly
+        invoiceDateInput.value = formatDateForDisplay(formatDateForInput(new Date()));
+        dateOfSupplyInput.value = formatDateForDisplay(formatDateForInput(new Date()));
         if (itemList.children.length === 0) { // Only add if no rows exist (e.g. after a full reset)
             createItemRow(); // Add initial item row
         }
         updateTaxRatesBasedOnGSTIN(); // Initial tax rate setup
     } else {
         loginPage.classList.remove('hidden');
-        loginPage.classList.add('flex');
         // Add class for login form animation
         document.querySelector('#login-page .max-w-md').classList.add('login-form-active');
         appContainer.classList.add('hidden');
-        appContainer.classList.remove('flex');
-        sidebar.classList.add('hidden'); // Ensure sidebar is hidden on small screens before login
-        sidebar.classList.remove('flex');
+        sidebar.classList.add('hidden-mobile'); // Ensure sidebar is hidden on small screens before login
     }
 }
 
-loginForm.addEventListener('submit', (e) => { // Changed to listen on form submit
-    e.preventDefault(); // Prevent form submission
+loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
     const username = usernameInput.value;
     const password = passwordInput.value;
 
@@ -485,18 +453,17 @@ logoutBtn.addEventListener('click', () => {
 
 // --- Hamburger Menu ---
 hamburgerMenu.addEventListener('click', () => {
-    sidebar.classList.toggle('hidden'); // Toggle hidden class
-    sidebar.classList.toggle('show-sidebar'); // For mobile animation
+    sidebar.classList.toggle('hidden-mobile');
+    sidebar.classList.toggle('show-sidebar');
     hamburgerMenu.classList.toggle('active'); // Toggle active class for icon animation
 });
 
 // Close sidebar when a nav item is clicked on mobile
 document.querySelectorAll('.sidebar-nav a').forEach(link => {
     link.addEventListener('click', () => {
-        // Check if sidebar is currently shown by hamburger menu (i.e., on mobile/tablet)
-        if (sidebar.classList.contains('show-sidebar')) {
+        if (window.innerWidth <= 1023) { // Check if it's a tablet/mobile view (lg breakpoint)
+            sidebar.classList.add('hidden-mobile');
             sidebar.classList.remove('show-sidebar');
-            sidebar.classList.add('hidden'); // Hide it again
             hamburgerMenu.classList.remove('active');
         }
     });
@@ -524,9 +491,7 @@ function setActiveNav(activeLink) {
 function showContentSection(sectionId) {
     document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
-        section.classList.add('hidden'); // Ensure it's hidden when not active
     });
-    document.getElementById(sectionId).classList.remove('hidden'); // Show the active section
     document.getElementById(sectionId).classList.add('active');
 
     // Specific actions for each section
@@ -546,23 +511,20 @@ function showContentSection(sectionId) {
         loadSettings();
     } else if (sectionId === 'payments-section') {
         renderPaymentHistory();
-        // Initialize flatpickr for payment date input
         flatpickr(paymentDateInput, { dateFormat: "d/m/Y", defaultDate: "today" });
         // Clear payment form when navigating to it
+        paymentInvoiceDisplay.value = ''; // Clear display
+        recordPaymentBtn.removeAttribute('data-invoice-number'); // Clear the associated invoice number
         paymentAmountInput.value = '';
         paymentMethodSelect.value = 'Cash';
         paymentNotesTextarea.value = '';
-        paymentInvoiceNumberInput.value = ''; // Clear invoice number display
-        recordPaymentBtn.removeAttribute('data-payment-id'); // Clear payment ID for new payment
-        recordPaymentBtn.removeAttribute('data-invoice-number'); // Clear invoice number
     }
+
     // Reset invoice generation state when navigating away from invoice section
     if (sectionId !== 'invoice-section') {
         generateInvoiceBtn.disabled = false; // Re-enable generate button
-        invoicePreview.classList.add('hidden'); // Hide preview modal
-        invoicePreview.classList.remove('modal-overlay'); // Remove modal overlay class
-        // The invoice-actions div is outside the invoice-preview, so hide it separately
-        document.querySelector('.invoice-actions').classList.add('hidden');
+        invoicePreview.classList.add('hidden'); // Hide preview
+        invoiceActions.classList.add('hidden'); // Hide actions
         invoiceData = null; // Clear invoice data
     }
 }
@@ -589,18 +551,12 @@ navSettings.addEventListener('click', (e) => {
 });
 
 // --- Date Pickers Initialization ---
-// Initialize all datepickers with the 'datepicker' class
-document.querySelectorAll('.datepicker').forEach(input => {
-    flatpickr(input, { dateFormat: "d/m/Y", allowInput: true });
-});
-// Special default for invoice and date of supply if they don't have a value
-if (!invoiceDateInput.value) {
-    invoiceDateInput.value = formatDateForDisplay(new Date());
-}
-if (!dateOfSupplyInput.value) {
-    dateOfSupplyInput.value = formatDateForDisplay(new Date());
-}
-
+flatpickr(invoiceDateInput, { dateFormat: "d/m/Y", defaultDate: "today" });
+flatpickr(dateOfSupplyInput, { dateFormat: "d/m/Y", defaultDate: "today" });
+flatpickr(historyDateFrom, { dateFormat: "d/m/Y", allowInput: true });
+flatpickr(historyDateTo, { dateFormat: "d/m/Y", allowInput: true });
+flatpickr(reportDateFrom, { dateFormat: "d/m/Y", allowInput: true });
+flatpickr(reportDateTo, { dateFormat: "d/m/Y", allowInput: true });
 
 // --- Customer Details & Autocomplete ---
 
@@ -618,7 +574,7 @@ saveCustomerBtn.addEventListener('click', () => {
         showMessageBox('Validation Error', 'Invalid GSTIN format. It should be 15 alphanumeric characters.');
         return;
     }
-    if (pan && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan)) {
+    if (pan && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan)) { // PAN validation
         showMessageBox('Validation Error', 'Invalid Receiver PAN format. It should be 10 alphanumeric characters (e.g., ABCDE1234F).');
         return;
     }
@@ -645,7 +601,7 @@ clearCustomerBtn.addEventListener('click', () => {
     customerGSTINInput.value = '';
     transportModeInput.value = '';
     vehicleNumberInput.value = '';
-    dateOfSupplyInput.value = formatDateForDisplay(new Date());
+    dateOfSupplyInput.value = formatDateForDisplay(formatDateForInput(new Date()));
     placeOfSupplyCityInput.value = '';
     placeOfSupplyStateInput.value = '';
     customerNameResults.classList.add('hidden');
@@ -754,7 +710,7 @@ function updateTaxRatesBasedOnGSTIN() {
         igstRateSpan.textContent = TAX_RATES.igst.toFixed(0);
     } else {
         // If customer GSTIN is empty or invalid, default to intra-state (B2C) from company's perspective
-        // Assuming company's state is the default place of supply for B2C if customer GSTIN is absent/invalid
+        // Assuming B2C is always intra-state for simplicity, as per common practice
         cgstRateSpan.textContent = TAX_RATES.cgst.toFixed(0);
         sgstRateSpan.textContent = TAX_RATES.sgst.toFixed(0);
         igstRateSpan.textContent = (0).toFixed(0);
@@ -781,62 +737,54 @@ function createItemRow(item = {}) {
     row.classList.add('invoice-item-row'); // Add class for easier selection in calculateSummary
     row.setAttribute('data-id', itemCounter); // Unique ID for each row
     row.innerHTML = `
-        <td class="py-2 px-2 text-center border-b border-gray-200 text-sm">${itemCounter}</td>
-
-        <td class="py-2 px-2 border-b border-gray-200 relative">
+        <td class="px-2 py-1 text-center border-b border-gray-200 text-sm">${itemCounter}</td>
+        <td class="px-2 py-1 border-b border-gray-200 relative">
             <textarea
-                class="item-description border border-gray-300 text-base font-medium resize-none w-full text-left placeholder:text-base placeholder:font-medium placeholder-gray-400"
-                style="height: 36px; max-height: 150px; min-height: 36px; overflow: hidden; line-height: 1.5rem; padding: 6px 12px;"
+                class="item-description border border-gray-300 p-2 text-sm resize-none w-full text-left"
+                style="height: 30px; max-height: 30px; min-height: 30px; overflow: hidden; line-height: 1.25rem; margin-bottom: 0;"
                 placeholder="Enter item description"
             >${item.description || ''}</textarea>
-
             <div class="item-description-results autocomplete-results absolute z-50 bg-white border border-gray-300 rounded-md shadow-md overflow-y-auto w-full hidden text-left text-sm p-2 max-h-48"></div>
         </td>
-
-        <td class="py-2 px-2 border-b border-gray-200">
+        <td class="px-2 py-1 border-b border-gray-200">
             <input
                 type="text"
-                class="item-hsn w-full px-2 py-2 border rounded text-base font-medium focus:ring focus:ring-blue-200 placeholder:text-base placeholder:font-medium placeholder-gray-400"
+                class="item-hsn w-full p-2 border rounded text-sm focus:ring focus:ring-blue-200"
                 placeholder="HSN/SAC"
                 value="${item.hsn || ''}"
             >
         </td>
-
-        <td class="py-2 px-2 border-b border-gray-200">
+        <td class="px-2 py-1 border-b border-gray-200">
             <input
                 type="number"
-                class="item-qty w-full px-2 py-2 border rounded text-base font-medium text-right focus:ring focus:ring-blue-200 placeholder:text-base placeholder:font-medium placeholder-gray-400"
+                class="item-qty w-full p-2 border rounded text-sm text-right focus:ring focus:ring-blue-200"
                 value="${item.qty || 1}"
                 min="1"
             >
         </td>
-
-        <td class="py-2 px-2 border-b border-gray-200">
+        <td class="px-2 py-1 border-b border-gray-200">
             <input
                 type="number"
-                class="item-rate w-full px-2 py-2 border rounded text-base font-medium text-right focus:ring focus:ring-blue-200 placeholder:text-base placeholder:font-medium placeholder-gray-400"
+                class="item-rate w-full p-2 border rounded text-sm text-right focus:ring focus:ring-blue-200"
                 step="0.01"
                 value="${item.rate || 0}"
                 min="0"
             >
         </td>
-
-        <td class="py-2 px-2 border-b border-gray-200">
+        <td class="px-2 py-1 border-b border-gray-200">
             <input
                 type="text"
-                class="item-discount w-full px-2 py-2 border rounded text-base font-medium text-right focus:ring focus:ring-blue-200 placeholder:text-base placeholder:font-medium placeholder-gray-400"
+                class="item-discount w-full p-2 border rounded text-sm text-right focus:ring focus:ring-blue-200"
                 placeholder="Amt or %"
                 value="${item.discountInput !== undefined ? item.discountInput : ''}"
             >
         </td>
-
-        <td class="py-2 px-2 border-b border-gray-200">
+        <td class="px-2 py-1 border-b border-gray-200">
             <div class="flex items-center justify-center h-full">
-                <span class="item-amount text-base font-medium">${formatCurrency(item.amount || 0)}</span>
+                <span class="item-amount text-sm font-medium">${formatCurrency(item.amount || 0)}</span>
             </div>
         </td>
-
-        <td class="py-2 px-2 border-b border-gray-200 print-hidden">
+        <td class="px-2 py-1 border-b border-gray-200">
             <div class="flex items-center justify-center h-full">
                 <button
                     type="button"
@@ -932,7 +880,6 @@ function createItemRow(item = {}) {
         }
     });
 
-
     // Remove item row
     removeItemBtn.addEventListener('click', () => {
         row.remove();
@@ -1005,10 +952,8 @@ function calculateItemRow() {
     const hsn = row.querySelector('.item-hsn').value.trim();
     if (description || hsn) {
         const key = `${description.toLowerCase()}-${hsn.toLowerCase()}`;
-        if (description || hsn) { // Only save if at least description or HSN is provided
-            itemsData[key] = { description, hsn, rate: rate };
-            localStorage.setItem('itemsData', JSON.stringify(itemsData));
-        }
+        itemsData[key] = { description, hsn, rate: rate };
+        localStorage.setItem('itemsData', JSON.stringify(itemsData));
     }
 
     calculateSummary();
@@ -1025,20 +970,25 @@ function calculateSummary() {
     itemRows.forEach(row => {
         const qty = parseFloat(row.querySelector(".item-qty")?.value || 0);
         const rate = parseFloat(row.querySelector(".item-rate")?.value || 0);
-        const discountInputVal = row.querySelector(".item-discount")?.value || '';
+        const discountVal = row.querySelector(".item-discount")?.value || '';
 
-        subTotalBeforeItemDiscount += (qty * rate); // Sum of (Qty * Rate) for all items
+        let baseAmountPerItem = qty * rate;
+        let discountAmountPerItem = 0;
 
-        let discountAmount = 0;
-        if (discountInputVal.endsWith('%')) {
-            const percent = parseFloat(discountInputVal);
-            if (!isNaN(percent) && percent >= 0 && percent <= 100) {
-                discountAmount = (qty * rate) * (percent / 100);
+        if (discountVal.endsWith('%')) {
+            const percentage = parseFloat(discountVal.slice(0, -1));
+            if (!isNaN(percentage) && percentage >= 0 && percentage <= 100) {
+                discountAmountPerItem = baseAmountPerItem * (percentage / 100);
             }
-        } else if (!isNaN(parseFloat(discountInputVal))) {
-            discountAmount = parseFloat(discountInputVal);
+        } else {
+            discountAmountPerItem = parseFloat(discountVal) || 0;
+            if (isNaN(discountAmountPerItem) || discountAmountPerItem < 0) {
+                discountAmountPerItem = 0;
+            }
         }
-        totalItemDiscount += discountAmount;
+        
+        subTotalBeforeItemDiscount += baseAmountPerItem;
+        totalItemDiscount += discountAmountPerItem;
     });
 
     const subTotalAfterItemDiscount = subTotalBeforeItemDiscount - totalItemDiscount;
@@ -1046,52 +996,29 @@ function calculateSummary() {
     const overallDiscount = parseFloat(overallDiscountInput.value) || 0;
     const totalTaxableValue = Math.max(0, subTotalAfterItemDiscount - overallDiscount);
 
-    const customerGstin = customerGSTINInput.value.trim().toUpperCase();
-    const companyGstin = COMPANY_DETAILS.gstin.trim().toUpperCase();
+    const cgstRate = parseFloat(cgstRateSpan.textContent) || 0;
+    const sgstRate = parseFloat(sgstRateSpan.textContent) || 0;
+    const igstRate = parseFloat(igstRateSpan.textContent) || 0;
 
-    const customerStateCode = getGstinStateCode(customerGstin);
-    const companyStateCode = getGstinStateCode(companyGstin);
-
-    let cgstAmount = 0;
-    let sgstAmount = 0;
-    let igstAmount = 0;
-
-    if (customerGstin && customerGstin.length === 15 && customerStateCode === companyStateCode) {
-        // Intra-state transaction (CGST + SGST)
-        cgstAmount = totalTaxableValue * (TAX_RATES.cgst / 100);
-        sgstAmount = totalTaxableValue * (TAX_RATES.sgst / 100);
-    } else if (customerGstin && customerGstin.length === 15 && customerStateCode !== companyStateCode) {
-        // Inter-state transaction (IGST only)
-        igstAmount = totalTaxableValue * (TAX_RATES.igst / 100);
-    } else {
-        // If customer GSTIN is empty or invalid, default to intra-state (B2C) from company's perspective
-        cgstAmount = totalTaxableValue * (TAX_RATES.cgst / 100);
-        sgstAmount = totalTaxableValue * (TAX_RATES.sgst / 100);
-    }
-
-    cgstAmount = parseFloat(cgstAmount.toFixed(2));
-    sgstAmount = parseFloat(sgstAmount.toFixed(2));
-    igstAmount = parseFloat(igstAmount.toFixed(2));
+    const cgstAmount = totalTaxableValue * (cgstRate / 100);
+    const sgstAmount = totalTaxableValue * (sgstRate / 100);
+    const igstAmount = totalTaxableValue * (igstRate / 100);
 
     const grandTotal = totalTaxableValue + cgstAmount + sgstAmount + igstAmount;
 
     // Update the DOM
-    subTotalSpan.textContent = formatCurrency(subTotalBeforeItemDiscount); // Display sub-total before item discount
-    totalDiscountSpan.textContent = formatCurrency(totalItemDiscount); // Display total item discount
-    overallDiscountInput.value = overallDiscount.toFixed(2); // Ensure input reflects the value
+    subTotalSpan.textContent = formatCurrency(subTotalBeforeItemDiscount);
+    totalItemDiscountSpan.textContent = formatCurrency(totalItemDiscount);
+    overallDiscountInput.value = overallDiscount.toFixed(2); // Keep input value updated
+    totalTaxableValueSpan.textContent = formatCurrency(totalTaxableValue);
     cgstAmountSpan.textContent = formatCurrency(cgstAmount);
     sgstAmountSpan.textContent = formatCurrency(sgstAmount);
     igstAmountSpan.textContent = formatCurrency(igstAmount);
     grandTotalSpan.textContent = formatCurrency(grandTotal);
-    // Update taxable value display (if the span exists)
-    if (totalTaxableValueSpan) { // Check if the element exists in HTML
-        totalTaxableValueSpan.textContent = formatCurrency(totalTaxableValue);
-    }
 }
 
 // Event listeners for summary fields
 overallDiscountInput.addEventListener('input', calculateSummary);
-
 
 // Reset form button
 resetFormBtn.addEventListener('click', () => {
@@ -1101,7 +1028,7 @@ resetFormBtn.addEventListener('click', () => {
     customerGSTINInput.value = '';
     transportModeInput.value = '';
     vehicleNumberInput.value = '';
-    dateOfSupplyInput.value = formatDateForDisplay(new Date());
+    dateOfSupplyInput.value = formatDateForDisplay(formatDateForInput(new Date()));
     placeOfSupplyCityInput.value = '';
     placeOfSupplyStateInput.value = '';
     customerNameResults.classList.add('hidden');
@@ -1109,39 +1036,33 @@ resetFormBtn.addEventListener('click', () => {
 
     itemList.innerHTML = '';
     itemCounter = 0;
-    createItemRow(); // Add initial empty row
+    createItemRow();
 
-    // Reset summary display
     subTotalSpan.textContent = formatCurrency(0);
-    totalDiscountSpan.textContent = formatCurrency(0);
+    totalItemDiscountSpan.textContent = formatCurrency(0);
+    totalTaxableValueSpan.textContent = formatCurrency(0);
     cgstAmountSpan.textContent = formatCurrency(0);
     sgstAmountSpan.textContent = formatCurrency(0);
     igstAmountSpan.textContent = formatCurrency(0);
     overallDiscountInput.value = '0.00';
     grandTotalSpan.textContent = formatCurrency(0);
-    if (totalTaxableValueSpan) {
-        totalTaxableValueSpan.textContent = formatCurrency(0);
-    }
 
     invoiceNumberInput.value = generateInvoiceNumber();
-    invoiceDateInput.value = formatDateForDisplay(new Date());
+    invoiceDateInput.value = formatDateForDisplay(formatDateForInput(new Date()));
 
-    updateTaxRatesBasedOnGSTIN(); // Reset tax rates based on cleared customer GSTIN
+    updateTaxRatesBasedOnGSTIN();
 
     invoicePreview.classList.add('hidden');
-    invoicePreview.classList.remove('modal-overlay'); // Remove modal overlay class
-    document.querySelector('.invoice-actions').classList.add('hidden'); // Hide actions
+    invoiceActions.classList.add('hidden');
     generateInvoiceBtn.disabled = false;
     invoiceData = null;
 });
-
 
 // New invoice button (same as reset)
 newInvoiceBtn.addEventListener('click', () => {
     generateInvoiceBtn.disabled = false;
     resetFormBtn.click();
 });
-
 
 // --- Generate Invoice and Populate Preview ---
 generateInvoiceBtn.addEventListener('click', () => {
@@ -1159,14 +1080,12 @@ generateInvoiceBtn.addEventListener('click', () => {
         const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
         const discountInputVal = row.querySelector('.item-discount').value.trim();
 
-        // If any field in a row has content, but not all required fields are valid, mark as invalid
-        if ((description || hsn || qty > 0 || rate > 0 || discountInputVal) && (!description || qty <= 0 || rate <= 0)) {
-            allItemsValid = false;
-            return; // Continue checking other rows for validity
-        }
-        // If the row is completely empty, it's fine, just don't add it to items array
-        if (!description && !hsn && qty === 0 && rate === 0 && !discountInputVal) {
-            return;
+        if (!description || qty <= 0 || rate <= 0) {
+            // If any field is partially filled but not valid, mark as invalid
+            if (description || hsn || qty > 0 || rate > 0 || discountInputVal) {
+                allItemsValid = false;
+            }
+            return; // Skip this row if it's empty or invalid
         }
 
         let itemEffectiveDiscount = 0;
@@ -1189,7 +1108,7 @@ generateInvoiceBtn.addEventListener('click', () => {
             rate: rate,
             discountInput: discountInputVal,
             itemDiscountAmount: parseFloat(itemEffectiveDiscount.toFixed(2)),
-            amount: parseFloat(((qty * rate) - itemEffectiveDiscount).toFixed(2)) // This is the line item total after its discount
+            amount: parseFloat(((qty * rate) - itemEffectiveDiscount).toFixed(2))
         });
     });
 
@@ -1199,22 +1118,21 @@ generateInvoiceBtn.addEventListener('click', () => {
     }
 
     if (!allItemsValid) {
-        showMessageBox('Validation Error', 'Some item rows have invalid data. Please ensure all items have a Description, Quantity > 0, and Rate > 0, or are completely empty.');
+        showMessageBox('Validation Error', 'Some item rows have invalid data. Please ensure all items have a Description, Quantity > 0, and Rate > 0.');
         return;
     }
 
-    // Recalculate summary to ensure all latest values are picked up
+    // Recalculate summary one last time to ensure all spans are updated before capturing data
     calculateSummary();
 
-    const currentGrandTotal = parseFloat(grandTotalSpan.textContent.replace('₹ ', '')) || 0;
-    const currentSubTotal = parseFloat(subTotalSpan.textContent.replace('₹ ', '')) || 0; // This is sub-total before item discount
-    const currentCgstAmount = parseFloat(cgstAmountSpan.textContent.replace('₹ ', '')) || 0;
-    const currentSgstAmount = parseFloat(sgstAmountSpan.textContent.replace('₹ ', '')) || 0;
-    const currentIgstAmount = parseFloat(igstAmountSpan.textContent.replace('₹ ', '')) || 0;
+    const currentSubTotal = parseFloat(subTotalSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentTotalItemDiscount = parseFloat(totalItemDiscountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
     const currentOverallDiscount = parseFloat(overallDiscountInput.value) || 0;
-    const currentTotalItemDiscount = items.reduce((sum, item) => sum + item.itemDiscountAmount, 0);
-    const currentTotalTaxableValue = (totalTaxableValueSpan ? parseFloat(totalTaxableValueSpan.textContent.replace('₹ ', '')) : 0) || 0;
-
+    const currentTaxableValue = parseFloat(totalTaxableValueSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentCgstAmount = parseFloat(cgstAmountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentSgstAmount = parseFloat(sgstAmountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentIgstAmount = parseFloat(igstAmountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentGrandTotal = parseFloat(grandTotalSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
 
     invoiceData = {
         invoiceDetails: {
@@ -1233,36 +1151,28 @@ generateInvoiceBtn.addEventListener('click', () => {
         },
         items: items,
         summary: {
-            subTotal: parseFloat(currentSubTotal.toFixed(2)), // Ensure stored as number, not string with currency symbol
-            totalItemDiscount: parseFloat(currentTotalItemDiscount.toFixed(2)),
-            overallDiscount: parseFloat(currentOverallDiscount.toFixed(2)),
-            taxableValue: parseFloat(currentTotalTaxableValue.toFixed(2)),
-            cgstRate: TAX_RATES.cgst, // Use actual rate from settings
-            cgstAmount: parseFloat(currentCgstAmount.toFixed(2)),
-            sgstRate: TAX_RATES.sgst, // Use actual rate from settings
-            sgstAmount: parseFloat(currentSgstAmount.toFixed(2)),
-            igstRate: TAX_RATES.igst, // Use actual rate from settings
-            igstAmount: parseFloat(currentIgstAmount.toFixed(2)),
-            grandTotal: parseFloat(currentGrandTotal.toFixed(2)),
-            balanceDue: parseFloat(currentGrandTotal.toFixed(2)) // Initial balance due is grand total
+            subTotal: currentSubTotal,
+            totalItemDiscount: currentTotalItemDiscount,
+            overallDiscount: currentOverallDiscount,
+            taxableValue: currentTaxableValue, // Store calculated taxable value
+            cgstRate: parseFloat(cgstRateSpan.textContent),
+            cgstAmount: currentCgstAmount,
+            sgstRate: parseFloat(sgstRateSpan.textContent),
+            sgstAmount: currentSgstAmount,
+            igstRate: parseFloat(igstRateSpan.textContent),
+            igstAmount: currentIgstAmount,
+            grandTotal: currentGrandTotal,
+            balanceDue: currentGrandTotal // Initial balance due
         },
-        company: COMPANY_DETAILS,
-        bank: BANK_DETAILS,
+        company: COMPANY_DETAILS, // Use global COMPANY_DETAILS
+        bank: BANK_DETAILS,     // Use global BANK_DETAILS
     };
 
     populateInvoicePreview(invoiceData);
     invoicePreview.classList.remove('hidden');
-    invoicePreview.classList.add('modal-overlay'); // Add modal overlay class
-    document.querySelector('.invoice-actions').classList.remove('hidden'); // Show actions
+    invoiceActions.classList.remove('hidden');
     generateInvoiceBtn.disabled = true;
     invoicePreview.scrollIntoView({ behavior: 'smooth', block: 'start' });
-});
-
-closePreviewBtn.addEventListener('click', () => {
-    invoicePreview.classList.add('hidden');
-    invoicePreview.classList.remove('modal-overlay'); // Remove modal overlay class
-    document.querySelector('.invoice-actions').classList.add('hidden'); // Hide actions
-    generateInvoiceBtn.disabled = false;
 });
 
 /**
@@ -1288,7 +1198,7 @@ function populateInvoicePreview(data) {
     previewPlaceOfSupply.textContent = data.invoiceDetails.placeOfSupply;
 
     const selectedCity = indianCities.find(city => city.city.toLowerCase() === data.invoiceDetails.placeOfSupply.toLowerCase());
-    previewCustomerAddressStateOnly.textContent = selectedCity ? selectedCity.state : 'N/A';
+    previewPlaceOfSupplyStateOnly.textContent = selectedCity ? selectedCity.state : 'N/A'; // Corrected ID
 
     previewCustomerName.textContent = data.receiverDetails.name;
     previewCustomerAddress.innerHTML = data.receiverDetails.address.replace(/\n/g, '<br>') || 'N/A';
@@ -1302,21 +1212,19 @@ function populateInvoicePreview(data) {
         const row = document.createElement('tr');
         // Adjusted item row for preview to match sample bill
         row.innerHTML = `
-            <td class="py-1 px-1 border border-gray-900 text-sm text-center">${previewSNo}</td>
-            <td class="py-1 px-1 border border-gray-900 text-sm">${item.description}</td>
-            <td class="py-1 px-1 border border-gray-900 text-sm text-center">${item.hsn || 'N/A'}</td>
-            <td class="py-1 px-1 border border-gray-900 text-sm text-center">${item.qty}</td>
-            <td class="py-1 px-1 border border-gray-900 text-sm text-right">${formatCurrency(item.rate)}</td>
-            <td class="py-1 px-1 border border-gray-900 text-sm text-right">${formatCurrency(item.amount)}</td>
+            <td class="py-1 px-1 border border-black text-center">${previewSNo}</td>
+            <td class="py-1 px-1 border border-black">${item.description}</td>
+            <td class="py-1 px-1 border border-black text-center">${item.hsn || 'N/A'}</td>
+            <td class="py-1 px-1 border border-black text-center">${item.qty}</td>
+            <td class="py-1 px-1 border border-black text-right">${formatCurrency(item.amount)}</td>
         `;
         previewItemList.appendChild(row);
     });
 
-    previewSubTotal.textContent = formatCurrency(data.summary.subTotal); // Sum of (Qty * Rate)
-    previewTotalDiscount.textContent = formatCurrency(data.summary.totalItemDiscount); // Item discount
-    previewOverallDiscount.textContent = formatCurrency(data.summary.overallDiscount); // Overall discount
-    previewTotalTaxableValue.textContent = formatCurrency(data.summary.taxableValue); // Taxable value after all discounts
-
+    previewSubTotal.textContent = formatCurrency(data.summary.subTotal);
+    previewTotalItemDiscount.textContent = formatCurrency(data.summary.totalItemDiscount);
+    previewOverallDiscount.textContent = formatCurrency(data.summary.overallDiscount);
+    previewTotalTaxableValue.textContent = formatCurrency(data.summary.taxableValue); // Use the stored taxable value
     previewCgstAmount.textContent = formatCurrency(data.summary.cgstAmount);
     previewSgstAmount.textContent = formatCurrency(data.summary.sgstAmount);
     previewIgstAmount.textContent = formatCurrency(data.summary.igstAmount);
@@ -1327,29 +1235,20 @@ function populateInvoicePreview(data) {
     previewBankName.textContent = data.bank.bankName;
     previewBankAccountNumber.textContent = data.bank.accountNumber;
     previewBankIfscCode.textContent = data.bank.ifscCode;
-}
 
+    if (watermarkElement) {
+        watermarkElement.textContent = data.company.name;
+    }
+}
 
 // --- Invoice Actions ---
 
 printInvoiceBtn.addEventListener('click', () => {
-    // Add a class to body to trigger print-specific CSS
     document.body.classList.add('printing-invoice');
-    // Hide elements that should not be printed
-    document.querySelectorAll('.print-hidden').forEach(el => el.style.display = 'none');
-    // Ensure watermark is visible for print
-    if (watermarkElement) {
-        watermarkElement.style.display = 'block';
-    }
-
+    hamburgerMenu.classList.add('print-hidden'); // Hide hamburger menu during print
     window.print();
-
-    // Restore visibility and remove print class after printing
-    document.querySelectorAll('.print-hidden').forEach(el => el.style.display = '');
-    if (watermarkElement) {
-        watermarkElement.style.display = 'none';
-    }
     document.body.classList.remove('printing-invoice');
+    hamburgerMenu.classList.remove('print-hidden');
 });
 
 downloadInvoicePdfBtn.addEventListener('click', async () => {
@@ -1359,16 +1258,12 @@ downloadInvoicePdfBtn.addEventListener('click', async () => {
     }
 
     // Temporarily hide actions and show preview for screenshot
-    document.querySelector('.invoice-actions').classList.add('hidden');
-    invoicePreview.classList.remove('hidden'); // Ensure preview is visible for html2canvas
-    invoicePreview.classList.remove('modal-overlay'); // Remove modal overlay for clean screenshot
+    invoiceActions.classList.add('hidden');
+    invoicePreview.classList.remove('hidden');
 
-    // Create a clone of the invoice content for PDF generation
-    // This helps avoid issues with hidden elements or modal styling affecting the screenshot
-    const invoiceContent = document.querySelector('#invoice-preview > div'); // Target the inner content div
-    const previewClone = invoiceContent.cloneNode(true);
-
-    // Apply print-specific styles to the clone
+    const previewClone = invoicePreview.cloneNode(true);
+    previewClone.classList.remove('hidden');
+    // Apply print-specific styles to the clone for accurate rendering
     previewClone.style.maxWidth = '210mm'; // A4 width
     previewClone.style.minHeight = '297mm'; // A4 height
     previewClone.style.border = 'none';
@@ -1378,17 +1273,18 @@ downloadInvoicePdfBtn.addEventListener('click', async () => {
     previewClone.style.top = '-9999px';
     previewClone.style.padding = '0';
     previewClone.style.margin = '0';
-    previewClone.style.display = 'block'; // Ensure it's displayed for html2canvas
 
-    // Hide elements that should not be in PDF (e.g., close button, digital stamp if it's an image)
-    previewClone.querySelectorAll('.do-not-print, .print-hidden').forEach(el => {
+    // Ensure watermark is visible on the cloned element for PDF
+    const clonedWatermark = previewClone.querySelector('#watermark-text');
+    if (clonedWatermark) {
+        clonedWatermark.style.display = 'block';
+        clonedWatermark.style.opacity = '0.1'; // Make watermark visible for PDF
+    }
+
+    // Hide print-hidden elements in the clone
+    previewClone.querySelectorAll('.print-hidden').forEach(el => {
         el.style.display = 'none';
     });
-    // Ensure watermark is visible in the clone for PDF
-    const cloneWatermark = previewClone.querySelector('#watermark-text');
-    if (cloneWatermark) {
-        cloneWatermark.style.display = 'block';
-    }
 
     document.body.appendChild(previewClone);
 
@@ -1402,12 +1298,12 @@ downloadInvoicePdfBtn.addEventListener('click', async () => {
             scale: 2, // Higher scale for better resolution
             useCORS: true,
             allowTaint: true,
-            scrollY: -window.scrollY, // Correct scroll position
+            scrollY: -window.scrollY,
             windowWidth: previewClone.scrollWidth,
             windowHeight: previewClone.scrollHeight,
-            // Explicitly ignore elements that shouldn't be in the print/PDF output
+            // Ignore elements that shouldn't be in the print/PDF output
             ignoreElements: (element) => {
-                return element.classList.contains('do-not-print') || element.classList.contains('print-hidden');
+                return element.classList.contains('do-not-print');
             }
         });
 
@@ -1422,13 +1318,13 @@ downloadInvoicePdfBtn.addEventListener('click', async () => {
 
         // Add image to PDF, handling multiple pages if content is too long
         pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
-        heightLeft -= (pdfHeight - 2 * margin); // Subtract the visible portion of the page
+        heightLeft -= pdfHeight - 2 * margin;
 
-        while (heightLeft > -1) { // Changed condition to handle very small remaining parts
-            position = - (imgHeight - (pdfHeight - 2 * margin) + heightLeft); // Calculate new position for next page
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight + margin;
             pdf.addPage();
             pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
-            heightLeft -= (pdfHeight - 2 * margin);
+            heightLeft -= pdfHeight - 2 * margin;
         }
 
         pdf.save(`Invoice_${invoiceData.invoiceDetails.invoiceNumber}.pdf`);
@@ -1439,8 +1335,7 @@ downloadInvoicePdfBtn.addEventListener('click', async () => {
         showMessageBox('Error', 'Failed to generate PDF. Please try again. Check console for details.');
     } finally {
         // Restore visibility and remove clone
-        document.querySelector('.invoice-actions').classList.remove('hidden'); // Show actions again
-        invoicePreview.classList.add('modal-overlay'); // Restore modal overlay class
+        invoiceActions.classList.remove('hidden');
         document.body.removeChild(previewClone);
     }
 });
@@ -1453,11 +1348,9 @@ saveInvoiceBtn.addEventListener('click', () => {
 
     const existingIndex = savedInvoices.findIndex(inv => inv.invoiceDetails.invoiceNumber === invoiceData.invoiceDetails.invoiceNumber);
 
-    // Calculate total paid for this invoice from payments history
     const existingInvoicePayments = payments.filter(p => p.invoiceNumber === invoiceData.invoiceDetails.invoiceNumber);
     const totalPaidForInvoice = existingInvoicePayments.reduce((sum, p) => sum + p.amount, 0);
     invoiceData.summary.balanceDue = Math.max(0, invoiceData.summary.grandTotal - totalPaidForInvoice);
-
 
     if (existingIndex > -1) {
         savedInvoices[existingIndex] = { ...invoiceData, lastSaved: new Date().toISOString() };
@@ -1468,11 +1361,11 @@ saveInvoiceBtn.addEventListener('click', () => {
     }
     localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
 
-    // If history section is active, re-render it to show updated balance due
     if (historySection.classList.contains('active')) {
         renderInvoiceHistory();
     }
 });
+
 
 shareInvoiceBtn.addEventListener('click', () => {
     // This is a placeholder for actual sharing functionality.
@@ -1484,9 +1377,12 @@ shareInvoiceBtn.addEventListener('click', () => {
 
 // --- Payments Section ---
 
+// Removed paymentInvoiceNumberInput and its autocomplete.
+// Payments will now be initiated from the Invoice History section.
+
 recordPaymentBtn.addEventListener('click', () => {
-    const paymentId = recordPaymentBtn.dataset.paymentId; // Get payment ID if editing
-    const invoiceNumber = paymentInvoiceNumberInput.value.trim(); // Get invoice number from the input field
+    // This function now expects the invoice number to be pre-filled from history
+    const invoiceNumber = recordPaymentBtn.dataset.invoiceNumber; // Get invoice number from button's data attribute
     const paymentDate = paymentDateInput.value.trim();
     const amount = parseFloat(paymentAmountInput.value);
     const method = paymentMethodSelect.value;
@@ -1494,10 +1390,6 @@ recordPaymentBtn.addEventListener('click', () => {
 
     if (!invoiceNumber || !paymentDate || isNaN(amount) || amount <= 0) {
         showMessageBox('Validation Error', 'Please ensure an Invoice is selected, enter a valid Payment Date, and a positive Amount.');
-        return;
-    }
-    if (!method || method === "") {
-        showMessageBox('Validation Error', 'Please select a Payment Method.');
         return;
     }
 
@@ -1508,13 +1400,11 @@ recordPaymentBtn.addEventListener('click', () => {
         return;
     }
 
-    // Calculate current total paid for this invoice, excluding the payment being edited (if any)
-    const currentTotalPaidExcludingThis = payments
-        .filter(p => p.invoiceNumber === invoiceNumber && p.id !== parseFloat(paymentId))
+    const currentTotalPaid = payments
+        .filter(p => p.invoiceNumber === invoiceNumber)
         .reduce((sum, p) => sum + p.amount, 0);
 
-    const remainingBalance = targetInvoice.summary.grandTotal - currentTotalPaidExcludingThis;
-
+    const remainingBalance = targetInvoice.summary.grandTotal - currentTotalPaid;
 
     if (amount > remainingBalance + 0.01) { // Adding a small tolerance for float comparison
         showMessageBox('Warning', `Amount exceeds balance due. Remaining balance is ${formatCurrency(remainingBalance)}. Proceeding will mark the invoice as overpaid.`, () => {
@@ -1525,35 +1415,17 @@ recordPaymentBtn.addEventListener('click', () => {
     }
 
     function proceedWithPayment() {
-        if (paymentId) {
-            // Editing existing payment
-            const paymentIndex = payments.findIndex(p => p.id === parseFloat(paymentId));
-            if (paymentIndex !== -1) {
-                payments[paymentIndex] = {
-                    id: parseFloat(paymentId),
-                    invoiceNumber: invoiceNumber,
-                    customerName: targetInvoice.receiverDetails.name,
-                    paymentDate: paymentDate,
-                    amount: parseFloat(amount.toFixed(2)),
-                    method: method,
-                    notes: notes
-                };
-                showMessageBox('Success', `Payment updated for Invoice ${invoiceNumber}.`);
-            }
-        } else {
-            // Adding new payment
-            const newPayment = {
-                id: Date.now() + Math.random(), // Unique ID for payment record
-                invoiceNumber: invoiceNumber,
-                customerName: targetInvoice.receiverDetails.name,
-                paymentDate: paymentDate,
-                amount: parseFloat(amount.toFixed(2)),
-                method: method,
-                notes: notes
-            };
-            payments.push(newPayment);
-            showMessageBox('Success', `Payment of ${formatCurrency(amount)} recorded for Invoice ${invoiceNumber}.`);
-        }
+        const newPayment = {
+            id: Date.now() + Math.random(), // Unique ID for payment record
+            invoiceNumber: invoiceNumber,
+            customerName: targetInvoice.receiverDetails.name,
+            paymentDate: paymentDate,
+            amount: parseFloat(amount.toFixed(2)),
+            method: method,
+            notes: notes
+        };
+
+        payments.push(newPayment);
         localStorage.setItem('payments', JSON.stringify(payments));
 
         // Update the balanceDue for the specific invoice in savedInvoices
@@ -1565,34 +1437,16 @@ recordPaymentBtn.addEventListener('click', () => {
 
         // Clear payment form fields
         paymentAmountInput.value = '';
-        paymentMethodSelect.value = 'Cash'; // Default method
+        paymentMethodSelect.value = 'Cash';
         paymentNotesTextarea.value = '';
-        paymentInvoiceNumberInput.value = ''; // Clear invoice number display
-        recordPaymentBtn.removeAttribute('data-payment-id'); // Clear the data attribute
+        paymentInvoiceDisplay.value = ''; // Clear display
         recordPaymentBtn.removeAttribute('data-invoice-number'); // Clear the data attribute
 
+        showMessageBox('Success', `Payment of ${formatCurrency(amount)} recorded for Invoice ${invoiceNumber}.`);
         renderPaymentHistory(); // Re-render payment history
         renderInvoiceHistory(); // Re-render invoice history to update balance due
     }
 });
-
-/**
- * Loads a payment record into the payment form for editing.
- * @param {object} payment - The payment object to load.
- */
-function loadPaymentToForm(payment) {
-    paymentInvoiceNumberInput.value = payment.invoiceNumber; // Display invoice number
-    recordPaymentBtn.setAttribute('data-invoice-number', payment.invoiceNumber);
-    recordPaymentBtn.setAttribute('data-payment-id', payment.id); // Set payment ID for editing
-
-    paymentDateInput.value = payment.paymentDate;
-    paymentAmountInput.value = payment.amount.toFixed(2);
-    paymentMethodSelect.value = payment.method;
-    paymentNotesTextarea.value = payment.notes;
-
-    // Navigate to payments section
-    setActiveNav(navPayments);
-}
 
 /**
  * Renders the payment history table.
@@ -1611,10 +1465,6 @@ function renderPaymentHistory() {
         const [dB, mB, yB] = b.paymentDate.split('/').map(Number);
         const dateA = new Date(yA, mA - 1, dA);
         const dateB = new Date(yB, mB - 1, dB);
-        // If dates are same, sort by ID (most recent first)
-        if (dateB.getTime() === dateA.getTime()) {
-            return b.id - a.id;
-        }
         return dateB - dateA;
     });
 
@@ -1628,27 +1478,12 @@ function renderPaymentHistory() {
             <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${payment.method}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-left truncate max-w-xs text-sm">${payment.notes || 'N/A'}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-center">
-                <button data-id="${payment.id}" class="edit-payment-btn bg-blue-500 text-white text-sm p-1 rounded mr-2 hover:bg-blue-600">
-                    <i class="fas fa-edit"></i> Edit
-                </button>
-                <button data-id="${payment.id}" class="delete-payment-btn bg-red-500 text-white text-sm p-1 rounded hover:bg-red-600">
+                <button data-id="${payment.id}" class="delete-payment-btn btn-danger text-sm p-1 rounded">
                     <i class="fas fa-trash"></i>
                 </button>
             </td>
         `;
         paymentHistoryList.appendChild(row);
-    });
-
-    document.querySelectorAll('.edit-payment-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const paymentId = parseFloat(e.currentTarget.dataset.id);
-            const paymentToEdit = payments.find(p => p.id === paymentId);
-            if (paymentToEdit) {
-                loadPaymentToForm(paymentToEdit);
-            } else {
-                showMessageBox('Error', 'Payment record not found.');
-            }
-        });
     });
 
     document.querySelectorAll('.delete-payment-btn').forEach(button => {
@@ -1702,7 +1537,6 @@ historyResetBtn.addEventListener('click', () => {
     historyDateTo.value = '';
     renderInvoiceHistory();
 });
-
 /**
  * Renders the invoice history table, applying filters if specified.
  */
@@ -1756,11 +1590,7 @@ function renderInvoiceHistory() {
         const [dB, mB, yB] = b.invoiceDetails.invoiceDate.split('/').map(Number);
         const dateA = new Date(yA, mA - 1, dA);
         const dateB = new Date(yB, mB - 1, dB);
-        // If dates are same, sort by invoice number (to maintain consistent order for dummy data)
-        if (dateB.getTime() === dateA.getTime()) {
-            return a.invoiceDetails.invoiceNumber.localeCompare(b.invoiceDetails.invoiceNumber);
-        }
-        return dateB - dateA; // Sort by date descending
+        return dateB - dateA;
     });
 
     filteredInvoices.forEach(invoice => {
@@ -1777,16 +1607,16 @@ function renderInvoiceHistory() {
             <td class="py-2 px-2 border-b border-gray-200 text-right text-sm">${formatCurrency(invoice.summary.grandTotal)}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-right ${balanceClass} text-sm">${formatCurrency(invoice.summary.balanceDue)}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-center">
-                <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="view-invoice-btn bg-blue-500 text-white text-sm p-1 rounded mr-2 hover:bg-blue-600">
+                <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="view-invoice-btn btn-secondary text-sm p-1 rounded mr-2">
                     <i class="fas fa-eye"></i> View
                 </button>
                 <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}"
                         data-balance-due="${invoice.summary.balanceDue.toFixed(2)}"
-                        class="record-payment-from-history-btn bg-green-500 text-white text-sm p-1 rounded mr-2 hover:bg-green-600 ${invoice.summary.balanceDue <= 0.01 ? 'opacity-50 cursor-not-allowed' : ''}"
+                        class="record-payment-from-history-btn btn-primary text-sm p-1 rounded mr-2 ${invoice.summary.balanceDue <= 0.01 ? 'opacity-50 cursor-not-allowed' : ''}"
                         ${invoice.summary.balanceDue <= 0.01 ? 'disabled' : ''}>
                     <i class="fas fa-dollar-sign"></i> Pay
                 </button>
-                <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="delete-invoice-btn bg-red-500 text-white text-sm p-1 rounded hover:bg-red-600">
+                <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="delete-invoice-btn btn-danger text-sm p-1 rounded">
                     <i class="fas fa-trash"></i> Delete
                 </button>
             </td>
@@ -1803,8 +1633,7 @@ function renderInvoiceHistory() {
                 setActiveNav(navInvoice);
                 populateInvoicePreview(invoiceToView);
                 invoicePreview.classList.remove('hidden');
-                invoicePreview.classList.add('modal-overlay');
-                document.querySelector('.invoice-actions').classList.remove('hidden');
+                invoiceActions.classList.remove('hidden');
                 generateInvoiceBtn.disabled = true;
                 invoicePreview.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } else {
@@ -1825,11 +1654,10 @@ function renderInvoiceHistory() {
 
             // Pre-fill payment form and navigate
             paymentAmountInput.value = balanceDue.toFixed(2);
-            paymentInvoiceNumberInput.value = invoiceNo; // Set the invoice number in the payment form
+            paymentInvoiceDisplay.value = invoiceNo; // Display invoice number in payment form
+            // Set invoice number as a data attribute on the record payment button itself
             recordPaymentBtn.setAttribute('data-invoice-number', invoiceNo);
-            // Clear any existing payment ID, as this is for a new payment against an invoice
-            recordPaymentBtn.removeAttribute('data-payment-id');
-            paymentDateInput.value = formatDateForDisplay(new Date());
+            paymentDateInput.value = formatDateForDisplay(formatDateForInput(new Date()));
             paymentMethodSelect.value = 'Cash'; // Default method
             paymentNotesTextarea.value = '';
 
@@ -1869,12 +1697,13 @@ function loadInvoiceToForm(invoice) {
     itemCounter = 0;
     invoice.items.forEach(item => createItemRow(item));
     if (invoice.items.length === 0) {
-        createItemRow(); // Ensure at least one empty row if invoice had no items
+        createItemRow();
     }
 
     overallDiscountInput.value = invoice.summary.overallDiscount.toFixed(2);
 
-    updateTaxRatesBasedOnGSTIN(); // This will also call calculateSummary
+    updateTaxRatesBasedOnGSTIN();
+    calculateSummary();
     invoiceData = invoice;
 }
 
@@ -1903,20 +1732,20 @@ generateReportBtn.addEventListener('click', () => {
     const toDateStr = reportDateTo.value.trim();
 
     if (!fromDateStr || !toDateStr) {
-        showMessageBox('Validation Error', 'Please select both "From Date" and "To Date" for the report.');
+        showMessageBox('Validation Error', 'Please select both "Date From" and "Date To" for the report.');
         return;
     }
 
     const [dFrom, mFrom, yFrom] = fromDateStr.split('/').map(Number);
     const fromDate = new Date(yFrom, mFrom - 1, dFrom);
 
-    const [dTo, mTo, yTo] = toDateToStr.split('/').map(Number);
+    const [dTo, mTo, yTo] = toDateStr.split('/').map(Number);
     let toDate = new Date(yTo, mTo - 1, dTo);
     toDate.setHours(23, 59, 59, 999);
 
-    let totalSales = 0; // Grand Total sum
-    let totalDiscount = 0; // Sum of all item and overall discounts
-    let totalTaxableAmount = 0; // Sum of all taxable values
+    let totalSales = 0;
+    let totalDiscount = 0;
+    let totalTaxableAmount = 0;
     let totalSgstCollected = 0;
     let totalCgstCollected = 0;
     let totalIgstCollected = 0;
@@ -1940,12 +1769,15 @@ generateReportBtn.addEventListener('click', () => {
 
     relevantInvoices.forEach(invoice => {
         totalSales += invoice.summary.grandTotal;
-        totalDiscount += invoice.summary.totalItemDiscount + invoice.summary.overallDiscount;
-        totalTaxableAmount += invoice.summary.taxableValue; // Use the stored taxable value
+        // Total discount is sum of item-level discounts and overall discount
+        totalDiscount += (invoice.summary.totalItemDiscount || 0) + (invoice.summary.overallDiscount || 0);
+        // Taxable value should be subtotal before tax, after all discounts
+        const currentInvoiceTaxableValue = invoice.summary.subTotal - (invoice.summary.totalItemDiscount || 0) - (invoice.summary.overallDiscount || 0);
+        totalTaxableAmount += Math.max(0, currentInvoiceTaxableValue);
 
-        totalSgstCollected += invoice.summary.sgstAmount;
-        totalCgstCollected += invoice.summary.cgstAmount;
-        totalIgstCollected += invoice.summary.igstAmount;
+        totalSgstCollected += invoice.summary.sgstAmount || 0;
+        totalCgstCollected += invoice.summary.cgstAmount || 0;
+        totalIgstCollected += invoice.summary.igstAmount || 0;
     });
 
     reportTotalSales.textContent = formatCurrency(totalSales);
@@ -1963,7 +1795,7 @@ exportReportBtn.addEventListener('click', () => {
     const toDateStr = reportDateTo.value.trim();
 
     if (!fromDateStr || !toDateStr) {
-        showMessageBox('Validation Error', 'Please select both "From Date" and "To Date" to export the report.');
+        showMessageBox('Validation Error', 'Please select both "Date From" and "Date To" to export the report.');
         return;
     }
 
@@ -1985,24 +1817,24 @@ exportReportBtn.addEventListener('click', () => {
         return;
     }
 
-    let csvContent = "Invoice Number,Invoice Date,Customer Name,Customer GSTIN,Taxable Amount,CGST,SGST,IGST,Total Tax,Item Discount,Overall Discount,Grand Total,Balance Due\n";
+    let csvContent = "Invoice Number,Invoice Date,Customer Name,Customer GSTIN,Taxable Amount,CGST,SGST,IGST,Total Tax,Overall Discount,Grand Total,Balance Due\n";
 
     relevantInvoices.forEach(invoice => {
-        const totalTax = invoice.summary.cgstAmount + invoice.summary.sgstAmount + invoice.summary.igstAmount;
+        const taxableAmountCalc = (invoice.summary.subTotal - (invoice.summary.totalItemDiscount || 0) - (invoice.summary.overallDiscount || 0));
+        const totalTax = (invoice.summary.cgstAmount || 0) + (invoice.summary.sgstAmount || 0) + (invoice.summary.igstAmount || 0);
         csvContent += [
             invoice.invoiceDetails.invoiceNumber,
             invoice.invoiceDetails.invoiceDate,
-            `"${invoice.receiverDetails.name.replace(/"/g, '""')}"`, // Handle commas in name
+            `"${invoice.receiverDetails.name.replace(/"/g, '""')}"`,
             invoice.receiverDetails.gstin || 'N/A',
-            invoice.summary.taxableValue.toFixed(2),
-            invoice.summary.cgstAmount.toFixed(2),
-            invoice.summary.sgstAmount.toFixed(2),
-            invoice.summary.igstAmount.toFixed(2),
+            taxableAmountCalc.toFixed(2),
+            (invoice.summary.cgstAmount || 0).toFixed(2),
+            (invoice.summary.sgstAmount || 0).toFixed(2),
+            (invoice.summary.igstAmount || 0).toFixed(2),
             totalTax.toFixed(2),
-            invoice.summary.totalItemDiscount.toFixed(2),
-            invoice.summary.overallDiscount.toFixed(2),
-            invoice.summary.grandTotal.toFixed(2),
-            invoice.summary.balanceDue.toFixed(2)
+            (invoice.summary.overallDiscount || 0).toFixed(2),
+            (invoice.summary.grandTotal || 0).toFixed(2),
+            (invoice.summary.balanceDue || 0).toFixed(2)
         ].join(',') + '\n';
     });
 
@@ -2039,11 +1871,11 @@ saveSettingsBtn.addEventListener('click', () => {
         showMessageBox('Validation Error', 'Company Name, Address, GSTIN, and PAN are required fields.');
         return;
     }
-    if (companyGSTIN && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(companyGSTIN)) {
+    if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(companyGSTIN)) {
         showMessageBox('Validation Error', 'Invalid Company GSTIN format. It should be 15 alphanumeric characters.');
         return;
     }
-    if (companyPAN && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(companyPAN)) {
+    if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(companyPAN)) {
         showMessageBox('Validation Error', 'Invalid Company PAN format. It should be 10 alphanumeric characters (e.g., ABCDE1234F).');
         return;
     }
@@ -2052,13 +1884,14 @@ saveSettingsBtn.addEventListener('click', () => {
         return;
     }
 
+
     COMPANY_DETAILS = {
         name: companyName,
         address: companyAddress,
         gstin: companyGSTIN,
         pan: companyPAN,
         phone: companyPhone,
-        slogan: DEFAULT_COMPANY_DETAILS.slogan // Preserve slogan from default if not editable in settings
+        slogan: COMPANY_DETAILS.slogan // Retain existing slogan
     };
     BANK_DETAILS = {
         bankName: bankName,
@@ -2076,7 +1909,7 @@ saveSettingsBtn.addEventListener('click', () => {
     localStorage.setItem('taxRates', JSON.stringify(TAX_RATES));
 
     updateCompanyDisplay();
-    updateTaxRatesBasedOnGSTIN(); // Recalculate invoice summary with new tax rates
+    updateTaxRatesBasedOnGSTIN();
     showMessageBox('Settings Saved', 'Your company and tax settings have been updated successfully!');
 });
 
@@ -2110,9 +1943,8 @@ function updateCompanyDisplay() {
     displayCompanyPAN.textContent = COMPANY_DETAILS.pan;
     displayCompanyPhone.textContent = COMPANY_DETAILS.phone;
 
-    if (sidebarCompanyName) {
-        sidebarCompanyName.textContent = COMPANY_DETAILS.name;
-    }
+
+    sidebarCompanyName.textContent = COMPANY_DETAILS.name;
 
     if (previewCompanySlogan) {
         previewCompanySlogan.textContent = COMPANY_DETAILS.slogan || '';
@@ -2181,10 +2013,10 @@ function generateDummyInvoices(count) {
 
     for (let i = 0; i < numDummyInvoices; i++) {
         const customer = dummyCustomers[Math.floor(Math.random() * dummyCustomers.length)];
-        // Find a city in the customer's state, or default to a common one if not found
-        const placeOfSupplyForInvoice = indianCities.find(city => city.state === getStateFromGSTIN(customer.gstin))?.city || "Mumbai";
+        const placeOfSupplyForInvoice = indianCities.find(city => city.state === getStateFromGSTIN(customer.gstin))?.city || customer.address.split(',').reverse()[1]?.trim() || "Mumbai"; // Default to Mumbai
 
-        const invoiceNum = `DUMMY-INV-${(i + 1).toString().padStart(4, '0')}`;
+        const dummyInvoiceCounter = (i + 1).toString().padStart(4, '0');
+        const invoiceNum = `DUMMY-INV-${dummyInvoiceCounter}`;
 
         const today = new Date();
         const oneYearAgo = new Date(today);
@@ -2192,12 +2024,12 @@ function generateDummyInvoices(count) {
 
         const randomTimestamp = oneYearAgo.getTime() + Math.random() * (today.getTime() - oneYearAgo.getTime());
         const invoiceDate = new Date(randomTimestamp);
-        const invDateFormatted = formatDateForDisplay(invoiceDate);
+        const invDateFormatted = formatDateForDisplay(formatDateForInput(invoiceDate));
 
         const numItems = Math.floor(Math.random() * 3) + 2;
         let items = [];
-        let subTotalBeforeItemDiscount = 0;
-        let totalItemDiscount = 0;
+        let currentSubTotal = 0;
+        let currentTotalItemDiscount = 0;
 
         for (let j = 0; j < numItems; j++) {
             const itemTemplate = dummyItems[Math.floor(Math.random() * dummyItems.length)];
@@ -2209,8 +2041,6 @@ function generateDummyInvoices(count) {
             let discountInputVal = itemTemplate.discount;
             let itemEffectiveDiscount = 0;
 
-            subTotalBeforeItemDiscount += (qty * rate);
-
             if (discountInputVal.endsWith('%')) {
                 const percentage = parseFloat(discountInputVal.slice(0, -1));
                 if (!isNaN(percentage)) {
@@ -2219,7 +2049,6 @@ function generateDummyInvoices(count) {
             } else if (discountInputVal) {
                 itemEffectiveDiscount = parseFloat(discountInputVal);
             }
-            totalItemDiscount += itemEffectiveDiscount;
 
             const itemAmount = (qty * rate) - itemEffectiveDiscount;
 
@@ -2232,10 +2061,14 @@ function generateDummyInvoices(count) {
                 itemDiscountAmount: parseFloat(itemEffectiveDiscount.toFixed(2)),
                 amount: parseFloat(itemAmount.toFixed(2))
             });
+            currentSubTotal += (qty * rate); // Subtotal before item-level discount
+            currentTotalItemDiscount += itemEffectiveDiscount; // Sum of item-level discounts
         }
 
-        const overallDiscount = Math.random() < 0.4 ? 0 : (Math.floor(Math.random() * 5) + 1) * 5;
-        const totalTaxableValue = Math.max(0, subTotalBeforeItemDiscount - totalItemDiscount - overallDiscount);
+        const subTotalAfterItemDiscount = currentSubTotal - currentTotalItemDiscount;
+        const overallDiscount = Math.random() < 0.4 ? 0 : (Math.floor(Math.random() * 5) + 1) * 5; // Overall discount in amount
+
+        const taxableValue = Math.max(0, subTotalAfterItemDiscount - overallDiscount);
 
         let cgstAmount = 0;
         let sgstAmount = 0;
@@ -2244,23 +2077,22 @@ function generateDummyInvoices(count) {
         const customerGstinCode = getGstinStateCode(customer.gstin);
         const companyGstinCode = getGstinStateCode(COMPANY_DETAILS.gstin);
 
-        if (customerGstinCode && customerGstinCode.length === 2 && customerGstinCode === companyGstinCode) {
-            cgstAmount = totalTaxableValue * (TAX_RATES.cgst / 100);
-            sgstAmount = totalTaxableValue * (TAX_RATES.sgst / 100);
-        } else if (customerGstinCode && customerGstinCode.length === 2 && customerGstinCode !== companyGstinCode) {
-            igstAmount = totalTaxableValue * (TAX_RATES.igst / 100);
+        if (customerGstinCode && customerGstinCode === companyGstinCode) {
+            cgstAmount = taxableValue * (TAX_RATES.cgst / 100);
+            sgstAmount = taxableValue * (TAX_RATES.sgst / 100);
+        } else if (customerGstinCode && customerGstinCode !== companyGstinCode) {
+            igstAmount = taxableValue * (TAX_RATES.igst / 100);
         } else {
-             // B2C or invalid GSTIN, assume intra-state from company's perspective
-             cgstAmount = totalTaxableValue * (TAX_RATES.cgst / 100);
-             sgstAmount = totalTaxableValue * (TAX_RATES.sgst / 100);
+            // Default for B2C (no GSTIN or invalid) is intra-state
+            cgstAmount = taxableValue * (TAX_RATES.cgst / 100);
+            sgstAmount = taxableValue * (TAX_RATES.sgst / 100);
         }
 
         cgstAmount = parseFloat(cgstAmount.toFixed(2));
         sgstAmount = parseFloat(sgstAmount.toFixed(2));
         igstAmount = parseFloat(igstAmount.toFixed(2));
 
-
-        let grandTotal = totalTaxableValue + cgstAmount + sgstAmount + igstAmount;
+        let grandTotal = taxableValue + cgstAmount + sgstAmount + igstAmount;
         grandTotal = parseFloat(grandTotal.toFixed(2));
 
         const dummyInvoice = {
@@ -2275,10 +2107,10 @@ function generateDummyInvoices(count) {
             receiverDetails: customer,
             items: items,
             summary: {
-                subTotal: parseFloat(subTotalBeforeItemDiscount.toFixed(2)), // Subtotal before any discounts
-                totalItemDiscount: parseFloat(totalItemDiscount.toFixed(2)),
-                overallDiscount: parseFloat(overallDiscount.toFixed(2)),
-                taxableValue: parseFloat(totalTaxableValue.toFixed(2)),
+                subTotal: parseFloat(currentSubTotal.toFixed(2)), // Gross total of items before any discounts
+                totalItemDiscount: parseFloat(currentTotalItemDiscount.toFixed(2)), // Sum of all item-level discounts
+                overallDiscount: parseFloat(overallDiscount.toFixed(2)), // Overall discount
+                taxableValue: parseFloat(taxableValue.toFixed(2)), // Calculated taxable value
                 cgstRate: TAX_RATES.cgst,
                 cgstAmount: cgstAmount,
                 sgstRate: TAX_RATES.sgst,
@@ -2286,7 +2118,7 @@ function generateDummyInvoices(count) {
                 igstRate: TAX_RATES.igst,
                 igstAmount: igstAmount,
                 grandTotal: grandTotal,
-                balanceDue: grandTotal // Will be updated by payments
+                balanceDue: grandTotal // Initial balance due
             },
             company: COMPANY_DETAILS,
             bank: BANK_DETAILS,
@@ -2294,36 +2126,22 @@ function generateDummyInvoices(count) {
         };
         savedInvoices.push(dummyInvoice);
 
-        // Generate dummy payments for some invoices
         if (Math.random() < 0.7) { // 70% chance of having at least one payment
-            const numPayments = Math.random() < 0.5 ? 1 : Math.floor(Math.random() * 2) + 1; // 1 or 2 payments
-            let currentPaid = 0;
-            for (let k = 0; k < numPayments; k++) {
-                const remaining = grandTotal - currentPaid;
-                if (remaining <= 0.01) break; // No more payments if already paid
-
-                let paidAmount = parseFloat((Math.random() * remaining * (0.2 + Math.random() * 0.8)).toFixed(2));
-                if (k === numPayments - 1 && remaining - paidAmount < 0.01) { // If last payment, try to pay off balance
-                    paidAmount = remaining;
-                }
-                paidAmount = parseFloat(paidAmount.toFixed(2));
-
-                const paymentDate = new Date(invoiceDate.getTime() + Math.random() * (30 * 24 * 60 * 60 * 1000)); // Within 30 days of invoice
-                payments.push({
-                    id: Date.now() + i * 1000 + k + Math.random(), // More unique ID
-                    invoiceNumber: invoiceNum,
-                    customerName: customer.name,
-                    paymentDate: formatDateForDisplay(paymentDate),
-                    amount: paidAmount,
-                    method: ['Cash', 'Bank Transfer', 'UPI'][Math.floor(Math.random() * 3)],
-                    notes: 'Dummy payment'
-                });
-                currentPaid += paidAmount;
-            }
+            const paidAmount = parseFloat((Math.random() * grandTotal * (0.2 + Math.random() * 0.8)).toFixed(2));
+            const paymentDate = new Date(invoiceDate.getTime() + Math.random() * (30 * 24 * 60 * 60 * 1000)); // Payment within 30 days
+            payments.push({
+                id: Date.now() + i * 100 + Math.random(),
+                invoiceNumber: invoiceNum,
+                customerName: customer.name,
+                paymentDate: formatDateForDisplay(formatDateForInput(paymentDate)),
+                amount: paidAmount,
+                method: ['Cash', 'Bank Transfer', 'UPI'][Math.floor(Math.random() * 3)],
+                notes: 'Dummy payment'
+            });
         }
     }
 
-    // After all invoices and initial payments are generated, update final balances
+    // After all dummy invoices and payments are created, calculate final balanceDue
     savedInvoices.forEach(invoice => {
         const totalPaidForInvoice = payments
             .filter(p => p.invoiceNumber === invoice.invoiceDetails.invoiceNumber)
@@ -2334,13 +2152,8 @@ function generateDummyInvoices(count) {
     localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
     localStorage.setItem('payments', JSON.stringify(payments));
     localStorage.setItem('customers', JSON.stringify(dummyCustomers));
-    // Save dummy items data for autocomplete
-    const initialItemsData = {};
-    dummyItems.forEach(item => {
-        const key = `${item.description.toLowerCase()}-${item.hsn.toLowerCase()}`;
-        initialItemsData[key] = { description: item.description, hsn: item.hsn, rate: item.rate };
-    });
-    localStorage.setItem('itemsData', JSON.stringify(initialItemsData));
+    // Save itemsData from dummy items for autocomplete
+    localStorage.setItem('itemsData', JSON.stringify(Object.fromEntries(dummyItems.map(item => [`${item.description.toLowerCase()}-${item.hsn.toLowerCase()}`, {description: item.description, hsn: item.hsn, rate: item.rate}]))));
 
     console.log(`Generated ${numDummyInvoices} dummy invoices and payments.`);
 }
@@ -2355,6 +2168,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     checkAuth();
-    // Initial rendering of history and payments will happen via checkAuth calling setActiveNav
+    // These render functions are called within checkAuth if logged in,
+    // but explicitly calling them ensures data is always fresh on initial load.
+    // They are safe to call multiple times as they clear and re-render.
+    renderPaymentHistory();
+    renderInvoiceHistory();
 });
-
