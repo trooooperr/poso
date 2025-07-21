@@ -187,9 +187,9 @@ const DEFAULT_BANK_DETAILS = {
     ifscCode: "ICIC0000001"
 };
 const DEFAULT_TAX_RATES = {
-    cgst: 9,
-    sgst: 9,
-    igst: 18
+    cgst: 6,
+    sgst: 6,
+    igst: 12
 };
 
 let COMPANY_DETAILS = JSON.parse(localStorage.getItem('companyDetails')) || DEFAULT_COMPANY_DETAILS;
@@ -1163,7 +1163,6 @@ generateInvoiceBtn.addEventListener('click', () => {
             igstRate: parseFloat(igstRateSpan.textContent),
             igstAmount: currentIgstAmount,
             grandTotal: currentGrandTotal,
-            balanceDue: currentGrandTotal // Initial balance due
         },
         company: COMPANY_DETAILS, // Use global COMPANY_DETAILS
         bank: BANK_DETAILS,     // Use global BANK_DETAILS
@@ -1470,7 +1469,6 @@ function deletePayment(paymentId) {
         payments.splice(index, 1);
         localStorage.setItem('payments', JSON.stringify(payments));
         renderPaymentHistory();
-        showMessageBox('Deleted', 'Payment record deleted successfully.');
     }
 }
 function deletePayment(paymentId) {
@@ -1579,17 +1577,7 @@ function renderInvoiceHistory() {
             <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${invoice.invoiceDetails.invoiceDate}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-left text-sm">${invoice.receiverDetails.name}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-right text-sm">${formatCurrency(invoice.summary.grandTotal)}</td>
-            <td class="py-2 px-2 border-b border-gray-200 text-right ${balanceClass} text-sm">${formatCurrency(invoice.summary.balanceDue)}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-center">
-                <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="view-invoice-btn btn-secondary text-sm p-1 rounded mr-2">
-                    <i class="fas fa-eye"></i> View
-                </button>
-                <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}"
-                        data-balance-due="${invoice.summary.balanceDue.toFixed(2)}"
-                        class="record-payment-from-history-btn btn-primary text-sm p-1 rounded mr-2 ${invoice.summary.balanceDue <= 0.01 ? 'opacity-50 cursor-not-allowed' : ''}"
-                        ${invoice.summary.balanceDue <= 0.01 ? 'disabled' : ''}>
-                    <i class="fas fa-dollar-sign"></i> Pay
-                </button>
                 <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="delete-invoice-btn btn-danger text-sm p-1 rounded">
                     <i class="fas fa-trash"></i> Delete
                 </button>
@@ -1598,46 +1586,7 @@ function renderInvoiceHistory() {
         invoiceHistoryList.appendChild(row);
     });
 
-    document.querySelectorAll('.view-invoice-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const invoiceNo = e.currentTarget.dataset.invoiceNo;
-            const invoiceToView = savedInvoices.find(inv => inv.invoiceDetails.invoiceNumber === invoiceNo);
-            if (invoiceToView) {
-                loadInvoiceToForm(invoiceToView);
-                setActiveNav(navInvoice);
-                populateInvoicePreview(invoiceToView);
-                invoicePreview.classList.remove('hidden');
-                invoiceActions.classList.remove('hidden');
-                generateInvoiceBtn.disabled = true;
-                invoicePreview.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else {
-                showMessageBox('Error', 'Invoice not found.');
-            }
-        });
-    });
 
-    document.querySelectorAll('.record-payment-from-history-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const invoiceNo = e.currentTarget.dataset.invoiceNo;
-            const balanceDue = parseFloat(e.currentTarget.dataset.balanceDue);
-
-            if (balanceDue <= 0.01) {
-                showMessageBox('Info', `Invoice ${invoiceNo} is already fully paid.`);
-                return;
-            }
-
-            // Pre-fill payment form and navigate
-            paymentAmountInput.value = balanceDue.toFixed(2);
-            paymentInvoiceDisplay.value = invoiceNo; // Display invoice number in payment form
-            // Set invoice number as a data attribute on the record payment button itself
-            recordPaymentBtn.setAttribute('data-invoice-number', invoiceNo);
-            paymentDateInput.value = formatDateForDisplay(formatDateForInput(new Date()));
-            paymentMethodSelect.value = 'Cash'; // Default method
-            paymentNotesTextarea.value = '';
-
-            setActiveNav(navPayments); // Navigate to payments section
-        });
-    });
 
     document.querySelectorAll('.delete-invoice-btn').forEach(button => {
         button.addEventListener('click', (e) => {
@@ -1791,7 +1740,7 @@ exportReportBtn.addEventListener('click', () => {
         return;
     }
 
-    let csvContent = "Invoice Number,Invoice Date,Customer Name,Customer GSTIN,Taxable Amount,CGST,SGST,IGST,Total Tax,Overall Discount,Grand Total,Balance Due\n";
+    let csvContent = "Invoice Number,Invoice Date,Customer Name,Customer GSTIN,Amount,CGST,SGST,IGST,Total Tax,Overall Discount,Grand Total\n";
 
     relevantInvoices.forEach(invoice => {
         const taxableAmountCalc = (invoice.summary.subTotal - (invoice.summary.totalItemDiscount || 0) - (invoice.summary.overallDiscount || 0));
@@ -1808,7 +1757,6 @@ exportReportBtn.addEventListener('click', () => {
             totalTax.toFixed(2),
             (invoice.summary.overallDiscount || 0).toFixed(2),
             (invoice.summary.grandTotal || 0).toFixed(2),
-            (invoice.summary.balanceDue || 0).toFixed(2)
         ].join(',') + '\n';
     });
 
@@ -2092,7 +2040,6 @@ function generateDummyInvoices(count) {
                 igstRate: TAX_RATES.igst,
                 igstAmount: igstAmount,
                 grandTotal: grandTotal,
-                balanceDue: grandTotal // Initial balance due
             },
             company: COMPANY_DETAILS,
             bank: BANK_DETAILS,
