@@ -1382,71 +1382,37 @@ shareInvoiceBtn.addEventListener('click', () => {
 // Payments will now be initiated from the Invoice History section.
 
 recordPaymentBtn.addEventListener('click', () => {
-    // This function now expects the invoice number to be pre-filled from history
-    const invoiceNumber = recordPaymentBtn.dataset.invoiceNumber; // Get invoice number from button's data attribute
     const paymentDate = paymentDateInput.value.trim();
     const amount = parseFloat(paymentAmountInput.value);
     const method = paymentMethodSelect.value;
     const notes = paymentNotesTextarea.value.trim();
+    const customerName = paymentCustomerInput.value.trim(); // Assuming a customer name field is available
 
-    if (!invoiceNumber || !paymentDate || isNaN(amount) || amount <= 0) {
-        showMessageBox('Validation Error', 'Please ensure an Invoice is selected, enter a valid Payment Date, and a positive Amount.');
+    if (!paymentDate || isNaN(amount) || amount <= 0 || !customerName) {
+        showMessageBox('Validation Error', 'Please enter a valid Customer Name, Payment Date, and a positive Amount.');
         return;
     }
 
-    const targetInvoice = savedInvoices.find(inv => inv.invoiceDetails.invoiceNumber === invoiceNumber);
+    const newPayment = {
+        id: Date.now() + Math.random(),
+        customerName: customerName,
+        paymentDate: paymentDate,
+        amount: parseFloat(amount.toFixed(2)),
+        method: method,
+        notes: notes
+    };
 
-    if (!targetInvoice) {
-        showMessageBox('Error', 'Selected Invoice Number not found in history. Please select an invoice from the history table.');
-        return;
-    }
+    payments.push(newPayment);
+    localStorage.setItem('payments', JSON.stringify(payments));
 
-    const currentTotalPaid = payments
-        .filter(p => p.invoiceNumber === invoiceNumber)
-        .reduce((sum, p) => sum + p.amount, 0);
+    // Clear form
+    paymentAmountInput.value = '';
+    paymentMethodSelect.value = 'Cash';
+    paymentNotesTextarea.value = '';
+    paymentCustomerInput.value = ''; // Clear customer input
 
-    const remainingBalance = targetInvoice.summary.grandTotal - currentTotalPaid;
-
-    if (amount > remainingBalance + 0.01) { // Adding a small tolerance for float comparison
-        showMessageBox('Warning', `Amount exceeds balance due. Remaining balance is ${formatCurrency(remainingBalance)}. Proceeding will mark the invoice as overpaid.`, () => {
-            proceedWithPayment();
-        });
-    } else {
-        proceedWithPayment();
-    }
-
-    function proceedWithPayment() {
-        const newPayment = {
-            id: Date.now() + Math.random(), // Unique ID for payment record
-            invoiceNumber: invoiceNumber,
-            customerName: targetInvoice.receiverDetails.name,
-            paymentDate: paymentDate,
-            amount: parseFloat(amount.toFixed(2)),
-            method: method,
-            notes: notes
-        };
-
-        payments.push(newPayment);
-        localStorage.setItem('payments', JSON.stringify(payments));
-
-        // Update the balanceDue for the specific invoice in savedInvoices
-        const updatedTotalPaidForInvoice = payments
-            .filter(p => p.invoiceNumber === invoiceNumber)
-            .reduce((sum, p) => sum + p.amount, 0);
-        targetInvoice.summary.balanceDue = Math.max(0, targetInvoice.summary.grandTotal - updatedTotalPaidForInvoice);
-        localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
-
-        // Clear payment form fields
-        paymentAmountInput.value = '';
-        paymentMethodSelect.value = 'Cash';
-        paymentNotesTextarea.value = '';
-        paymentInvoiceDisplay.value = ''; // Clear display
-        recordPaymentBtn.removeAttribute('data-invoice-number'); // Clear the data attribute
-
-        showMessageBox('Success', `Payment of ${formatCurrency(amount)} recorded for Invoice ${invoiceNumber}.`);
-        renderPaymentHistory(); // Re-render payment history
-        renderInvoiceHistory(); // Re-render invoice history to update balance due
-    }
+    showMessageBox('Success', `Payment of ${formatCurrency(amount)} recorded for ${customerName}.`);
+    renderPaymentHistory();
 });
 
 /**
@@ -1461,7 +1427,6 @@ function renderPaymentHistory() {
     noPaymentData.classList.add('hidden');
 
     const sortedPayments = [...payments].sort((a, b) => {
-        // Sort by date descending
         const [dA, mA, yA] = a.paymentDate.split('/').map(Number);
         const [dB, mB, yB] = b.paymentDate.split('/').map(Number);
         const dateA = new Date(yA, mA - 1, dA);
@@ -1472,7 +1437,6 @@ function renderPaymentHistory() {
     sortedPayments.forEach(payment => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${payment.invoiceNumber}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-left text-sm">${payment.customerName}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${payment.paymentDate}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-right text-sm">${formatCurrency(payment.amount)}</td>
@@ -1490,7 +1454,7 @@ function renderPaymentHistory() {
     document.querySelectorAll('.delete-payment-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const paymentId = parseFloat(e.currentTarget.dataset.id);
-            showMessageBox('Confirm Deletion', 'Are you sure you want to delete this payment record? This will also update the invoice balance.', () => {
+            showMessageBox('Confirm Deletion', 'Are you sure you want to delete this payment record?', () => {
                 deletePayment(paymentId);
             });
         });
@@ -1498,9 +1462,17 @@ function renderPaymentHistory() {
 }
 
 /**
- * Deletes a payment record and updates the associated invoice's balance due.
- * @param {number} paymentId - The ID of the payment to delete.
+ * Deletes a payment record by ID.
  */
+function deletePayment(paymentId) {
+    const index = payments.findIndex(p => p.id === paymentId);
+    if (index !== -1) {
+        payments.splice(index, 1);
+        localStorage.setItem('payments', JSON.stringify(payments));
+        renderPaymentHistory();
+        showMessageBox('Deleted', 'Payment record deleted successfully.');
+    }
+}
 function deletePayment(paymentId) {
     const paymentToDelete = payments.find(p => p.id === paymentId);
     if (!paymentToDelete) return;
@@ -1538,6 +1510,7 @@ historyResetBtn.addEventListener('click', () => {
     historyDateTo.value = '';
     renderInvoiceHistory();
 });
+
 /**
  * Renders the invoice history table, applying filters if specified.
  */

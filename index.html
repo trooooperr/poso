@@ -455,67 +455,77 @@
                 </div>
             </section>
 
-            <!-- Payments Section -->
-            <section id="payments-section" class="content-section hidden">
-                <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 mb-8 pb-4 border-b-4 border-blue-600 flex items-center">
-                    <i class="fas fa-money-bill-wave mr-3 text-blue-600"></i> Record Payments Received
-                </h1>
+           <!-- Payments Section -->
+<section id="payments-section" class="content-section hidden">
+    <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 mb-8 pb-4 border-b-4 border-blue-600 flex items-center">
+        <i class="fas fa-money-bill-wave mr-3 text-blue-600"></i> Record Payments Received
+    </h1>
 
-                <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Record New Payment</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Invoice number input removed as requested -->
-                        <div>
-                            <label for="payment-date" class="block text-sm font-medium text-gray-700 mb-2">Payment Date <span class="text-red-500">*</span></label>
-                            <input type="text" id="payment-date" class="datepicker w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" readonly>
-                        </div>
-                        <div>
-                            <label for="payment-amount" class="block text-sm font-medium text-gray-700 mb-2">Amount Received <span class="text-red-500">*</span></label>
-                            <input type="number" id="payment-amount" min="0" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter amount">
-                        </div>
-                        <div>
-                            <label for="payment-method" class="block text-sm font-medium text-gray-700 mb-2">Payment Method <span class="text-red-500">*</span></label>
-                            <select id="payment-method" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out custom-select">
-                                <option value="">Select Method</option>
-                                <option value="Cash">Cash</option>
-                                <option value="Bank Transfer">Bank Transfer</option>
-                                <option value="Cheque">Cheque</option>
-                                <option value="UPI">UPI</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="col-span-full">
-                            <label for="payment-notes" class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
-                            <textarea id="payment-notes" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400 min-h-[90px] resize-y" placeholder="Any additional notes about the payment"></textarea>
-                        </div>
-                    </div>
-                    <!-- The record-payment-btn will have a data-invoice-number attribute set from history -->
-                    <button id="record-payment-btn" class="btn-primary mt-6"><i class="fas fa-dollar-sign mr-2"></i> Record Payment</button>
-                </div>
+    <div class="form-section-card bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-200">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Record New Payment</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- ✅ Customer Name input added -->
+            <div>
+                <label for="payment-customer" class="block text-sm font-medium text-gray-700 mb-2">Customer Name <span class="text-red-500">*</span></label>
+                <input type="text" id="payment-customer" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter customer name">
+            </div>
 
-                <div class="form-section-card bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Payment History</h2>
-                    <div class="overflow-x-auto custom-scroll">
-                        <table class="item-table w-full border-collapse border border-gray-300">
-                            <thead>
-                                <tr class="bg-blue-100">
-                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Invoice No.</th>
-                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Customer</th>
-                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Date</th>
-                                    <th class="py-3 px-4 text-right text-sm font-semibold text-blue-700 uppercase border border-gray-300">Amount</th>
-                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Method</th>
-                                    <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Notes</th>
-                                    <th class="py-3 px-4 text-center text-sm font-semibold text-blue-700 uppercase border border-gray-300">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="payment-history-list">
-                                <!-- Payment history rows will be added here by JavaScript -->
-                            </tbody>
-                        </table>
-                        <p id="no-payment-data" class="text-center text-gray-500 py-6 text-lg hidden">No payment records found.</p>
-                    </div>
-                </div>
-            </section>
+            <div>
+                <label for="payment-date" class="block text-sm font-medium text-gray-700 mb-2">Payment Date <span class="text-red-500">*</span></label>
+                <input type="text" id="payment-date" class="datepicker w-full px-4 py-2 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" readonly>
+            </div>
+
+            <div>
+                <label for="payment-amount" class="block text-sm font-medium text-gray-700 mb-2">Amount Received <span class="text-red-500">*</span></label>
+                <input type="number" id="payment-amount" min="0" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400" placeholder="Enter amount">
+            </div>
+
+            <div>
+                <label for="payment-method" class="block text-sm font-medium text-gray-700 mb-2">Payment Method <span class="text-red-500">*</span></label>
+                <select id="payment-method" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out custom-select">
+                    <option value="">Select Method</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Cheque">Cheque</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="col-span-full">
+                <label for="payment-notes" class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                <textarea id="payment-notes" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out placeholder-gray-400 min-h-[90px] resize-y" placeholder="Any additional notes about the payment"></textarea>
+            </div>
+        </div>
+
+        <button id="record-payment-btn" class="btn-primary mt-6">
+            <i class="fas fa-dollar-sign mr-2"></i> Record Payment
+        </button>
+    </div>
+
+    <div class="form-section-card bg-white p-6 rounded-xl shadow-md border border-gray-200">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">Payment History</h2>
+        <div class="overflow-x-auto custom-scroll">
+            <table class="item-table w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-blue-100">
+                        <!-- ✅ Removed Invoice No. column -->
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Customer</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Date</th>
+                        <th class="py-3 px-4 text-right text-sm font-semibold text-blue-700 uppercase border border-gray-300">Amount</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Method</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-blue-700 uppercase border border-gray-300">Notes</th>
+                        <th class="py-3 px-4 text-center text-sm font-semibold text-blue-700 uppercase border border-gray-300">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="payment-history-list">
+                    <!-- Payment history rows will be added here by JavaScript -->
+                </tbody>
+            </table>
+            <p id="no-payment-data" class="text-center text-gray-500 py-6 text-lg hidden">No payment records found.</p>
+        </div>
+    </div>
+</section>
 
             <!-- Invoice History Section -->
             <section id="history-section" class="content-section hidden">
