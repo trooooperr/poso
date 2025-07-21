@@ -1375,7 +1375,9 @@ saveInvoiceBtn.addEventListener('click', () => {
 
     const existingIndex = savedInvoices.findIndex(inv => inv.invoiceDetails.invoiceNumber === invoiceData.invoiceDetails.invoiceNumber);
 
-
+    // Calculate balance due based on *existing* payments for this invoice
+    const totalPaidForInvoice = payments.filter(p => p.invoiceNumber === invoiceData.invoiceDetails.invoiceNumber).reduce((sum, p) => sum + p.amount, 0);
+    invoiceData.summary.balanceDue = Math.max(0, invoiceData.summary.grandTotal - totalPaidForInvoice);
 
 
     if (existingIndex > -1) {
@@ -1426,9 +1428,16 @@ recordPaymentBtn.addEventListener('click', () => {
         return;
     }
 
+    // Find the invoice to ensure payment isn't overshooting the grand total - balance due
+    const targetInvoice = savedInvoices.find(inv => inv.invoiceDetails.invoiceNumber === invoiceNumber);
+    if (!targetInvoice) {
+        showMessageBox('Error', 'Associated invoice not found. Cannot record payment.');
+        return;
+    }
 
-
-
+    // Calculate current balance due for the target invoice
+    const totalPaidForInvoice = payments.filter(p => p.invoiceNumber === invoiceNumber).reduce((sum, p) => sum + p.amount, 0);
+    const currentBalanceDue = targetInvoice.summary.grandTotal - totalPaidForInvoice;
 
     if (amount > currentBalanceDue + 0.01) { // Add a small tolerance for floating point
         showMessageBox('Payment Error', `Payment amount (${formatCurrency(amount)}) exceeds remaining balance (${formatCurrency(currentBalanceDue)}) for this invoice. Please enter a lower amount.`);
@@ -1610,6 +1619,16 @@ function renderInvoiceHistory() {
     });
 
     filteredInvoices.forEach(invoice => {
+        const row = document.createElement('tr');
+        let balanceClass = 'text-green-600'; // Fully paid
+        let balanceText = 'Fully Paid';
+        const balanceDue = invoice.summary.balanceDue || 0;
+
+        if (balanceDue > 0.01) { // Check if balance is effectively greater than zero
+            balanceClass = 'text-red-600 font-semibold';
+            balanceText = formatCurrency(balanceDue);
+        }
+
         row.innerHTML = `
             <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${invoice.invoiceDetails.invoiceNumber}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${invoice.invoiceDetails.invoiceDate}</td>
@@ -1617,7 +1636,6 @@ function renderInvoiceHistory() {
             <td class="py-2 px-2 border-b border-gray-200 text-right text-sm">${formatCurrency(invoice.summary.grandTotal)}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-right text-sm ${balanceClass}">${balanceText}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-center space-x-2">
-
                 <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="delete-invoice-btn btn-danger text-sm p-1 rounded">
                     <i class="fas fa-trash"></i> Delete
                 </button>
@@ -1625,6 +1643,10 @@ function renderInvoiceHistory() {
         `;
         invoiceHistoryList.appendChild(row);
     });
+
+
+
+
 
     document.querySelectorAll('.delete-invoice-btn').forEach(button => {
         button.addEventListener('click', (e) => {
@@ -2107,6 +2129,7 @@ function generateDummyInvoices(count) {
                 igstRate: TAX_RATES.igst,
                 igstAmount: igstAmount,
                 grandTotal: grandTotal,
+                balanceDue: grandTotal // Initially, balance due is grand total
             },
             company: COMPANY_DETAILS,
             bank: BANK_DETAILS,
