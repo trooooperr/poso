@@ -61,6 +61,7 @@ const igstRateSpan = document.getElementById('igst-rate');
 const igstAmountSpan = document.getElementById('igst-amount');
 const grandTotalSpan = document.getElementById('grand-total');
 
+
 const generateInvoiceBtn = document.getElementById('generate-invoice-btn');
 const resetFormBtn = document.getElementById('reset-form-btn');
 
@@ -1016,7 +1017,7 @@ function calculateSummary() {
     const sgstAmount = totalTaxableValue * (sgstRate / 100);
     const igstAmount = totalTaxableValue * (igstRate / 100);
 
-    const grandTotal = totalTaxableValue + cgstAmount + sgstAmount + igstAmount;
+    const grandTotal = totalTaxableValue + cgstAmount + sgstAmount + igstAmount ;
 
     // Update the DOM
     subTotalSpan.textContent = formatCurrency(subTotalBeforeItemDiscount);
@@ -1250,10 +1251,6 @@ function populateInvoicePreview(data) {
     previewBankName.textContent = data.bank.bankName;
     previewBankAccountNumber.textContent = data.bank.accountNumber;
     previewBankIfscCode.textContent = data.bank.ifscCode;
-
-    if (watermarkElement) {
-        watermarkElement.textContent = data.company.name;
-    }
 }
 
 // --- Invoice Actions ---
@@ -1675,7 +1672,7 @@ function loadInvoiceToForm(invoice) {
         createItemRow(); // Ensure at least one empty row if invoice had no items
     }
 
-    overallDiscountInput.value = invoice.summary.overallDiscount.toFixed(2);
+    overallDiscountInput.value = invoice.summary.overallDiscount;
 
     updateTaxRatesBasedOnGSTIN(); // This will also call calculateSummary internally
     // calculateSummary(); // Called by updateTaxRatesBasedOnGSTIN
@@ -2175,4 +2172,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // They are safe to call multiple times as they clear and re-render.
     renderPaymentHistory();
     renderInvoiceHistory();
+});
+document.getElementById('generate-invoice-btn').addEventListener('click', generateInvoice);
+
+invoiceData = {
+    customerName: document.getElementById('customer-name').value,
+    customerPhone: document.getElementById('customer-phone').value,
+    items: [], // push item rows here
+};
+
+document.querySelectorAll('.item-row').forEach(row => {
+    const itemName = row.querySelector('.item-name').value;
+    const itemQty = parseFloat(row.querySelector('.item-qty').value);
+    const itemPrice = parseFloat(row.querySelector('.item-price').value);
+
+    invoiceData.items.push({
+        name: itemName,
+        qty: itemQty,
+        price: itemPrice
+    });
 });

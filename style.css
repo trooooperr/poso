@@ -473,8 +473,6 @@ textarea {
     box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
 }
 .summary-table .grand-total-row td {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Added text shadow */
 }
 

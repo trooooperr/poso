@@ -287,7 +287,7 @@
                             </tr>
                             <tr class="border-b border-dashed border-gray-300">
                                 <td class="py-2 px-2 text-lg font-medium text-gray-700">Item Discount:</td>
-                                <td class="py-2 px-2 text-right text-xl font-bold text-red-500" id="total-discount">₹ 0.00</td>
+                                <td class="py-2 px-2 text-right text-xl font-bold text-red-500" id="total-item-discount">₹ 0.00</td>
                             </tr>
                             <tr class="border-b border-dashed border-gray-300">
                                 <td class="py-2 px-2 text-lg font-medium text-gray-700">Overall Discount:</td>
@@ -308,8 +308,8 @@
                                 <td class="py-2 px-2 text-right text-xl font-bold text-blue-600" id="igst-amount">₹ 0.00</td>
                             </tr>
                             <tr class="grand-total-row bg-blue-600 text-white">
-                                <td class="py-3 px-2 text-xl md:text-2xl font-extrabold text-shadow-md">Grand Total:</td>
-                                <td class="py-3 px-2 text-right text-2xl md:text-3xl font-extrabold text-shadow-md" id="grand-total">₹ 0.00</td>
+                                <td class="py-2 px-2 text-xl md:text-xl font-bold">Grand Total:</td>
+                                <td class="py-2 px-2 text-right text-xl md:text-2xl font-bold" id="grand-total">₹ 0.00</td>
                             </tr>
                         </tbody>
                     </table>
@@ -322,8 +322,7 @@
 
                 <!-- Invoice Preview Section (Initially Hidden, shown on generate) -->
                 <div id="invoice-preview" class="invoice-preview-container hidden print-only bg-white border border-gray-300 shadow-xl rounded-xl relative overflow-hidden mt-8 p-6 md:p-10">
-                    <!-- Watermark for PDF -->
-                    <div id="watermark-text" class="absolute inset-0 flex items-center justify-center text-gray-200 text-6xl font-extrabold opacity-0 rotate-[-25deg] pointer-events-none z-0 do-not-print"></div>
+
 
                     <div class="invoice-content border-2 border-gray-900 p-4 relative z-10 font-sans text-gray-800">
                         <div class="invoice-header-section text-center pb-3 border-b-2 border-gray-900 mb-4">
@@ -441,16 +440,6 @@
                         </div>
 
                         <div class="flex justify-end text-sm font-bold text-gray-800 mb-4">For <span id="preview-company-name-bottom" class="text-blue-700 ml-1">GUPTA BEADS</span></div>
-
-                        <div class="signatures-section flex justify-between pt-10 relative">
-                            <div class="signature-box flex-1 text-center border-t border-gray-900 pt-2 text-xs relative">
-                                <p>Receiver's Signature</p>
-                            </div>
-                            <div class="signature-box flex-1 text-center border-t border-gray-900 pt-2 text-xs relative">
-                                <img src="signature_stamp.png" alt="Digital Stamp" class="digital-stamp absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-auto opacity-90 do-not-print">
-                                <p>Signatory</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
