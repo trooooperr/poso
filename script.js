@@ -1490,11 +1490,9 @@ function deletePayment(paymentId) {
         invoice.summary.balanceDue = Math.max(0, invoice.summary.grandTotal - totalPaidForInvoice);
         localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
     }
-
-    showMessageBox('Success', 'Payment record deleted and invoice balance updated.', () => {
-        renderPaymentHistory();
-        renderInvoiceHistory(); // Re-render invoice history to reflect balance change
-    });
+    
+    renderPaymentHistory();
+    renderInvoiceHistory()
 }
 
 
