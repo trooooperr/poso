@@ -1269,14 +1269,41 @@ function populateInvoicePreview(data) {
 
 if (printInvoiceBtn) {
     printInvoiceBtn.addEventListener('click', () => {
-        document.body.classList.add('printing-invoice');
-        if (hamburgerMenu) hamburgerMenu.classList.add('print-hidden'); // Hide hamburger menu during print
-        window.print();
-        document.body.classList.remove('printing-invoice');
-        if (hamburgerMenu) hamburgerMenu.classList.remove('print-hidden');
+        const printWindow = window.open('', '_blank');
+
+        if (!printWindow) {
+            showMessageBox('Error', 'Popup blocked! Please allow popups for this site.');
+            return;
+        }
+
+        const invoiceContent = invoicePreview.innerHTML;
+        const styleTags = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
+            .map(el => el.outerHTML)
+            .join('\n');
+
+        printWindow.document.open();
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Print Invoice</title>
+                ${styleTags}
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 20px;
+                        font-family: Arial, sans-serif;
+                        max-width: 210mm;
+                    }
+                </style>
+            </head>
+            <body onload="window.print(); window.close();">
+                <div>${invoiceContent}</div>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
     });
 }
-
 
 if (downloadInvoicePdfBtn) {
     downloadInvoicePdfBtn.addEventListener('click', async () => {

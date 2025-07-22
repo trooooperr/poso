@@ -675,18 +675,6 @@ textarea {
     opacity: 0.9;
 }
 
-/* Watermark for print */
-#watermark-text {
-    color: #e0e7ff; /* Light blue */
-    opacity: 0.2;
-    font-size: 4rem; /* Adjust as needed */
-    font-weight: 800;
-    transform: rotate(-45deg);
-    pointer-events: none; /* Allows clicks/selection through it */
-    z-index: 0; /* Ensure it's behind content */
-    white-space: nowrap; /* Prevent text wrapping */
-    text-align: center;
-}
 
 /* Message Box Overlay */
 .message-box-overlay.show {
