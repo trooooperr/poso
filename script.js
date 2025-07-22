@@ -1443,8 +1443,8 @@ if (recordPaymentBtn) {
         const customerName = paymentCustomerInput.value.trim(); // Get customer name from input
 
 
-        if (!invoiceNumber || !customerName || !paymentDate || isNaN(amount) || amount <= 0) {
-            showMessageBox('Validation Error', 'Please select an Invoice from history, and enter a valid Payment Date and a positive Amount.');
+        if ( !customerName || !paymentDate || isNaN(amount) || amount <= 0) {
+            showMessageBox('Validation Error', 'Please enter a valid Payment Date and a positive Amount.');
             return;
         }
 
