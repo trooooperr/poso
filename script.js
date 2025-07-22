@@ -1433,6 +1433,7 @@ if (shareInvoiceBtn) {
 // --- Payments Section ---
 
 // Record Payment Button Listener
+// Record Payment Button Listener
 if (recordPaymentBtn) {
     recordPaymentBtn.addEventListener('click', () => {
         const invoiceNumber = recordPaymentBtn.dataset.invoiceNumber; // Get invoice number from data attribute
@@ -1440,13 +1441,19 @@ if (recordPaymentBtn) {
         const amount = parseFloat(paymentAmountInput.value);
         const method = paymentMethodSelect.value;
         const notes = paymentNotesTextarea.value.trim();
-        const customerName = paymentCustomerInput.value.trim(); // Get customer name from input
+        const customerName = paymentCustomerInput.value.trim(); // Retrieve from input field
 
-
-        if ( !customerName || !paymentDate || isNaN(amount) || amount <= 0) {
+        // Removed the check for !customerName in validation because paymentCustomerInput.value
+        // is auto-filled from history or can be manually entered.
+        if (!paymentDate || isNaN(amount) || amount <= 0) {
             showMessageBox('Validation Error', 'Please enter a valid Payment Date and a positive Amount.');
             return;
         }
+        if (!invoiceNumber) {
+            showMessageBox('Validation Error', 'No invoice selected for payment. Please select an invoice from history or generate a new one.');
+            return;
+        }
+
 
         // Find the invoice to ensure payment isn't overshooting the grand total - balance due
         const targetInvoice = savedInvoices.find(inv => inv.invoiceDetails.invoiceNumber === invoiceNumber);
@@ -1468,7 +1475,7 @@ if (recordPaymentBtn) {
         const newPayment = {
             id: Date.now() + Math.random(), // Unique ID for payment record
             invoiceNumber: invoiceNumber, // Link payment to invoice
-            customerName: customerName,
+            customerName: customerName, // Use the value from the input field
             paymentDate: paymentDate,
             amount: parseFloat(amount.toFixed(2)),
             method: method,
