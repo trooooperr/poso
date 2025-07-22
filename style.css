@@ -1254,3 +1254,10 @@ textarea.item-description::placeholder {
         font-size: 0.8rem;
     }
 }
+/* Add this to your CSS file */
+.record-payment-from-history-btn:disabled {
+    cursor: not-allowed;
+    background-color: #a7f3d0; /* Light green */
+    color: #065f46; /* Darker green text */
+    /* You can add more styles like a subtle shadow or filter if desired */
+}

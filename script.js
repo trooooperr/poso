@@ -119,9 +119,7 @@ const paymentNotesTextarea = document.getElementById('payment-notes');
 const recordPaymentBtn = document.getElementById('record-payment-btn');
 const paymentHistoryList = document.getElementById('payment-history-list');
 const noPaymentData = document.getElementById('no-payment-data');
-// This was missing from HTML, adding for payment flow.
-const paymentCustomerInput = document.getElementById('payment-customer-name');
-
+const paymentCustomerInput = document.getElementById('payment-customer'); // Corrected ID based on your HTML
 
 // History elements
 const historyInvoiceNumberSearch = document.getElementById('history-invoice-number-search');
@@ -428,10 +426,11 @@ function checkAuth() {
             createItemRow(); // Add initial item row
         }
         updateTaxRatesBasedOnGSTIN(); // Initial tax rate setup
+        customerNameInput.focus(); // Autofocus customer name input
     } else {
         loginPage.classList.remove('hidden');
         // Add class for login form animation
-        document.querySelector('#login-page .max-w-md').classList.add('login-form-active');
+        document.querySelector('#login-page .max-w-sm').classList.add('login-form-active'); // Corrected selector
         appContainer.classList.add('hidden');
         sidebar.classList.add('hidden-mobile'); // Ensure sidebar is hidden on small screens before login
     }
@@ -523,6 +522,8 @@ function showContentSection(sectionId) {
         paymentMethodSelect.value = 'Cash';
         paymentNotesTextarea.value = '';
         paymentCustomerInput.value = ''; // Clear customer input
+    } else if (sectionId === 'invoice-section') {
+        customerNameInput.focus(); // Autofocus when invoice section is active
     }
 
     // Reset invoice generation state when navigating away from invoice section
@@ -533,7 +534,6 @@ function showContentSection(sectionId) {
         invoiceData = null; // Clear invoice data
     }
 }
-
 
 navInvoice.addEventListener('click', (e) => {
     e.preventDefault();
@@ -938,15 +938,14 @@ function calculateItemRow() {
         if (!isNaN(percentage) && percentage >= 0 && percentage <= 100) {
             effectiveDiscount = baseAmount * (percentage / 100);
         } else {
-            // If invalid percentage, reset discount input and effective discount
-            effectiveDiscount = 0;
-            row.querySelector('.item-discount').value = '';
+            effectiveDiscount = 0; // Use 0 for calculation if invalid percentage
+            // Don't clear input, let user fix it
         }
     } else {
         effectiveDiscount = parseFloat(discountInputVal) || 0;
         if (isNaN(effectiveDiscount) || effectiveDiscount < 0) {
-            effectiveDiscount = 0;
-            row.querySelector('.item-discount').value = '';
+            effectiveDiscount = 0; // Use 0 for calculation if invalid amount
+            // Don't clear input, let user fix it
         }
     }
 
@@ -1000,11 +999,16 @@ function calculateSummary() {
         totalItemDiscount += discountAmountPerItem;
     });
 
-    const overallDiscount = parseFloat(overallDiscountInput.value) || 0;
+    let overallDiscount = parseFloat(overallDiscountInput.value) || 0;
     if (isNaN(overallDiscount) || overallDiscount < 0) {
-        overallDiscountInput.value = '0.00';
-        // Use 0 for calculation if invalid
+        overallDiscount = 0;
+        // Don't reset input value here, let the user type if they want
     }
+    // Ensure the input field displays 0 if it's currently invalid or empty, without losing focus.
+    if (overallDiscountInput.value.trim() === '' || isNaN(parseFloat(overallDiscountInput.value))) {
+        overallDiscountInput.value = '0';
+    }
+
 
     const subTotalAfterItemDiscount = subTotalBeforeItemDiscount - totalItemDiscount;
     const totalTaxableValue = Math.max(0, subTotalAfterItemDiscount - overallDiscount);
@@ -1017,68 +1021,77 @@ function calculateSummary() {
     const sgstAmount = totalTaxableValue * (sgstRate / 100);
     const igstAmount = totalTaxableValue * (igstRate / 100);
 
-    const grandTotal = totalTaxableValue + cgstAmount + sgstAmount + igstAmount ;
+    const grandTotal = totalTaxableValue + cgstAmount + sgstAmount + igstAmount;
 
-    // Update the DOM
-    subTotalSpan.textContent = formatCurrency(subTotalBeforeItemDiscount);
-    totalItemDiscountSpan.textContent = formatCurrency(totalItemDiscount);
-    // overallDiscountInput.value is already set by user, only ensure it's a number
-    totalTaxableValueSpan.textContent = formatCurrency(totalTaxableValue);
-    cgstAmountSpan.textContent = formatCurrency(cgstAmount);
-    sgstAmountSpan.textContent = formatCurrency(sgstAmount);
-    igstAmountSpan.textContent = formatCurrency(igstAmount);
-    grandTotalSpan.textContent = formatCurrency(grandTotal);
+    // Update the DOM - Add null checks for elements
+    if (subTotalSpan) subTotalSpan.textContent = formatCurrency(subTotalBeforeItemDiscount);
+    if (totalItemDiscountSpan) totalItemDiscountSpan.textContent = formatCurrency(totalItemDiscount);
+    // overallDiscountInput.value is already handled above
+    if (totalTaxableValueSpan) totalTaxableValueSpan.textContent = formatCurrency(totalTaxableValue);
+    if (cgstAmountSpan) cgstAmountSpan.textContent = formatCurrency(cgstAmount);
+    if (sgstAmountSpan) sgstAmountSpan.textContent = formatCurrency(sgstAmount);
+    if (igstAmountSpan) igstAmountSpan.textContent = formatCurrency(igstAmount);
+    if (grandTotalSpan) grandTotalSpan.textContent = formatCurrency(grandTotal);
 }
 
 // Event listeners for summary fields
-overallDiscountInput.addEventListener('input', calculateSummary);
+if (overallDiscountInput) overallDiscountInput.addEventListener('input', calculateSummary);
 
 // Reset form button
-resetFormBtn.addEventListener('click', () => {
-    customerNameInput.value = '';
-    customerAddressInput.value = '';
-    customerPANInput.value = '';
-    customerGSTINInput.value = '';
-    transportModeInput.value = '';
-    vehicleNumberInput.value = '';
-    dateOfSupplyInput.value = formatDateForDisplay(formatDateForInput(new Date()));
-    placeOfSupplyCityInput.value = '';
-    placeOfSupplyStateInput.value = '';
-    customerNameResults.classList.add('hidden');
-    placeOfSupplyResults.classList.add('hidden');
+if (resetFormBtn) {
+    resetFormBtn.addEventListener('click', () => {
+        if (customerNameInput) customerNameInput.value = '';
+        if (customerAddressInput) customerAddressInput.value = '';
+        if (customerPANInput) customerPANInput.value = '';
+        if (customerGSTINInput) customerGSTINInput.value = '';
+        if (transportModeInput) transportModeInput.value = '';
+        if (vehicleNumberInput) vehicleNumberInput.value = '';
+        if (dateOfSupplyInput) dateOfSupplyInput.value = formatDateForDisplay(formatDateForInput(new Date()));
+        if (placeOfSupplyCityInput) placeOfSupplyCityInput.value = '';
+        if (placeOfSupplyStateInput) placeOfSupplyStateInput.value = '';
+        if (customerNameResults) customerNameResults.classList.add('hidden');
+        if (placeOfSupplyResults) placeOfSupplyResults.classList.add('hidden');
 
-    itemList.innerHTML = '';
-    itemCounter = 0;
-    createItemRow();
+        if (itemList) itemList.innerHTML = '';
+        itemCounter = 0;
+        createItemRow();
 
-    subTotalSpan.textContent = formatCurrency(0);
-    totalItemDiscountSpan.textContent = formatCurrency(0);
-    totalTaxableValueSpan.textContent = formatCurrency(0);
-    cgstAmountSpan.textContent = formatCurrency(0);
-    sgstAmountSpan.textContent = formatCurrency(0);
-    igstAmountSpan.textContent = formatCurrency(0);
-    overallDiscountInput.value = '0.00';
-    grandTotalSpan.textContent = formatCurrency(0);
+        if (subTotalSpan) subTotalSpan.textContent = formatCurrency(0);
+        if (totalItemDiscountSpan) totalItemDiscountSpan.textContent = formatCurrency(0);
+        if (totalTaxableValueSpan) totalTaxableValueSpan.textContent = formatCurrency(0);
+        if (cgstAmountSpan) cgstAmountSpan.textContent = formatCurrency(0);
+        if (sgstAmountSpan) sgstAmountSpan.textContent = formatCurrency(0);
+        if (igstAmountSpan) igstAmountSpan.textContent = formatCurrency(0);
+        if (overallDiscountInput) overallDiscountInput.value = '0.00';
+        if (grandTotalSpan) grandTotalSpan.textContent = formatCurrency(0);
 
-    invoiceNumberInput.value = generateInvoiceNumber();
-    invoiceDateInput.value = formatDateForDisplay(formatDateForInput(new Date()));
+        if (invoiceNumberInput) invoiceNumberInput.value = generateInvoiceNumber();
+        if (invoiceDateInput) invoiceDateInput.value = formatDateForDisplay(formatDateForInput(new Date()));
 
-    updateTaxRatesBasedOnGSTIN(); // Recalculate taxes based on cleared customer GSTIN
+        updateTaxRatesBasedOnGSTIN(); // Recalculate taxes based on cleared customer GSTIN
 
-    invoicePreview.classList.add('hidden');
-    invoiceActions.classList.add('hidden');
-    generateInvoiceBtn.disabled = false;
-    invoiceData = null;
-});
+        if (invoicePreview) invoicePreview.classList.add('hidden');
+        if (invoiceActions) invoiceActions.classList.add('hidden');
+        if (generateInvoiceBtn) generateInvoiceBtn.disabled = false;
+        invoiceData = null;
+        if (customerNameInput) customerNameInput.focus(); // Autofocus after reset
+    });
+}
+
 
 // New invoice button (same as reset)
-newInvoiceBtn.addEventListener('click', () => {
-    generateInvoiceBtn.disabled = false;
-    resetFormBtn.click();
-});
+if (newInvoiceBtn) {
+    newInvoiceBtn.addEventListener('click', () => {
+        if (generateInvoiceBtn) generateInvoiceBtn.disabled = false;
+        if (resetFormBtn) resetFormBtn.click();
+    });
+}
+
 
 // --- Generate Invoice and Populate Preview ---
-generateInvoiceBtn.addEventListener('click', () => {
+if (generateInvoiceBtn) generateInvoiceBtn.addEventListener('click', handleGenerateInvoiceClick);
+
+function handleGenerateInvoiceClick() {
     if (!customerNameInput.value.trim() || !invoiceDateInput.value.trim() || !dateOfSupplyInput.value.trim() || !placeOfSupplyCityInput.value.trim()) {
         showMessageBox('Validation Error', 'Please fill in all required fields (Receiver Name, Invoice Date, Date of Supply, Place of Supply City).');
         return;
@@ -1087,11 +1100,11 @@ generateInvoiceBtn.addEventListener('click', () => {
     let items = [];
     let allItemsValid = true;
     document.querySelectorAll('#item-list tr').forEach(row => {
-        const description = row.querySelector('.item-description').value.trim();
-        const hsn = row.querySelector('.item-hsn').value.trim();
-        const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
-        const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
-        const discountInputVal = row.querySelector('.item-discount').value.trim();
+        const description = row.querySelector('.item-description')?.value.trim();
+        const hsn = row.querySelector('.item-hsn')?.value.trim();
+        const qty = parseFloat(row.querySelector('.item-qty')?.value) || 0;
+        const rate = parseFloat(row.querySelector('.item-rate')?.value) || 0;
+        const discountInputVal = row.querySelector('.item-discount')?.value.trim();
 
         // Validate only if the row has any content.
         // If a row is entirely empty, it's considered for removal/ignored.
@@ -1105,7 +1118,7 @@ generateInvoiceBtn.addEventListener('click', () => {
         }
 
         let itemEffectiveDiscount = 0;
-        if (discountInputVal.endsWith('%')) {
+        if (discountInputVal && discountInputVal.endsWith('%')) {
             const percentage = parseFloat(discountInputVal.slice(0, -1));
             if (!isNaN(percentage) && percentage >= 0 && percentage <= 100) {
                 itemEffectiveDiscount = (qty * rate) * (percentage / 100);
@@ -1116,7 +1129,6 @@ generateInvoiceBtn.addEventListener('click', () => {
                 itemEffectiveDiscount = 0;
             }
         }
-
         items.push({
             description: description,
             hsn: hsn,
@@ -1142,14 +1154,14 @@ generateInvoiceBtn.addEventListener('click', () => {
     calculateSummary();
 
     // Re-read values from the DOM after calculateSummary() has updated them
-    const currentSubTotal = parseFloat(subTotalSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
-    const currentTotalItemDiscount = parseFloat(totalItemDiscountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
-    const currentOverallDiscount = parseFloat(overallDiscountInput.value) || 0;
-    const currentTaxableValue = parseFloat(totalTaxableValueSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
-    const currentCgstAmount = parseFloat(cgstAmountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
-    const currentSgstAmount = parseFloat(sgstAmountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
-    const currentIgstAmount = parseFloat(igstAmountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
-    const currentGrandTotal = parseFloat(grandTotalSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentSubTotal = parseFloat(subTotalSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentTotalItemDiscount = parseFloat(totalItemDiscountSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentOverallDiscount = parseFloat(overallDiscountInput?.value) || 0;
+    const currentTaxableValue = parseFloat(totalTaxableValueSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentCgstAmount = parseFloat(cgstAmountSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentSgstAmount = parseFloat(sgstAmountSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentIgstAmount = parseFloat(igstAmountSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentGrandTotal = parseFloat(grandTotalSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
 
     invoiceData = {
         invoiceDetails: {
@@ -1172,11 +1184,11 @@ generateInvoiceBtn.addEventListener('click', () => {
             totalItemDiscount: currentTotalItemDiscount,
             overallDiscount: currentOverallDiscount,
             taxableValue: currentTaxableValue, // Store calculated taxable value
-            cgstRate: parseFloat(cgstRateSpan.textContent),
+            cgstRate: parseFloat(cgstRateSpan?.textContent),
             cgstAmount: currentCgstAmount,
-            sgstRate: parseFloat(sgstRateSpan.textContent),
+            sgstRate: parseFloat(sgstRateSpan?.textContent),
             sgstAmount: currentSgstAmount,
-            igstRate: parseFloat(igstRateSpan.textContent),
+            igstRate: parseFloat(igstRateSpan?.textContent),
             igstAmount: currentIgstAmount,
             grandTotal: currentGrandTotal,
         },
@@ -1185,43 +1197,43 @@ generateInvoiceBtn.addEventListener('click', () => {
     };
 
     populateInvoicePreview(invoiceData);
-    invoicePreview.classList.remove('hidden');
-    invoiceActions.classList.remove('hidden');
-    generateInvoiceBtn.disabled = true;
-    invoicePreview.scrollIntoView({ behavior: 'smooth', block: 'start' });
-});
+    if (invoicePreview) invoicePreview.classList.remove('hidden');
+    if (invoiceActions) invoiceActions.classList.remove('hidden');
+    if (generateInvoiceBtn) generateInvoiceBtn.disabled = true;
+    if (invoicePreview) invoicePreview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
 /**
  * Populates the invoice preview section with the given invoice data.
  * @param {object} data - The invoice data object.
  */
 function populateInvoicePreview(data) {
-    previewCompanyMainTitle.textContent = data.company.name;
+    if (previewCompanyMainTitle) previewCompanyMainTitle.textContent = data.company.name;
     if (previewCompanySlogan) {
         previewCompanySlogan.textContent = data.company.slogan || '';
     }
-    previewCompanyAddress.innerHTML = data.company.address.replace(/\n/g, '<br>');
-    previewCompanyPhone.textContent = data.company.phone;
-    previewCompanyGSTIN.textContent = data.company.gstin;
-    previewCompanyPAN.textContent = data.company.pan;
-    previewCompanyNameBottom.textContent = data.company.name;
+    if (previewCompanyAddress) previewCompanyAddress.innerHTML = data.company.address.replace(/\n/g, '<br>');
+    if (previewCompanyPhone) previewCompanyPhone.textContent = data.company.phone;
+    if (previewCompanyGSTIN) previewCompanyGSTIN.textContent = data.company.gstin;
+    if (previewCompanyPAN) previewCompanyPAN.textContent = data.company.pan;
+    if (previewCompanyNameBottom) previewCompanyNameBottom.textContent = data.company.name;
 
-    previewInvoiceNumber.textContent = data.invoiceDetails.invoiceNumber;
-    previewInvoiceDate.textContent = data.invoiceDetails.invoiceDate;
-    previewTransportMode.textContent = data.invoiceDetails.transportMode || 'N/A';
-    previewVehicleNumber.textContent = data.invoiceDetails.vehicleNumber || 'N/A';
-    previewDateOfSupply.textContent = data.invoiceDetails.dateOfSupply;
-    previewPlaceOfSupply.textContent = data.invoiceDetails.placeOfSupply;
+    if (previewInvoiceNumber) previewInvoiceNumber.textContent = data.invoiceDetails.invoiceNumber;
+    if (previewInvoiceDate) previewInvoiceDate.textContent = data.invoiceDetails.invoiceDate;
+    if (previewTransportMode) previewTransportMode.textContent = data.invoiceDetails.transportMode || 'N/A';
+    if (previewVehicleNumber) previewVehicleNumber.textContent = data.invoiceDetails.vehicleNumber || 'N/A';
+    if (previewDateOfSupply) previewDateOfSupply.textContent = data.invoiceDetails.dateOfSupply;
+    if (previewPlaceOfSupply) previewPlaceOfSupply.textContent = data.invoiceDetails.placeOfSupply;
 
     const selectedCity = indianCities.find(city => city.city.toLowerCase() === data.invoiceDetails.placeOfSupply.toLowerCase());
-    previewPlaceOfSupplyStateOnly.textContent = selectedCity ? selectedCity.state : 'N/A'; // Corrected ID
+    if (previewPlaceOfSupplyStateOnly) previewPlaceOfSupplyStateOnly.textContent = selectedCity ? selectedCity.state : 'N/A'; // Corrected ID
 
-    previewCustomerName.textContent = data.receiverDetails.name;
-    previewCustomerAddress.innerHTML = data.receiverDetails.address.replace(/\n/g, '<br>') || 'N/A';
-    previewCustomerPAN.textContent = data.receiverDetails.pan || 'N/A';
-    previewCustomerGSTIN.textContent = data.receiverDetails.gstin || 'N/A';
+    if (previewCustomerName) previewCustomerName.textContent = data.receiverDetails.name;
+    if (previewCustomerAddress) previewCustomerAddress.innerHTML = data.receiverDetails.address.replace(/\n/g, '<br>') || 'N/A';
+    if (previewCustomerPAN) previewCustomerPAN.textContent = data.receiverDetails.pan || 'N/A';
+    if (previewCustomerGSTIN) previewCustomerGSTIN.textContent = data.receiverDetails.gstin || 'N/A';
 
-    previewItemList.innerHTML = '';
+    if (previewItemList) previewItemList.innerHTML = '';
     let previewSNo = 0;
     data.items.forEach(item => {
         previewSNo++;
@@ -1234,255 +1246,269 @@ function populateInvoicePreview(data) {
             <td class="py-1 px-1 border border-black text-center">${item.qty}</td>
             <td class="py-1 px-1 border border-black text-right">${formatCurrency(item.amount)}</td>
         `;
-        previewItemList.appendChild(row);
+        if (previewItemList) previewItemList.appendChild(row);
     });
 
-    previewSubTotal.textContent = formatCurrency(data.summary.subTotal);
-    previewTotalItemDiscount.textContent = formatCurrency(data.summary.totalItemDiscount);
-    previewOverallDiscount.textContent = formatCurrency(data.summary.overallDiscount);
-    previewTotalTaxableValue.textContent = formatCurrency(data.summary.taxableValue); // Use the stored taxable value
-    previewCgstAmount.textContent = formatCurrency(data.summary.cgstAmount);
-    previewSgstAmount.textContent = formatCurrency(data.summary.sgstAmount);
-    previewIgstAmount.textContent = formatCurrency(data.summary.igstAmount);
-    previewGrandTotal.textContent = formatCurrency(data.summary.grandTotal);
+    if (previewSubTotal) previewSubTotal.textContent = formatCurrency(data.summary.subTotal);
+    if (previewTotalItemDiscount) previewTotalItemDiscount.textContent = formatCurrency(data.summary.totalItemDiscount);
+    if (previewOverallDiscount) previewOverallDiscount.textContent = formatCurrency(data.summary.overallDiscount);
+    if (previewTotalTaxableValue) previewTotalTaxableValue.textContent = formatCurrency(data.summary.taxableValue); // Use the stored taxable value
+    if (previewCgstAmount) previewCgstAmount.textContent = formatCurrency(data.summary.cgstAmount);
+    if (previewSgstAmount) previewSgstAmount.textContent = formatCurrency(data.summary.sgstAmount);
+    if (previewIgstAmount) previewIgstAmount.textContent = formatCurrency(data.summary.igstAmount);
+    if (previewGrandTotal) previewGrandTotal.textContent = formatCurrency(data.summary.grandTotal);
 
-    amountInWordsSpan.textContent = convertNumberToWords(data.summary.grandTotal);
+    if (amountInWordsSpan) amountInWordsSpan.textContent = convertNumberToWords(data.summary.grandTotal);
 
-    previewBankName.textContent = data.bank.bankName;
-    previewBankAccountNumber.textContent = data.bank.accountNumber;
-    previewBankIfscCode.textContent = data.bank.ifscCode;
+    if (previewBankName) previewBankName.textContent = data.bank.bankName;
+    if (previewBankAccountNumber) previewBankAccountNumber.textContent = data.bank.accountNumber;
+    if (previewBankIfscCode) previewBankIfscCode.textContent = data.bank.ifscCode;
 }
 
 // --- Invoice Actions ---
 
-printInvoiceBtn.addEventListener('click', () => {
-    document.body.classList.add('printing-invoice');
-    hamburgerMenu.classList.add('print-hidden'); // Hide hamburger menu during print
-    window.print();
-    document.body.classList.remove('printing-invoice');
-    hamburgerMenu.classList.remove('print-hidden');
-});
-
-downloadInvoicePdfBtn.addEventListener('click', async () => {
-    if (!invoiceData) {
-        showMessageBox('Error', 'No invoice generated to download.');
-        return;
-    }
-
-    // Temporarily hide actions and show preview for screenshot
-    invoiceActions.classList.add('hidden');
-    invoicePreview.classList.remove('hidden');
-
-    const previewClone = invoicePreview.cloneNode(true);
-    previewClone.classList.remove('hidden');
-    // Apply print-specific styles to the clone for accurate rendering
-    previewClone.style.maxWidth = '210mm'; // A4 width
-    previewClone.style.minHeight = '297mm'; // A4 height
-    previewClone.style.border = 'none';
-    previewClone.style.boxShadow = 'none';
-    previewClone.style.position = 'absolute';
-    previewClone.style.left = '-9999px'; // Move off-screen
-    previewClone.style.top = '-9999px';
-    previewClone.style.padding = '0';
-    previewClone.style.margin = '0';
-
-    // Ensure watermark is visible on the cloned element for PDF
-    const clonedWatermark = previewClone.querySelector('#watermark-text');
-    if (clonedWatermark) {
-        clonedWatermark.style.display = 'block';
-        clonedWatermark.style.opacity = '0.1'; // Make watermark visible for PDF
-    }
-
-    // Hide print-hidden elements in the clone
-    previewClone.querySelectorAll('.print-hidden').forEach(el => {
-        el.style.display = 'none';
+if (printInvoiceBtn) {
+    printInvoiceBtn.addEventListener('click', () => {
+        document.body.classList.add('printing-invoice');
+        if (hamburgerMenu) hamburgerMenu.classList.add('print-hidden'); // Hide hamburger menu during print
+        window.print();
+        document.body.classList.remove('printing-invoice');
+        if (hamburgerMenu) hamburgerMenu.classList.remove('print-hidden');
     });
+}
 
-    document.body.appendChild(previewClone);
 
-    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    const margin = 5; // Reduced margin for more content space
-
-    try {
-        const canvas = await html2canvas(previewClone, {
-            scale: 2, // Higher scale for better resolution
-            useCORS: true,
-            allowTaint: true,
-            scrollY: -window.scrollY,
-            windowWidth: previewClone.scrollWidth,
-            windowHeight: previewClone.scrollHeight,
-            // Ignore elements that shouldn't be in the print/PDF output
-            ignoreElements: (element) => {
-                return element.classList.contains('do-not-print');
-            }
-        });
-
-        const imgData = canvas.toDataURL('image/jpeg', 1.0); // Use JPEG for smaller file size
-        const imgProps = pdf.getImageProperties(imgData);
-        // Calculate image dimensions to fit within PDF page with margins
-        const imgWidth = pdfWidth - 2 * margin;
-        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-
-        let heightLeft = imgHeight;
-        let position = margin;
-
-        // Add image to PDF, handling multiple pages if content is too long
-        pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
-        heightLeft -= pdfHeight - 2 * margin;
-
-        while (heightLeft >= 0) {
-            position = heightLeft - imgHeight + margin;
-            pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
-            heightLeft -= pdfHeight - 2 * margin;
+if (downloadInvoicePdfBtn) {
+    downloadInvoicePdfBtn.addEventListener('click', async () => {
+        if (!invoiceData) {
+            showMessageBox('Error', 'No invoice generated to download.');
+            return;
         }
 
-        pdf.save(`Invoice_${invoiceData.invoiceDetails.invoiceNumber}.pdf`);
-        showMessageBox('Success', 'Invoice downloaded as PDF!');
+        // Temporarily hide actions and show preview for screenshot
+        if (invoiceActions) invoiceActions.classList.add('hidden');
+        if (invoicePreview) invoicePreview.classList.remove('hidden');
 
-    } catch (error) {
-        console.error('Error generating PDF:', error);
-        showMessageBox('Error', 'Failed to generate PDF. Please try again. Check console for details.');
-    } finally {
-        // Restore visibility and remove clone
-        invoiceActions.classList.remove('hidden');
-        document.body.removeChild(previewClone);
-    }
-});
+        const previewClone = invoicePreview.cloneNode(true);
+        previewClone.classList.remove('hidden');
+        // Apply print-specific styles to the clone for accurate rendering
+        previewClone.style.maxWidth = '210mm'; // A4 width
+        previewClone.style.minHeight = '297mm'; // A4 height
+        previewClone.style.border = 'none';
+        previewClone.style.boxShadow = 'none';
+        previewClone.style.position = 'absolute';
+        previewClone.style.left = '-9999px'; // Move off-screen
+        previewClone.style.top = '-9999px';
+        previewClone.style.padding = '0';
+        previewClone.style.margin = '0';
 
-saveInvoiceBtn.addEventListener('click', () => {
-    if (!invoiceData) {
-        showMessageBox('Error', 'No invoice generated to save.');
-        return;
-    }
+        // Ensure watermark is visible on the cloned element for PDF
+        const clonedWatermark = previewClone.querySelector('#watermark-text');
+        if (clonedWatermark) {
+            clonedWatermark.style.display = 'block';
+            clonedWatermark.style.opacity = '0.1'; // Make watermark visible for PDF
+        }
 
-    // Ensure all calculations are fresh before saving
-    calculateSummary();
-    invoiceData.summary.subTotal = parseFloat(subTotalSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
-    invoiceData.summary.totalItemDiscount = parseFloat(totalItemDiscountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
-    invoiceData.summary.overallDiscount = parseFloat(overallDiscountInput.value) || 0;
-    invoiceData.summary.taxableValue = parseFloat(totalTaxableValueSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
-    invoiceData.summary.cgstAmount = parseFloat(cgstAmountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
-    invoiceData.summary.sgstAmount = parseFloat(sgstAmountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
-    invoiceData.summary.igstAmount = parseFloat(igstAmountSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
-    invoiceData.summary.grandTotal = parseFloat(grandTotalSpan.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+        // Hide print-hidden elements in the clone
+        previewClone.querySelectorAll('.print-hidden').forEach(el => {
+            el.style.display = 'none';
+        });
+
+        document.body.appendChild(previewClone);
+
+        const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const margin = 5; // Reduced margin for more content space
+
+        try {
+            const canvas = await html2canvas(previewClone, {
+                scale: 2, // Higher scale for better resolution
+                useCORS: true,
+                allowTaint: true,
+                scrollY: -window.scrollY,
+                windowWidth: previewClone.scrollWidth,
+                windowHeight: previewClone.scrollHeight,
+                // Ignore elements that shouldn't be in the print/PDF output
+                ignoreElements: (element) => {
+                    return element.classList.contains('do-not-print');
+                }
+            });
+
+            const imgData = canvas.toDataURL('image/jpeg', 1.0); // Use JPEG for smaller file size
+            const imgProps = pdf.getImageProperties(imgData);
+            // Calculate image dimensions to fit within PDF page with margins
+            const imgWidth = pdfWidth - 2 * margin;
+            const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+            let heightLeft = imgHeight;
+            let position = margin;
+
+            // Add image to PDF, handling multiple pages if content is too long
+            pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+            heightLeft -= pdfHeight - 2 * margin;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight + margin;
+                pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+                heightLeft -= pdfHeight - 2 * margin;
+            }
+
+            pdf.save(`Invoice_${invoiceData.invoiceDetails.invoiceNumber}.pdf`);
+            showMessageBox('Success', 'Invoice downloaded as PDF!');
+
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            showMessageBox('Error', 'Failed to generate PDF. Please try again. Check console for details.');
+        } finally {
+            // Restore visibility and remove clone
+            if (invoiceActions) invoiceActions.classList.remove('hidden');
+            document.body.removeChild(previewClone);
+        }
+    });
+}
 
 
-    const existingIndex = savedInvoices.findIndex(inv => inv.invoiceDetails.invoiceNumber === invoiceData.invoiceDetails.invoiceNumber);
+if (saveInvoiceBtn) {
+    saveInvoiceBtn.addEventListener('click', () => {
+        if (!invoiceData) {
+            showMessageBox('Error', 'No invoice generated to save.');
+            return;
+        }
 
-    // Calculate balance due based on *existing* payments for this invoice
-    const totalPaidForInvoice = payments.filter(p => p.invoiceNumber === invoiceData.invoiceDetails.invoiceNumber).reduce((sum, p) => sum + p.amount, 0);
-    invoiceData.summary.balanceDue = Math.max(0, invoiceData.summary.grandTotal - totalPaidForInvoice);
-
-
-    if (existingIndex > -1) {
-        // Update existing invoice, but keep the original 'lastSaved' if it's already there and more recent, or update to now.
-        // This prevents dummy data from constantly updating if it's older.
-        const existingLastSaved = new Date(savedInvoices[existingIndex].lastSaved);
-        const currentSaveTime = new Date();
-        savedInvoices[existingIndex] = {
-            ...invoiceData,
-            lastSaved: (existingLastSaved > currentSaveTime ? existingLastSaved.toISOString() : currentSaveTime.toISOString())
-        };
-        showMessageBox('Info', `Invoice ${invoiceData.invoiceDetails.invoiceNumber} updated successfully!`);
-    } else {
-        savedInvoices.push({ ...invoiceData, lastSaved: new Date().toISOString() });
-        showMessageBox('Success', `Invoice ${invoiceData.invoiceDetails.invoiceNumber} saved successfully!`);
-    }
-    localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
-
-    // Re-render history if currently active to show updated status/saved invoice
-    if (historySection.classList.contains('active')) {
-        renderInvoiceHistory();
-    }
-});
+        // Ensure all calculations are fresh before saving
+        calculateSummary();
+        invoiceData.summary.subTotal = parseFloat(subTotalSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+        invoiceData.summary.totalItemDiscount = parseFloat(totalItemDiscountSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+        invoiceData.summary.overallDiscount = parseFloat(overallDiscountInput?.value) || 0;
+        invoiceData.summary.taxableValue = parseFloat(totalTaxableValueSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+        invoiceData.summary.cgstAmount = parseFloat(cgstAmountSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+        invoiceData.summary.sgstAmount = parseFloat(sgstAmountSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+        invoiceData.summary.igstAmount = parseFloat(igstAmountSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+        invoiceData.summary.grandTotal = parseFloat(grandTotalSpan?.textContent.replace(/[^0-9.-]+/g, '')) || 0;
 
 
-shareInvoiceBtn.addEventListener('click', () => {
-    // This is a placeholder for actual sharing functionality.
-    // In a real application, this would involve backend integration
-    // to generate a shareable link or email the invoice.
-    showMessageBox('Share Invoice', 'Sharing functionality is not yet implemented. In a real application, this would allow you to share the invoice via email or a secure link.');
-});
+        const existingIndex = savedInvoices.findIndex(inv => inv.invoiceDetails.invoiceNumber === invoiceData.invoiceDetails.invoiceNumber);
+
+        // Calculate balance due based on *existing* payments for this invoice
+        const totalPaidForInvoice = payments.filter(p => p.invoiceNumber === invoiceData.invoiceDetails.invoiceNumber).reduce((sum, p) => sum + p.amount, 0);
+        invoiceData.summary.balanceDue = Math.max(0, invoiceData.summary.grandTotal - totalPaidForInvoice);
+
+
+        if (existingIndex > -1) {
+            // Update existing invoice, but keep the original 'lastSaved' if it's already there and more recent, or update to now.
+            // This prevents dummy data from constantly updating if it's older.
+            const existingLastSaved = new Date(savedInvoices[existingIndex].lastSaved);
+            const currentSaveTime = new Date();
+            savedInvoices[existingIndex] = {
+                ...invoiceData,
+                lastSaved: (existingLastSaved > currentSaveTime ? existingLastSaved.toISOString() : currentSaveTime.toISOString())
+            };
+            showMessageBox('Info', `Invoice ${invoiceData.invoiceDetails.invoiceNumber} updated successfully!`);
+        } else {
+            savedInvoices.push({ ...invoiceData, lastSaved: new Date().toISOString() });
+            showMessageBox('Success', `Invoice ${invoiceData.invoiceDetails.invoiceNumber} saved successfully!`);
+        }
+        localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
+
+        // Re-render history if currently active to show updated status/saved invoice
+        if (historySection && historySection.classList.contains('active')) {
+            renderInvoiceHistory();
+        }
+    });
+}
+
+
+if (shareInvoiceBtn) {
+    shareInvoiceBtn.addEventListener('click', () => {
+        // This is a placeholder for actual sharing functionality.
+        // In a real application, this would involve backend integration
+        // to generate a shareable link or email the invoice.
+        showMessageBox('Share Invoice', 'Sharing functionality is not yet implemented. In a real application, this would allow you to share the invoice via email or a secure link.');
+    });
+}
 
 
 // --- Payments Section ---
 
 // Record Payment Button Listener
-recordPaymentBtn.addEventListener('click', () => {
-    const invoiceNumber = recordPaymentBtn.dataset.invoiceNumber; // Get invoice number from data attribute
-    const paymentDate = paymentDateInput.value.trim();
-    const amount = parseFloat(paymentAmountInput.value);
-    const method = paymentMethodSelect.value;
-    const notes = paymentNotesTextarea.value.trim();
-    const customerName = paymentCustomerInput.value.trim(); // Get customer name from input
+if (recordPaymentBtn) {
+    recordPaymentBtn.addEventListener('click', () => {
+        const invoiceNumber = recordPaymentBtn.dataset.invoiceNumber; // Get invoice number from data attribute
+        const paymentDate = paymentDateInput.value.trim();
+        const amount = parseFloat(paymentAmountInput.value);
+        const method = paymentMethodSelect.value;
+        const notes = paymentNotesTextarea.value.trim();
+        const customerName = paymentCustomerInput.value.trim(); // Get customer name from input
 
 
-    if (!invoiceNumber || !customerName || !paymentDate || isNaN(amount) || amount <= 0) {
-        showMessageBox('Validation Error', 'Please select an Invoice from history, and enter a valid Payment Date and a positive Amount.');
-        return;
-    }
+        if (!invoiceNumber || !customerName || !paymentDate || isNaN(amount) || amount <= 0) {
+            showMessageBox('Validation Error', 'Please select an Invoice from history, and enter a valid Payment Date and a positive Amount.');
+            return;
+        }
 
-    // Find the invoice to ensure payment isn't overshooting the grand total - balance due
-    const targetInvoice = savedInvoices.find(inv => inv.invoiceDetails.invoiceNumber === invoiceNumber);
-    if (!targetInvoice) {
-        showMessageBox('Error', 'Associated invoice not found. Cannot record payment.');
-        return;
-    }
+        // Find the invoice to ensure payment isn't overshooting the grand total - balance due
+        const targetInvoice = savedInvoices.find(inv => inv.invoiceDetails.invoiceNumber === invoiceNumber);
+        if (!targetInvoice) {
+            showMessageBox('Error', 'Associated invoice not found. Cannot record payment.');
+            return;
+        }
 
-    // Calculate current balance due for the target invoice
-    const totalPaidForInvoice = payments.filter(p => p.invoiceNumber === invoiceNumber).reduce((sum, p) => sum + p.amount, 0);
-    const currentBalanceDue = targetInvoice.summary.grandTotal - totalPaidForInvoice;
+        // Calculate current balance due for the target invoice
+        const totalPaidForInvoice = payments.filter(p => p.invoiceNumber === invoiceNumber).reduce((sum, p) => sum + p.amount, 0);
+        const currentBalanceDue = targetInvoice.summary.grandTotal - totalPaidForInvoice;
 
-    if (amount > currentBalanceDue + 0.01) { // Add a small tolerance for floating point
-        showMessageBox('Payment Error', `Payment amount (${formatCurrency(amount)}) exceeds remaining balance (${formatCurrency(currentBalanceDue)}) for this invoice. Please enter a lower amount.`);
-        return;
-    }
-
-
-    const newPayment = {
-        id: Date.now() + Math.random(), // Unique ID for payment record
-        invoiceNumber: invoiceNumber, // Link payment to invoice
-        customerName: customerName,
-        paymentDate: paymentDate,
-        amount: parseFloat(amount.toFixed(2)),
-        method: method,
-        notes: notes
-    };
-
-    payments.push(newPayment);
-    localStorage.setItem('payments', JSON.stringify(payments));
-
-    // Update the balanceDue for the specific invoice in savedInvoices
-    targetInvoice.summary.balanceDue = Math.max(0, targetInvoice.summary.grandTotal - (totalPaidForInvoice + newPayment.amount));
-    localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
+        if (amount > currentBalanceDue + 0.01) { // Add a small tolerance for floating point
+            showMessageBox('Payment Error', `Payment amount (${formatCurrency(amount)}) exceeds remaining balance (${formatCurrency(currentBalanceDue)}) for this invoice. Please enter a lower amount.`);
+            return;
+        }
 
 
-    // Clear payment form
-    paymentInvoiceDisplay.value = ''; // Clear display
-    recordPaymentBtn.removeAttribute('data-invoice-number'); // Clear the associated invoice number
-    paymentAmountInput.value = '';
-    paymentMethodSelect.value = 'Cash';
-    paymentNotesTextarea.value = '';
-    paymentCustomerInput.value = ''; // Clear customer input
+        const newPayment = {
+            id: Date.now() + Math.random(), // Unique ID for payment record
+            invoiceNumber: invoiceNumber, // Link payment to invoice
+            customerName: customerName,
+            paymentDate: paymentDate,
+            amount: parseFloat(amount.toFixed(2)),
+            method: method,
+            notes: notes
+        };
 
-    showMessageBox('Success', `Payment of ${formatCurrency(amount)} recorded for Invoice ${invoiceNumber}.`);
-    renderPaymentHistory(); // Re-render payment history
-    renderInvoiceHistory(); // Re-render invoice history to update balance due status
-});
+        payments.push(newPayment);
+        localStorage.setItem('payments', JSON.stringify(payments));
+
+        // Update the balanceDue for the specific invoice in savedInvoices
+        targetInvoice.summary.balanceDue = Math.max(0, targetInvoice.summary.grandTotal - (totalPaidForInvoice + newPayment.amount));
+        localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
+
+
+        // Clear payment form
+        if (paymentInvoiceDisplay) paymentInvoiceDisplay.value = ''; // Clear display
+        if (recordPaymentBtn) recordPaymentBtn.removeAttribute('data-invoice-number'); // Clear the associated invoice number
+        if (paymentAmountInput) paymentAmountInput.value = '';
+        if (paymentMethodSelect) paymentMethodSelect.value = 'Cash';
+        if (paymentNotesTextarea) paymentNotesTextarea.value = '';
+        if (paymentCustomerInput) paymentCustomerInput.value = ''; // Clear customer input
+
+        showMessageBox('Success', `Payment of ${formatCurrency(amount)} recorded for Invoice ${invoiceNumber}.`);
+        renderPaymentHistory(); // Re-render payment history
+        renderInvoiceHistory(); // Re-render invoice history to update balance due status
+    });
+}
+
 
 /**
  * Renders the payment history table.
  */
 function renderPaymentHistory() {
+    if (!paymentHistoryList) return; // Add null check for paymentHistoryList
     paymentHistoryList.innerHTML = '';
     if (payments.length === 0) {
-        noPaymentData.classList.remove('hidden');
+        if (noPaymentData) noPaymentData.classList.remove('hidden');
         return;
     }
-    noPaymentData.classList.add('hidden');
+    if (noPaymentData) noPaymentData.classList.add('hidden');
 
     const sortedPayments = [...payments].sort((a, b) => {
         const [dA, mA, yA] = a.paymentDate.split('/').map(Number);
@@ -1550,26 +1576,30 @@ function deletePayment(paymentId) {
 
 // --- Invoice History Section ---
 
-historyFilterBtn.addEventListener('click', renderInvoiceHistory);
-historyResetBtn.addEventListener('click', () => {
-    historyInvoiceNumberSearch.value = '';
-    historyCustomerNameSearch.value = '';
-    historyDateFrom.value = '';
-    historyDateTo.value = '';
-    renderInvoiceHistory();
-});
+if (historyFilterBtn) historyFilterBtn.addEventListener('click', renderInvoiceHistory);
+if (historyResetBtn) {
+    historyResetBtn.addEventListener('click', () => {
+        if (historyInvoiceNumberSearch) historyInvoiceNumberSearch.value = '';
+        if (historyCustomerNameSearch) historyCustomerNameSearch.value = '';
+        if (historyDateFrom) historyDateFrom.value = '';
+        if (historyDateTo) historyDateTo.value = '';
+        renderInvoiceHistory();
+    });
+}
+
 
 /**
  * Renders the invoice history table, applying filters if specified.
  */
 function renderInvoiceHistory() {
+    if (!invoiceHistoryList) return; // Add null check for invoiceHistoryList
     invoiceHistoryList.innerHTML = '';
     let filteredInvoices = [...savedInvoices];
 
-    const invoiceNoQuery = historyInvoiceNumberSearch.value.trim().toLowerCase();
-    const customerNameQuery = historyCustomerNameSearch.value.trim().toLowerCase();
-    const dateFromStr = historyDateFrom.value.trim();
-    const dateToStr = historyDateTo.value.trim();
+    const invoiceNoQuery = historyInvoiceNumberSearch?.value.trim().toLowerCase();
+    const customerNameQuery = historyCustomerNameSearch?.value.trim().toLowerCase();
+    const dateFromStr = historyDateFrom?.value.trim();
+    const dateToStr = historyDateTo?.value.trim();
 
     if (invoiceNoQuery) {
         filteredInvoices = filteredInvoices.filter(inv =>
@@ -1602,10 +1632,10 @@ function renderInvoiceHistory() {
     }
 
     if (filteredInvoices.length === 0) {
-        noHistoryData.classList.remove('hidden');
+        if (noHistoryData) noHistoryData.classList.remove('hidden');
         return;
     }
-    noHistoryData.classList.add('hidden');
+    if (noHistoryData) noHistoryData.classList.add('hidden');
 
     filteredInvoices.sort((a, b) => {
         const [dA, mA, yA] = a.invoiceDetails.invoiceDate.split('/').map(Number);
@@ -1616,15 +1646,45 @@ function renderInvoiceHistory() {
     });
 
     filteredInvoices.forEach(invoice => {
-        const row = document.createElement('tr');
+        const totalPaid = payments
+            .filter(p => p.invoiceNumber === invoice.invoiceDetails.invoiceNumber)
+            .reduce((sum, p) => sum + p.amount, 0);
+        const balanceDue = Math.max(0, invoice.summary.grandTotal - totalPaid);
 
+        let statusClass = '';
+        let statusText = '';
+        if (balanceDue <= 0.01) { // Add a small tolerance for floating point
+            statusClass = 'text-green-600 font-semibold';
+            statusText = 'Paid';
+        } else if (totalPaid > 0) {
+            statusClass = 'text-orange-600 font-semibold';
+            statusText = 'Partial';
+        } else {
+            statusClass = 'text-red-600 font-semibold';
+            statusText = 'Unpaid';
+        }
+
+
+        const row = document.createElement('tr');
         row.innerHTML = `
-            <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${invoice.invoiceDetails.invoiceNumber}</td>
+            <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">
+                <a href="#" class="view-invoice-link text-blue-600 hover:underline" data-invoice-no="${invoice.invoiceDetails.invoiceNumber}">
+                    ${invoice.invoiceDetails.invoiceNumber}
+                </a>
+            </td>
             <td class="py-2 px-2 border-b border-gray-200 text-center text-sm">${invoice.invoiceDetails.invoiceDate}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-left text-sm">${invoice.receiverDetails.name}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-right text-sm">${formatCurrency(invoice.summary.grandTotal)}</td>
+            <td class="py-2 px-2 border-b border-gray-200 text-right text-sm">${formatCurrency(balanceDue)}</td>
+            <td class="py-2 px-2 border-b border-gray-200 text-center text-sm ${statusClass}">${statusText}</td>
             <td class="py-2 px-2 border-b border-gray-200 text-center space-x-2">
-                <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="delete-invoice-btn btn-danger text-sm p-1 rounded">
+                <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="load-invoice-btn bg-blue-500 text-white text-sm p-1 rounded hover:bg-blue-600">
+                    <i class="fas fa-edit"></i> Edit/View
+                </button>
+                <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" data-customer-name="${invoice.receiverDetails.name}" data-grand-total="${invoice.summary.grandTotal}" data-balance-due="${balanceDue}" class="record-payment-from-history-btn bg-green-500 text-white text-sm p-1 rounded hover:bg-green-600 ${balanceDue <= 0.01 ? 'opacity-50 cursor-not-allowed' : ''}" ${balanceDue <= 0.01 ? 'disabled' : ''}>
+                    <i class="fas fa-money-bill-wave"></i> Record Payment
+                </button>
+                <button data-invoice-no="${invoice.invoiceDetails.invoiceNumber}" class="delete-invoice-btn btn-danger text-sm p-1 rounded hover:bg-red-600">
                     <i class="fas fa-trash"></i> Delete
                 </button>
             </td>
@@ -1632,9 +1692,45 @@ function renderInvoiceHistory() {
         invoiceHistoryList.appendChild(row);
     });
 
+    document.querySelectorAll('.view-invoice-link, .load-invoice-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default link behavior
+            const invoiceNo = e.currentTarget.dataset.invoiceNo;
+            const invoiceToLoad = savedInvoices.find(inv => inv.invoiceDetails.invoiceNumber === invoiceNo);
+            if (invoiceToLoad) {
+                loadInvoiceToForm(invoiceToLoad);
+                setActiveNav(navInvoice); // Navigate to invoice section
+                populateInvoicePreview(invoiceToLoad); // Ensure preview is also updated
+                if (invoicePreview) invoicePreview.classList.remove('hidden'); // Show preview
+                if (invoiceActions) invoiceActions.classList.remove('hidden'); // Show actions
+                if (generateInvoiceBtn) generateInvoiceBtn.disabled = true; // Disable generate button after loading existing
+                if (invoicePreview) invoicePreview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                showMessageBox('Error', 'Invoice not found.');
+            }
+        });
+    });
 
+    document.querySelectorAll('.record-payment-from-history-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const invoiceNo = e.currentTarget.dataset.invoiceNo;
+            const customerName = e.currentTarget.dataset.customerName;
+            const grandTotal = parseFloat(e.currentTarget.dataset.grandTotal);
+            const balanceDue = parseFloat(e.currentTarget.dataset.balanceDue);
 
+            if (balanceDue <= 0.01) {
+                showMessageBox('Info', 'This invoice is already fully paid.');
+                return;
+            }
 
+            setActiveNav(navPayments);
+            if (paymentInvoiceDisplay) paymentInvoiceDisplay.value = invoiceNo; // Display invoice number in payment form
+            if (recordPaymentBtn) recordPaymentBtn.dataset.invoiceNumber = invoiceNo; // Set data attribute for recording
+            if (paymentCustomerInput) paymentCustomerInput.value = customerName; // Auto-fill customer name
+            if (paymentAmountInput) paymentAmountInput.value = balanceDue.toFixed(2); // Pre-fill with remaining balance
+            if (paymentAmountInput) paymentAmountInput.focus(); // Focus on amount input
+        });
+    });
 
     document.querySelectorAll('.delete-invoice-btn').forEach(button => {
         button.addEventListener('click', (e) => {
@@ -1652,30 +1748,29 @@ function renderInvoiceHistory() {
  * @param {object} invoice - The invoice data object to load.
  */
 function loadInvoiceToForm(invoice) {
-    customerNameInput.value = invoice.receiverDetails.name;
-    customerAddressInput.value = invoice.receiverDetails.address;
-    customerPANInput.value = invoice.receiverDetails.pan || '';
-    customerGSTINInput.value = invoice.receiverDetails.gstin;
-    invoiceNumberInput.value = invoice.invoiceDetails.invoiceNumber;
-    invoiceDateInput.value = invoice.invoiceDetails.invoiceDate;
-    transportModeInput.value = invoice.invoiceDetails.transportMode || '';
-    vehicleNumberInput.value = invoice.invoiceDetails.vehicleNumber || '';
-    dateOfSupplyInput.value = invoice.invoiceDetails.dateOfSupply;
-    placeOfSupplyCityInput.value = invoice.invoiceDetails.placeOfSupply;
+    if (customerNameInput) customerNameInput.value = invoice.receiverDetails.name;
+    if (customerAddressInput) customerAddressInput.value = invoice.receiverDetails.address;
+    if (customerPANInput) customerPANInput.value = invoice.receiverDetails.pan || '';
+    if (customerGSTINInput) customerGSTINInput.value = invoice.receiverDetails.gstin;
+    if (invoiceNumberInput) invoiceNumberInput.value = invoice.invoiceDetails.invoiceNumber;
+    if (invoiceDateInput) invoiceDateInput.value = invoice.invoiceDetails.invoiceDate;
+    if (transportModeInput) transportModeInput.value = invoice.invoiceDetails.transportMode || '';
+    if (vehicleNumberInput) vehicleNumberInput.value = invoice.invoiceDetails.vehicleNumber || '';
+    if (dateOfSupplyInput) dateOfSupplyInput.value = invoice.invoiceDetails.dateOfSupply;
+    if (placeOfSupplyCityInput) placeOfSupplyCityInput.value = invoice.invoiceDetails.placeOfSupply;
     const selectedCity = indianCities.find(city => city.city.toLowerCase() === invoice.invoiceDetails.placeOfSupply.toLowerCase());
-    placeOfSupplyStateInput.value = selectedCity ? selectedCity.state : ''; // Auto-fill state on load
+    if (placeOfSupplyStateInput) placeOfSupplyStateInput.value = selectedCity ? selectedCity.state : ''; // Auto-fill state on load
 
-    itemList.innerHTML = '';
+    if (itemList) itemList.innerHTML = '';
     itemCounter = 0;
     invoice.items.forEach(item => createItemRow(item));
     if (invoice.items.length === 0) {
         createItemRow(); // Ensure at least one empty row if invoice had no items
     }
 
-    overallDiscountInput.value = invoice.summary.overallDiscount;
+    if (overallDiscountInput) overallDiscountInput.value = invoice.summary.overallDiscount;
 
     updateTaxRatesBasedOnGSTIN(); // This will also call calculateSummary internally
-    // calculateSummary(); // Called by updateTaxRatesBasedOnGSTIN
     invoiceData = invoice;
 }
 
@@ -1699,233 +1794,240 @@ function deleteInvoice(invoiceNumber) {
 
 // --- Reports Section ---
 
-generateReportBtn.addEventListener('click', () => {
-    const fromDateStr = reportDateFrom.value.trim();
-    const toDateStr = reportDateTo.value.trim();
+if (generateReportBtn) {
+    generateReportBtn.addEventListener('click', () => {
+        const fromDateStr = reportDateFrom?.value.trim();
+        const toDateStr = reportDateTo?.value.trim();
 
-    if (!fromDateStr || !toDateStr) {
-        showMessageBox('Validation Error', 'Please select both "Date From" and "Date To" for the report.');
-        return;
-    }
+        if (!fromDateStr || !toDateStr) {
+            showMessageBox('Validation Error', 'Please select both "Date From" and "Date To" for the report.');
+            return;
+        }
 
-    const [dFrom, mFrom, yFrom] = fromDateStr.split('/').map(Number);
-    const fromDate = new Date(yFrom, mFrom - 1, dFrom);
+        const [dFrom, mFrom, yFrom] = fromDateStr.split('/').map(Number);
+        const fromDate = new Date(yFrom, mFrom - 1, dFrom);
 
-    const [dTo, mTo, yTo] = toDateStr.split('/').map(Number);
-    let toDate = new Date(yTo, mTo - 1, dTo);
-    toDate.setHours(23, 59, 59, 999);
+        const [dTo, mTo, yTo] = toDateStr.split('/').map(Number);
+        let toDate = new Date(yTo, mTo - 1, dTo);
+        toDate.setHours(23, 59, 59, 999);
 
-    let totalSales = 0;
-    let totalDiscount = 0;
-    let totalTaxableAmount = 0;
-    let totalSgstCollected = 0;
-    let totalCgstCollected = 0;
-    let totalIgstCollected = 0;
+        let totalSales = 0;
+        let totalDiscount = 0;
+        let totalTaxableAmount = 0;
+        let totalSgstCollected = 0;
+        let totalCgstCollected = 0;
+        let totalIgstCollected = 0;
 
-    const relevantInvoices = savedInvoices.filter(invoice => {
-        const [id, im, iy] = invoice.invoiceDetails.invoiceDate.split('/').map(Number);
-        const invoiceDate = new Date(iy, im - 1, id);
-        return invoiceDate >= fromDate && invoiceDate <= toDate;
+        const relevantInvoices = savedInvoices.filter(invoice => {
+            const [id, im, iy] = invoice.invoiceDetails.invoiceDate.split('/').map(Number);
+            const invoiceDate = new Date(iy, im - 1, id);
+            return invoiceDate >= fromDate && invoiceDate <= toDate;
+        });
+
+        if (relevantInvoices.length === 0) {
+            showMessageBox('No Data', 'No invoices found for the selected date range to generate a report.');
+            if (reportTotalSales) reportTotalSales.textContent = formatCurrency(0);
+            if (reportTotalDiscount) reportTotalDiscount.textContent = formatCurrency(0);
+            if (reportTaxableAmount) reportTaxableAmount.textContent = formatCurrency(0);
+            if (reportSgstCollected) reportSgstCollected.textContent = formatCurrency(0);
+            if (reportCgstCollected) reportCgstCollected.textContent = formatCurrency(0);
+            if (reportIgstCollected) reportIgstCollected.textContent = formatCurrency(0);
+            return;
+        }
+
+        relevantInvoices.forEach(invoice => {
+            totalSales += invoice.summary.grandTotal;
+            // Total discount is sum of item-level discounts and overall discount
+            totalDiscount += (invoice.summary.totalItemDiscount || 0) + (invoice.summary.overallDiscount || 0);
+            // Taxable value should be subtotal before tax, after all discounts
+            const currentInvoiceTaxableValue = (invoice.summary.subTotal || 0) - (invoice.summary.totalItemDiscount || 0) - (invoice.summary.overallDiscount || 0);
+            totalTaxableAmount += Math.max(0, currentInvoiceTaxableValue);
+
+            totalSgstCollected += invoice.summary.sgstAmount || 0;
+            totalCgstCollected += invoice.summary.cgstAmount || 0;
+            totalIgstCollected += invoice.summary.igstAmount || 0;
+        });
+        if (reportTotalSales) reportTotalSales.textContent = formatCurrency(totalSales);
+        if (reportTotalDiscount) reportTotalDiscount.textContent = formatCurrency(totalDiscount);
+        if (reportTaxableAmount) reportTaxableAmount.textContent = formatCurrency(totalTaxableAmount);
+        if (reportSgstCollected) reportSgstCollected.textContent = formatCurrency(totalSgstCollected);
+        if (reportCgstCollected) reportCgstCollected.textContent = formatCurrency(totalCgstCollected);
+        if (reportIgstCollected) reportIgstCollected.textContent = formatCurrency(totalIgstCollected);
+
+        showMessageBox('Report Generated', `Report for ${fromDateStr} to ${toDateStr} successfully generated.`);
     });
+}
 
-    if (relevantInvoices.length === 0) {
-        showMessageBox('No Data', 'No invoices found for the selected date range to generate a report.');
-        reportTotalSales.textContent = formatCurrency(0);
-        reportTotalDiscount.textContent = formatCurrency(0);
-        reportTaxableAmount.textContent = formatCurrency(0);
-        reportSgstCollected.textContent = formatCurrency(0);
-        reportCgstCollected.textContent = formatCurrency(0);
-        reportIgstCollected.textContent = formatCurrency(0);
-        return;
-    }
 
-    relevantInvoices.forEach(invoice => {
-        totalSales += invoice.summary.grandTotal;
-        // Total discount is sum of item-level discounts and overall discount
-        totalDiscount += (invoice.summary.totalItemDiscount || 0) + (invoice.summary.overallDiscount || 0);
-        // Taxable value should be subtotal before tax, after all discounts
-        const currentInvoiceTaxableValue = (invoice.summary.subTotal || 0) - (invoice.summary.totalItemDiscount || 0) - (invoice.summary.overallDiscount || 0);
-        totalTaxableAmount += Math.max(0, currentInvoiceTaxableValue);
+if (exportReportBtn) {
+    exportReportBtn.addEventListener('click', () => {
+        const fromDateStr = reportDateFrom?.value.trim();
+        const toDateStr = reportDateTo?.value.trim();
 
-        totalSgstCollected += invoice.summary.sgstAmount || 0;
-        totalCgstCollected += invoice.summary.cgstAmount || 0;
-        totalIgstCollected += invoice.summary.igstAmount || 0;
+        if (!fromDateStr || !toDateStr) {
+            showMessageBox('Validation Error', 'Please select both "Date From" and "Date To" to export the report.');
+            return;
+        }
+
+        const [dFrom, mFrom, yFrom] = fromDateStr.split('/').map(Number);
+        const fromDate = new Date(yFrom, mFrom - 1, dFrom);
+
+        const [dTo, mTo, yTo] = toDateStr.split('/').map(Number);
+        let toDate = new Date(yTo, mTo - 1, dTo);
+        toDate.setHours(23, 59, 59, 999);
+
+        const relevantInvoices = savedInvoices.filter(invoice => {
+            const [id, im, iy] = invoice.invoiceDetails.invoiceDate.split('/').map(Number);
+            const invoiceDate = new Date(iy, im - 1, id);
+            return invoiceDate >= fromDate && invoiceDate <= toDate;
+        });
+
+        if (relevantInvoices.length === 0) {
+            showMessageBox('No Data', 'No invoices found for the selected date range to export.');
+            return;
+        }
+
+        let csvContent = "Invoice Number,Invoice Date,Customer Name,Customer GSTIN,Amount,CGST,SGST,IGST,Total Tax,Overall Discount,Grand Total\n";
+
+        relevantInvoices.forEach(invoice => {
+            // Ensure values are numbers before toFixed
+            const subTotal = invoice.summary.subTotal || 0;
+            const totalItemDiscount = invoice.summary.totalItemDiscount || 0;
+            const overallDiscount = invoice.summary.overallDiscount || 0;
+            const cgstAmount = invoice.summary.cgstAmount || 0;
+            const sgstAmount = invoice.summary.sgstAmount || 0;
+            const igstAmount = invoice.summary.igstAmount || 0;
+            const grandTotal = invoice.summary.grandTotal || 0;
+
+            const taxableAmountCalc = subTotal - totalItemDiscount - overallDiscount;
+            const totalTax = cgstAmount + sgstAmount + igstAmount;
+
+            csvContent += [
+                invoice.invoiceDetails.invoiceNumber,
+                invoice.invoiceDetails.invoiceDate,
+                `"${invoice.receiverDetails.name.replace(/"/g, '""')}"`,
+                invoice.receiverDetails.gstin || 'N/A',
+                taxableAmountCalc.toFixed(2),
+                cgstAmount.toFixed(2),
+                sgstAmount.toFixed(2),
+                igstAmount.toFixed(2),
+                totalTax.toFixed(2),
+                overallDiscount.toFixed(2),
+                grandTotal.toFixed(2),
+            ].join(',') + '\n';
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute('download', `Invoice_Report_${fromDateStr.replace(/\//g, '-')}_to_${toDateStr.replace(/\//g, '-')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showMessageBox('Success', 'Report exported as CSV file!');
     });
-
-    reportTotalSales.textContent = formatCurrency(totalSales);
-    reportTotalDiscount.textContent = formatCurrency(totalDiscount);
-    reportTaxableAmount.textContent = formatCurrency(totalTaxableAmount);
-    reportSgstCollected.textContent = formatCurrency(totalSgstCollected);
-    reportCgstCollected.textContent = formatCurrency(totalCgstCollected);
-    reportIgstCollected.textContent = formatCurrency(totalIgstCollected);
-
-    showMessageBox('Report Generated', `Report for ${fromDateStr} to ${toDateStr} successfully generated.`);
-});
-
-exportReportBtn.addEventListener('click', () => {
-    const fromDateStr = reportDateFrom.value.trim();
-    const toDateStr = reportDateTo.value.trim();
-
-    if (!fromDateStr || !toDateStr) {
-        showMessageBox('Validation Error', 'Please select both "Date From" and "Date To" to export the report.');
-        return;
-    }
-
-    const [dFrom, mFrom, yFrom] = fromDateStr.split('/').map(Number);
-    const fromDate = new Date(yFrom, mFrom - 1, dFrom);
-
-    const [dTo, mTo, yTo] = toDateStr.split('/').map(Number);
-    let toDate = new Date(yTo, mTo - 1, dTo);
-    toDate.setHours(23, 59, 59, 999);
-
-    const relevantInvoices = savedInvoices.filter(invoice => {
-        const [id, im, iy] = invoice.invoiceDetails.invoiceDate.split('/').map(Number);
-        const invoiceDate = new Date(iy, im - 1, id);
-        return invoiceDate >= fromDate && invoiceDate <= toDate;
-    });
-
-    if (relevantInvoices.length === 0) {
-        showMessageBox('No Data', 'No invoices found for the selected date range to export.');
-        return;
-    }
-
-    let csvContent = "Invoice Number,Invoice Date,Customer Name,Customer GSTIN,Amount,CGST,SGST,IGST,Total Tax,Overall Discount,Grand Total\n";
-
-    relevantInvoices.forEach(invoice => {
-        // Ensure values are numbers before toFixed
-        const subTotal = invoice.summary.subTotal || 0;
-        const totalItemDiscount = invoice.summary.totalItemDiscount || 0;
-        const overallDiscount = invoice.summary.overallDiscount || 0;
-        const cgstAmount = invoice.summary.cgstAmount || 0;
-        const sgstAmount = invoice.summary.sgstAmount || 0;
-        const igstAmount = invoice.summary.igstAmount || 0;
-        const grandTotal = invoice.summary.grandTotal || 0;
-
-        const taxableAmountCalc = subTotal - totalItemDiscount - overallDiscount;
-        const totalTax = cgstAmount + sgstAmount + igstAmount;
-
-        csvContent += [
-            invoice.invoiceDetails.invoiceNumber,
-            invoice.invoiceDetails.invoiceDate,
-            `"${invoice.receiverDetails.name.replace(/"/g, '""')}"`,
-            invoice.receiverDetails.gstin || 'N/A',
-            taxableAmountCalc.toFixed(2),
-            cgstAmount.toFixed(2),
-            sgstAmount.toFixed(2),
-            igstAmount.toFixed(2),
-            totalTax.toFixed(2),
-            overallDiscount.toFixed(2),
-            grandTotal.toFixed(2),
-        ].join(',') + '\n';
-    });
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute('download', `Invoice_Report_${fromDateStr.replace(/\//g, '-')}_to_${toDateStr.replace(/\//g, '-')}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    showMessageBox('Success', 'Report exported as CSV file!');
-});
+}
 
 
 // --- Settings Section ---
 
-saveSettingsBtn.addEventListener('click', () => {
-    const companyName = settingCompanyName.value.trim();
-    const companyAddress = settingCompanyAddress.value.trim();
-    const companyGSTIN = settingCompanyGSTIN.value.trim().toUpperCase();
-    const companyPAN = settingCompanyPAN.value.trim().toUpperCase();
-    const companyPhone = settingCompanyPhone.value.trim();
+if (saveSettingsBtn) {
+    saveSettingsBtn.addEventListener('click', () => {
+        const companyName = settingCompanyName?.value.trim();
+        const companyAddress = settingCompanyAddress?.value.trim();
+        const companyGSTIN = settingCompanyGSTIN?.value.trim().toUpperCase();
+        const companyPAN = settingCompanyPAN?.value.trim().toUpperCase();
+        const companyPhone = settingCompanyPhone?.value.trim();
 
-    const bankName = settingBankName.value.trim();
-    const accountNumber = settingAccountNumber.value.trim();
-    const ifscCode = settingIfscCode.value.trim().toUpperCase();
+        const bankName = settingBankName?.value.trim();
+        const accountNumber = settingAccountNumber?.value.trim();
+        const ifscCode = settingIfscCode?.value.trim().toUpperCase();
 
-    const cgstRate = parseFloat(settingCgstRate.value);
-    const sgstRate = parseFloat(settingSgstRate.value);
-    const igstRate = parseFloat(settingIgstRate.value);
+        const cgstRate = parseFloat(settingCgstRate?.value);
+        const sgstRate = parseFloat(settingSgstRate?.value);
+        const igstRate = parseFloat(settingIgstRate?.value);
 
-    if (!companyName || !companyAddress || !companyGSTIN || !companyPAN) {
-        showMessageBox('Validation Error', 'Company Name, Address, GSTIN, and PAN are required fields.');
-        return;
-    }
-    if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(companyGSTIN)) {
-        showMessageBox('Validation Error', 'Invalid Company GSTIN format. It should be 15 alphanumeric characters.');
-        return;
-    }
-    if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(companyPAN)) {
-        showMessageBox('Validation Error', 'Invalid Company PAN format. It should be 10 alphanumeric characters (e.g., ABCDE1234F).');
-        return;
-    }
-    if (isNaN(cgstRate) || isNaN(sgstRate) || isNaN(igstRate) || cgstRate < 0 || sgstRate < 0 || igstRate < 0) {
-        showMessageBox('Validation Error', 'Tax rates must be valid positive numbers.');
-        return;
-    }
+        if (!companyName || !companyAddress || !companyGSTIN || !companyPAN) {
+            showMessageBox('Validation Error', 'Company Name, Address, GSTIN, and PAN are required fields.');
+            return;
+        }
+        if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(companyGSTIN)) {
+            showMessageBox('Validation Error', 'Invalid Company GSTIN format. It should be 15 alphanumeric characters.');
+            return;
+        }
+        if (companyPAN && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(companyPAN)) { // PAN validation added
+            showMessageBox('Validation Error', 'Invalid Company PAN format. It should be 10 alphanumeric characters (e.g., ABCDE1234F).');
+            return;
+        }
+        if (isNaN(cgstRate) || isNaN(sgstRate) || isNaN(igstRate) || cgstRate < 0 || sgstRate < 0 || igstRate < 0) {
+            showMessageBox('Validation Error', 'Tax rates must be valid positive numbers.');
+            return;
+        }
 
 
-    COMPANY_DETAILS = {
-        name: companyName,
-        address: companyAddress,
-        gstin: companyGSTIN,
-        pan: companyPAN,
-        phone: companyPhone,
-        slogan: COMPANY_DETAILS.slogan // Retain existing slogan
-    };
-    BANK_DETAILS = {
-        bankName: bankName,
-        accountNumber: accountNumber,
-        ifscCode: ifscCode
-    };
-    TAX_RATES = {
-        cgst: cgstRate,
-        sgst: sgstRate,
-        igst: igstRate
-    };
+        COMPANY_DETAILS = {
+            name: companyName,
+            address: companyAddress,
+            gstin: companyGSTIN,
+            pan: companyPAN,
+            phone: companyPhone,
+            slogan: COMPANY_DETAILS.slogan // Retain existing slogan
+        };
+        BANK_DETAILS = {
+            bankName: bankName,
+            accountNumber: accountNumber,
+            ifscCode: ifscCode
+        };
+        TAX_RATES = {
+            cgst: cgstRate,
+            sgst: sgstRate,
+            igst: igstRate
+        };
 
-    localStorage.setItem('companyDetails', JSON.stringify(COMPANY_DETAILS));
-    localStorage.setItem('bankDetails', JSON.stringify(BANK_DETAILS));
-    localStorage.setItem('taxRates', JSON.stringify(TAX_RATES));
+        localStorage.setItem('companyDetails', JSON.stringify(COMPANY_DETAILS));
+        localStorage.setItem('bankDetails', JSON.stringify(BANK_DETAILS));
+        localStorage.setItem('taxRates', JSON.stringify(TAX_RATES));
 
-    updateCompanyDisplay();
-    updateTaxRatesBasedOnGSTIN(); // This will trigger calculateSummary as well
-    showMessageBox('Settings Saved', 'Your company and tax settings have been updated successfully!');
-});
+        updateCompanyDisplay();
+        updateTaxRatesBasedOnGSTIN(); // This will trigger calculateSummary as well
+        showMessageBox('Settings Saved', 'Your company and tax settings have been updated successfully!');
+    });
+}
+
 
 /**
  * Loads saved settings into the settings form fields.
  */
 function loadSettings() {
-    settingCompanyName.value = COMPANY_DETAILS.name;
-    settingCompanyAddress.value = COMPANY_DETAILS.address;
-    settingCompanyGSTIN.value = COMPANY_DETAILS.gstin;
-    settingCompanyPAN.value = COMPANY_DETAILS.pan;
-    settingCompanyPhone.value = COMPANY_DETAILS.phone;
+    if (settingCompanyName) settingCompanyName.value = COMPANY_DETAILS.name;
+    if (settingCompanyAddress) settingCompanyAddress.value = COMPANY_DETAILS.address;
+    if (settingCompanyGSTIN) settingCompanyGSTIN.value = COMPANY_DETAILS.gstin;
+    if (settingCompanyPAN) settingCompanyPAN.value = COMPANY_DETAILS.pan;
+    if (settingCompanyPhone) settingCompanyPhone.value = COMPANY_DETAILS.phone;
 
 
-    settingBankName.value = BANK_DETAILS.bankName;
-    settingAccountNumber.value = BANK_DETAILS.accountNumber;
-    settingIfscCode.value = BANK_DETAILS.ifscCode;
+    if (settingBankName) settingBankName.value = BANK_DETAILS.bankName;
+    if (settingAccountNumber) settingAccountNumber.value = BANK_DETAILS.accountNumber;
+    if (settingIfscCode) settingIfscCode.value = BANK_DETAILS.ifscCode;
 
-    settingCgstRate.value = TAX_RATES.cgst;
-    settingSgstRate.value = TAX_RATES.sgst;
-    settingIgstRate.value = TAX_RATES.igst;
+    if (settingCgstRate) settingCgstRate.value = TAX_RATES.cgst;
+    if (settingSgstRate) settingSgstRate.value = TAX_RATES.sgst;
+    if (settingIgstRate) settingIgstRate.value = TAX_RATES.igst;
 }
 
 /**
  * Updates the displayed company details across the application UI.
  */
 function updateCompanyDisplay() {
-    displayCompanyName.textContent = COMPANY_DETAILS.name;
-    displayCompanyAddress.innerHTML = COMPANY_DETAILS.address.replace(/\n/g, '<br>');
-    displayCompanyGSTIN.textContent = COMPANY_DETAILS.gstin;
-    displayCompanyPAN.textContent = COMPANY_DETAILS.pan;
-    displayCompanyPhone.textContent = COMPANY_DETAILS.phone;
+    if (displayCompanyName) displayCompanyName.textContent = COMPANY_DETAILS.name;
+    if (displayCompanyAddress) displayCompanyAddress.innerHTML = COMPANY_DETAILS.address.replace(/\n/g, '<br>');
+    if (displayCompanyGSTIN) displayCompanyGSTIN.textContent = COMPANY_DETAILS.gstin;
+    if (displayCompanyPAN) displayCompanyPAN.textContent = COMPANY_DETAILS.pan;
+    if (displayCompanyPhone) displayCompanyPhone.textContent = COMPANY_DETAILS.phone;
 
 
-    sidebarCompanyName.textContent = COMPANY_DETAILS.name;
+    if (sidebarCompanyName) sidebarCompanyName.textContent = COMPANY_DETAILS.name;
 
     if (previewCompanySlogan) {
         previewCompanySlogan.textContent = COMPANY_DETAILS.slogan || '';
@@ -1996,6 +2098,7 @@ function generateDummyInvoices(count) {
         const customer = dummyCustomers[Math.floor(Math.random() * dummyCustomers.length)];
         // Determine placeOfSupply based on customer's GSTIN or a random city if no GSTIN
         let placeOfSupplyForInvoice = "Mumbai"; // Default
+        const companyStateCode = getGstinStateCode(COMPANY_DETAILS.gstin);
         if (customer.gstin) {
             const customerStateName = getStateFromGSTIN(customer.gstin);
             const cityInState = indianCities.find(city => city.state === customerStateName);
@@ -2006,11 +2109,20 @@ function generateDummyInvoices(count) {
                 const otherCitiesInState = indianCities.filter(city => city.state === customerStateName);
                 if (otherCitiesInState.length > 0) {
                     placeOfSupplyForInvoice = otherCitiesInState[Math.floor(Math.random() * otherCitiesInState.length)].city;
+                } else {
+                    // Fallback to a random city if no matching city in DB for the GSTIN state
+                    placeOfSupplyForInvoice = indianCities[Math.floor(Math.random() * indianCities.length)].city;
                 }
             }
         } else {
-            // For B2C customers, pick a random city from the list
-            placeOfSupplyForInvoice = indianCities[Math.floor(Math.random() * indianCities.length)].city;
+            // For B2C customers, use the company's state for intra-state logic, pick a city from that state
+            const companyStateName = gstStateCodes[companyStateCode];
+            const citiesInCompanyState = indianCities.filter(city => city.state === companyStateName);
+            if (citiesInCompanyState.length > 0) {
+                placeOfSupplyForInvoice = citiesInCompanyState[Math.floor(Math.random() * citiesInCompanyState.length)].city;
+            } else {
+                placeOfSupplyForInvoice = indianCities[Math.floor(Math.random() * indianCities.length)].city;
+            }
         }
 
 
@@ -2074,15 +2186,16 @@ function generateDummyInvoices(count) {
         let igstAmount = 0;
 
         const customerGstinCode = getGstinStateCode(customer.gstin);
-        const companyGstinCode = getGstinStateCode(COMPANY_DETAILS.gstin);
+        // COMPANY_DETAILS.gstin is global and reliable
+        // const companyGstinCode = getGstinStateCode(COMPANY_DETAILS.gstin); // Already defined earlier
 
-        if (customerGstinCode && customerGstinCode === companyGstinCode) {
+        if (customerGstinCode && customerGstinCode === companyStateCode) {
             cgstAmount = taxableValue * (TAX_RATES.cgst / 100);
             sgstAmount = taxableValue * (TAX_RATES.sgst / 100);
-        } else if (customerGstinCode && customerGstinCode !== companyGstinCode) {
+        } else if (customerGstinCode && customerGstinCode !== companyStateCode) {
             igstAmount = taxableValue * (TAX_RATES.igst / 100);
         } else {
-            // Default for B2C (no GSTIN or invalid) is intra-state
+            // Default for B2C (no GSTIN or invalid) is intra-state (company's state)
             cgstAmount = taxableValue * (TAX_RATES.cgst / 100);
             sgstAmount = taxableValue * (TAX_RATES.sgst / 100);
         }
@@ -2131,7 +2244,7 @@ function generateDummyInvoices(count) {
             payments.push({
                 id: Date.now() + i * 100 + Math.random(),
                 invoiceNumber: invoiceNum,
-                customerName: customer.name,
+                customerName: customer.name, // Store customer name with payment
                 paymentDate: formatDateForDisplay(formatDateForInput(paymentDate)),
                 amount: paidAmount,
                 method: ['Cash', 'Bank Transfer', 'UPI'][Math.floor(Math.random() * 3)],
@@ -2170,25 +2283,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // These render functions are called within checkAuth if logged in,
     // but explicitly calling them ensures data is always fresh on initial load.
     // They are safe to call multiple times as they clear and re-render.
-    renderPaymentHistory();
-    renderInvoiceHistory();
-});
-document.getElementById('generate-invoice-btn').addEventListener('click', generateInvoice);
-
-invoiceData = {
-    customerName: document.getElementById('customer-name').value,
-    customerPhone: document.getElementById('customer-phone').value,
-    items: [], // push item rows here
-};
-
-document.querySelectorAll('.item-row').forEach(row => {
-    const itemName = row.querySelector('.item-name').value;
-    const itemQty = parseFloat(row.querySelector('.item-qty').value);
-    const itemPrice = parseFloat(row.querySelector('.item-price').value);
-
-    invoiceData.items.push({
-        name: itemName,
-        qty: itemQty,
-        price: itemPrice
-    });
+    // renderPaymentHistory(); // Called by checkAuth -> setActiveNav
+    // renderInvoiceHistory(); // Called by checkAuth -> setActiveNav
 });
