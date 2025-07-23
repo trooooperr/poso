@@ -1457,91 +1457,88 @@ if (shareInvoiceBtn) {
 }
 
 
-// --- Payments Section ---
 
-// Record Payment Button Listener
-// Record Payment Button Listener
+// --- Record Payment Button Listener ---
 if (recordPaymentBtn) {
     recordPaymentBtn.addEventListener('click', () => {
-        const invoiceNumber = recordPaymentBtn.dataset.invoiceNumber; // Get invoice number from data attribute
+        const invoiceNumber = recordPaymentBtn.dataset.invoiceNumber; // from dataset
         const paymentDate = paymentDateInput.value.trim();
         const amount = parseFloat(paymentAmountInput.value);
         const method = paymentMethodSelect.value;
         const notes = paymentNotesTextarea.value.trim();
-        const customerName = paymentCustomerInput.value.trim(); // Retrieve from input field
+        const customerName = paymentCustomerInput.value.trim();
 
-        // Removed the check for !customerName in validation because paymentCustomerInput.value
-        // is auto-filled from history or can be manually entered.
+        // Validation
         if (!paymentDate || isNaN(amount) || amount <= 0) {
             showMessageBox('Validation Error', 'Please enter a valid Payment Date and a positive Amount.');
             return;
         }
-        if (!invoiceNumber) {
-            showMessageBox('Validation Error', 'No invoice selected for payment. Please select an invoice from history or generate a new one.');
-            return;
-        }
 
-
-        // Find the invoice to ensure payment isn't overshooting the grand total - balance due
         const targetInvoice = savedInvoices.find(inv => inv.invoiceDetails.invoiceNumber === invoiceNumber);
-        if (!targetInvoice) {
-            showMessageBox('Error', 'Associated invoice not found. Cannot record payment.');
+        const totalPaidForInvoice = payments
+            .filter(p => p.invoiceNumber === invoiceNumber)
+            .reduce((sum, p) => sum + p.amount, 0);
+
+        const currentBalanceDue = targetInvoice
+            ? targetInvoice.summary.grandTotal - totalPaidForInvoice
+            : Infinity;
+
+        if (amount > currentBalanceDue + 0.01) {
+            showMessageBox(
+                'Payment Error',
+                `Payment amount (${formatCurrency(amount)}) exceeds remaining balance (${formatCurrency(currentBalanceDue)}) for this invoice. Please enter a lower amount.`
+            );
             return;
         }
-
-        // Calculate current balance due for the target invoice
-        const totalPaidForInvoice = payments.filter(p => p.invoiceNumber === invoiceNumber).reduce((sum, p) => sum + p.amount, 0);
-        const currentBalanceDue = targetInvoice.summary.grandTotal - totalPaidForInvoice;
-
-        if (amount > currentBalanceDue + 0.01) { // Add a small tolerance for floating point
-            showMessageBox('Payment Error', `Payment amount (${formatCurrency(amount)}) exceeds remaining balance (${formatCurrency(currentBalanceDue)}) for this invoice. Please enter a lower amount.`);
-            return;
-        }
-
 
         const newPayment = {
-            id: Date.now() + Math.random(), // Unique ID for payment record
-            invoiceNumber: invoiceNumber, // Link payment to invoice
-            customerName: customerName, // Use the value from the input field
-            paymentDate: paymentDate,
+            id: Date.now() + Math.random(),
+            invoiceNumber,
+            customerName,
+            paymentDate,
             amount: parseFloat(amount.toFixed(2)),
-            method: method,
-            notes: notes
+            method,
+            notes,
         };
 
         payments.push(newPayment);
         localStorage.setItem('payments', JSON.stringify(payments));
 
-        // Update the balanceDue for the specific invoice in savedInvoices
-        targetInvoice.summary.balanceDue = Math.max(0, targetInvoice.summary.grandTotal - (totalPaidForInvoice + newPayment.amount));
-        localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
+        // Update invoice balance
+        if (targetInvoice) {
+            targetInvoice.summary.balanceDue = Math.max(
+                0,
+                targetInvoice.summary.grandTotal - (totalPaidForInvoice + newPayment.amount)
+            );
+            localStorage.setItem('savedInvoices', JSON.stringify(savedInvoices));
+        }
 
-
-        // Clear payment form
-        if (paymentInvoiceDisplay) paymentInvoiceDisplay.value = ''; // Clear display
-        if (recordPaymentBtn) recordPaymentBtn.removeAttribute('data-invoice-number'); // Clear the associated invoice number
+        // Clear form
+        if (paymentInvoiceDisplay) paymentInvoiceDisplay.value = '';
+        if (recordPaymentBtn) recordPaymentBtn.removeAttribute('data-invoice-number');
         if (paymentAmountInput) paymentAmountInput.value = '';
         if (paymentMethodSelect) paymentMethodSelect.value = 'Cash';
         if (paymentNotesTextarea) paymentNotesTextarea.value = '';
-        if (paymentCustomerInput) paymentCustomerInput.value = ''; // Clear customer input
+        if (paymentCustomerInput) paymentCustomerInput.value = '';
 
         showMessageBox('Success', `Payment of ${formatCurrency(amount)} recorded for Invoice ${invoiceNumber}.`);
-        renderPaymentHistory(); // Re-render payment history
-        renderInvoiceHistory(); // Re-render invoice history to update balance due status
+
+        renderPaymentHistory();
+        renderInvoiceHistory?.(); // Optional chaining in case function is defined later
     });
 }
 
-
-/**
- * Renders the payment history table.
- */
+// --- Renders Payment History ---
 function renderPaymentHistory() {
-    if (!paymentHistoryList) return; // Add null check for paymentHistoryList
+    if (!paymentHistoryList) return;
+
     paymentHistoryList.innerHTML = '';
+
     if (payments.length === 0) {
         if (noPaymentData) noPaymentData.classList.remove('hidden');
         return;
     }
+
     if (noPaymentData) noPaymentData.classList.add('hidden');
 
     const sortedPayments = [...payments].sort((a, b) => {
@@ -1570,6 +1567,7 @@ function renderPaymentHistory() {
         paymentHistoryList.appendChild(row);
     });
 
+    // Delete Button Handler
     document.querySelectorAll('.delete-payment-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const paymentId = parseFloat(e.currentTarget.dataset.id);
@@ -1579,7 +1577,6 @@ function renderPaymentHistory() {
         });
     });
 }
-
 /**
  * Deletes a payment record by ID and updates associated invoice balance.
  * @param {number} paymentId - The ID of the payment to delete.

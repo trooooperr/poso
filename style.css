@@ -427,9 +427,11 @@ textarea {
     max-height: 100px !important; /* Max height for textarea */
     resize: vertical;
     line-height: 1.5 !important;
+    z-index: 100;
 }
 .item-table td:nth-child(3) input { /* HSN/SAC input */
     min-width: 80px;
+    z-index: 100;
 }
 .item-table td:nth-child(4) input { /* Qty input */
     min-width: 60px;
