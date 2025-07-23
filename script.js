@@ -455,22 +455,22 @@ logoutBtn.addEventListener('click', () => {
 });
 
 // --- Hamburger Menu ---
+// --- Hamburger Menu ---
 hamburgerMenu.addEventListener('click', () => {
-    sidebar.classList.toggle('hidden-mobile');
-    sidebar.classList.toggle('show-sidebar');
-    hamburgerMenu.classList.toggle('active'); // Toggle active class for icon animation
+    sidebar.classList.toggle('hidden'); // Show/hide on mobile
+    hamburgerMenu.classList.toggle('active'); // Optional: for animation
 });
 
 // Close sidebar when a nav item is clicked on mobile
 document.querySelectorAll('.sidebar-nav a').forEach(link => {
     link.addEventListener('click', () => {
-        if (window.innerWidth <= 1023) { // Check if it's a tablet/mobile view (lg breakpoint)
-            sidebar.classList.add('hidden-mobile');
-            sidebar.classList.remove('show-sidebar');
+        if (window.innerWidth <= 1023) { // lg breakpoint
+            sidebar.classList.add('hidden');
             hamburgerMenu.classList.remove('active');
         }
     });
 });
+
 
 // --- Navigation Functionality ---
 

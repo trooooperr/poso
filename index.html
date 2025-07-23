@@ -49,7 +49,8 @@
     <div id="app-container" class="app-container flex flex-grow bg-white rounded-none shadow-none overflow-hidden my-0 mx-0 max-w-full hidden">
 
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar hidden lg:flex flex-col justify-between bg-gray-900 text-white p-6 shadow-2xl relative z-20 transition-all duration-300 ease-in-out">
+        <aside
+  id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gray-900 text-white p-6 shadow-2xl z-50 transform -translate-x-full lg:translate-x-0 lg:flex flex-col justify-between transition-transform duration-300 ease-in-out">
             <div class="flex-grow">
                 <div class="sidebar-logo text-4xl font-extrabold text-center mb-10 tracking-wider text-white-400">GUPTA BEADS</div>
                 <nav class="sidebar-nav space-y-4">
@@ -77,7 +78,7 @@
 
         <!-- Hamburger Menu (for mobile/tablet) -->
         <div id="hamburger-menu" class="lg:hidden fixed top-4 right-4 bg-blue-600 text-white p-3 rounded-full shadow-lg cursor-pointer z-50">
-            <i class="fas fa-bars text-xl"></i>
+           <i class="fas fa-bars text-xl"></i>
         </div>
 
         <!-- Main Content Area -->
